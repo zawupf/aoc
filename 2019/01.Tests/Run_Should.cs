@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace Aoc._2019._01.Tests
