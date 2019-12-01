@@ -5,12 +5,14 @@ using System.Collections.Generic;
 
 namespace Aoc._2019._01
 {
-    public class Run : IRun
+    public class Run : BaseRun, IRun
     {
+        public Run(string InputPrefix = "") : base(InputPrefix) { }
+
         public string Job1()
         {
             var fuels =
-                from line in File.ReadLines("01/input1.txt")
+                from line in ReadLines("01/input1.txt")
                 select int.Parse(line) into mass
                 select RequiredFuel(mass)
                 ;
@@ -21,7 +23,7 @@ namespace Aoc._2019._01
         public string Job2()
         {
             var fuels =
-                from line in File.ReadLines("01/input1.txt")
+                from line in ReadLines("01/input1.txt")
                 select int.Parse(line) into mass
                 select RequiredTotalFuel(mass)
                 ;

@@ -23,5 +23,13 @@ namespace Aoc._2019._01.Tests
         {
             Assert.Equal(fuel, Run.RequiredTotalFuel(mass));
         }
+
+        [Fact]
+        public void Stars()
+        {
+            var run = new Run("../../../../");
+            Assert.Equal("3421505", run.Job1());
+            Assert.Equal("5129386", run.Job2());
+        }
     }
 }
