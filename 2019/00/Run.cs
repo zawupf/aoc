@@ -2,12 +2,6 @@
 
 namespace Aoc._2019._00
 {
-    public interface IRun
-    {
-        public string Job1();
-        public string Job2();
-    };
-
     public class Run : IRun
     {
         public string Job1()

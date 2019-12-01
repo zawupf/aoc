@@ -8,16 +8,23 @@ namespace Aoc._2019
         {
             Console.WriteLine("Hello, Advent Of Code!");
 
-            Run(0, new _00.Run());
+            // Run(0, new _00.Run());
+            Run(1, new _01.Run());
 
             return;
 
-            void Run(int day, _00.IRun run)
+            void Run(int day, IRun run)
             {
-                var suffix = day == 0 ? "" : " - Template";
+                var suffix = day == 0 ? " - Template" : "";
                 Dump($"\nDay {day}{suffix}");
-                Dump($"Result 1: {run.Job1()}");
-                Dump($"Result 2: {run.Job2()}");
+                try
+                {
+                    Dump($"Result 1: {run.Job1()}");
+                    Dump($"Result 2: {run.Job2()}");
+                }
+                catch (NotImplementedException)
+                {
+                }
             }
 
             void Dump(string message) => Console.WriteLine(message);
