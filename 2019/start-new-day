@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -o errexit
+
+if [[ x"$1" = x"" ]]; then
+  echo "Day number argument missing"
+  exit 1
+fi
+
+fw=netcoreapp3.0
+
+lib_name="$1"
+dotnet new classlib -f "$fw" -o "$lib_name"
+dotnet add "$lib_name" reference 00
+rm "$lib_name/Class1.cs"
+cp templates/Run.cs "$lib_name/"
+sed -i "s/_xx/_$1/g" "$lib_name/Run.cs"
+
+test_name="$1.Tests"
+dotnet new xunit -f "$fw" -o "$test_name"
+dotnet add "$test_name" reference "$1"
+rm "$test_name/UnitTest1.cs"
+cp templates/Run_Should.cs "$test_name/"
+sed -i "s/_xx/_$1/g" "$test_name/Run_Should.cs"
+
+dotnet sln add "$lib_name"
+dotnet sln add "$test_name"
