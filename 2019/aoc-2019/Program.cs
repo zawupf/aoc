@@ -9,7 +9,8 @@ namespace Aoc._2019
             Console.WriteLine("Hello, Advent Of Code!");
 
             // Run(0, new _00.Run());
-            Run(1, new _01.Run());
+            // Run(1, new _01.Run());
+            Run(2, new _02.Run());
 
             return;
 

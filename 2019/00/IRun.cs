@@ -20,5 +20,8 @@ namespace Aoc._2019
 
         protected IEnumerable<string> ReadLines(
             string path) => File.ReadLines(InputPrefix + path);
+
+        protected string ReadAllText(
+            string path) => File.ReadAllText(InputPrefix + path);
     }
 }
