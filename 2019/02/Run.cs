@@ -17,18 +17,13 @@ namespace Aoc._2019._02
         public string Job2()
         {
             var code = ReadCode();
-            for (int noun = 0; noun < 100; noun++)
-            {
-                for (int verb = 0; verb < 100; verb++)
-                {
-                    var result = Exec(code, noun, verb);
-                    if (result == 19690720)
-                    {
-                        return (100 * noun + verb).ToString();
-                    }
-                }
-            }
-            return "Panic!";
+            var query =
+                from noun in Enumerable.Range(0, 100)
+                from verb in Enumerable.Range(0, 100)
+                where Exec(code, noun, verb) == 19690720
+                select (100 * noun + verb)
+                ;
+            return query.First().ToString();
         }
 
         private int Exec(int[] code, int? noun = null, int? verb = null)
