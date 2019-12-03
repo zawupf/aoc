@@ -22,7 +22,7 @@ rm "$test_name/UnitTest1.cs"
 cp templates/Run_Should.cs "$test_name/"
 sed -i "s/_xx/_$1/g" "$test_name/Run_Should.cs"
 
-dotnet add aoc-2019 reference 02
+dotnet add aoc-2019 reference "$lib_name"
 
 dotnet sln add "$lib_name"
 dotnet sln add "$test_name"
