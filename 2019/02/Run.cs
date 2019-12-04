@@ -51,8 +51,8 @@ namespace Aoc._2019._02
         public Computer(int[] code, int? noun = null, int? verb = null)
         {
             this.code = code.Clone() as int[];
-            this.code[1] = noun != null ? (int)noun : code[1];
-            this.code[2] = verb != null ? (int)verb : code[2];
+            this.code[1] = noun ?? code[1];
+            this.code[2] = verb ?? code[2];
         }
 
         public int[] Exec()
