@@ -57,6 +57,18 @@ namespace Aoc._2019._05
         private List<int> inputs = new List<int> { };
         private List<int> outputs = new List<int> { };
 
+        public bool IsHalted { get; private set; }
+        public bool IsPaused { get; private set; }
+
+        public static int[] Compile(string sourceCode)
+        {
+            var code = (
+                from number in sourceCode.Split(',')
+                select int.Parse(number)
+            ).ToArray();
+            return code;
+        }
+
         public Computer(int[] code, int? noun = null, int? verb = null)
         {
             this.code = code.Clone() as int[];
@@ -68,8 +80,20 @@ namespace Aoc._2019._05
         {
             this.inputs = inputs;
             position = 0;
+            IsHalted = false;
+            IsPaused = false;
             while (HandleOpcode()) ;
             outputs = this.outputs;
+            return code;
+        }
+
+        public int[] Continue(int input, List<int> outputs)
+        {
+            IsHalted = false;
+            IsPaused = false;
+            this.inputs.Add(input);
+            this.outputs = outputs;
+            while (HandleOpcode()) ;
             return code;
         }
 
@@ -155,10 +179,16 @@ namespace Aoc._2019._05
                 Opcode.JumpIfFalse => JumpIfFalse(),
                 Opcode.LessThan => LessThan(),
                 Opcode.Equals => Equals(),
-                Opcode.Halt => false,
+                Opcode.Halt => Halt(),
                 _ => throw new InvalidOpcodeException(),
             };
             return doContinue;
+        }
+
+        private bool Halt()
+        {
+            IsHalted = true;
+            return false;
         }
 
         private bool Add()
@@ -177,10 +207,21 @@ namespace Aoc._2019._05
 
         private bool Input()
         {
+            if (!inputs.Any())
+            {
+                return Pause();
+            }
+
             WriteParameter(0, inputs.First());
             inputs.RemoveAt(0);
             position += 2;
             return true;
+        }
+
+        private bool Pause()
+        {
+            IsPaused = true;
+            return false;
         }
 
         private bool Output()
