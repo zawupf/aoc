@@ -22,6 +22,6 @@ namespace Aoc._2019
             string path) => File.ReadLines(InputPrefix + path);
 
         protected string ReadAllText(
-            string path) => File.ReadAllText(InputPrefix + path);
+            string path) => File.ReadAllText(InputPrefix + path).TrimEnd();
     }
 }
