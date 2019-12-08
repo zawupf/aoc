@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>aoc_2019_calendar.tests</RootNamespace>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\aoc-2019-calendar\aoc-2019-calendar.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Day01_Should.fs" />
+    <Compile Include="Day02_Should.fs" />
+    <Compile Include="Day03_Should.fs" />
+    <Compile Include="Day04_Should.fs" />
+    <Compile Include="Day05_Should.fs" />
+    <Compile Include="Day06_Should.fs" />
+    <Compile Include="Day07_Should.fs" />
+    <Compile Include="Day08_Should.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+  </ItemGroup>
+</Project>
