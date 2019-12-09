@@ -21,18 +21,18 @@ namespace Aoc._2019._07
             return result.ToString();
         }
 
-        public static int MaxThrusterSignal(int[] code)
+        public static long MaxThrusterSignal(long[] code)
         {
-            var phaseset = new int[] { 0, 1, 2, 3, 4 };
+            var phaseset = new long[] { 0, 1, 2, 3, 4 };
             var results =
                 from phases in GetPermutations(phaseset, phaseset.Length)
                 select Analyzer.Exec(phases.ToArray(), code);
             return results.Max();
         }
 
-        public static int MaxThrusterSignalFeedback(int[] code)
+        public static long MaxThrusterSignalFeedback(long[] code)
         {
-            var phaseset = new int[] { 5, 6, 7, 8, 9 };
+            var phaseset = new long[] { 5, 6, 7, 8, 9 };
             var results =
                 from phases in GetPermutations(phaseset, phaseset.Length)
                 select Analyzer.ExecFeedback(phases.ToArray(), code);
@@ -48,7 +48,7 @@ namespace Aoc._2019._07
                     (t1, t2) => t1.Concat(new T[] { t2 }));
         }
 
-        private int[] ReadCode()
+        private long[] ReadCode()
         {
             return Computer.Compile(ReadAllText("07/input1.txt"));
         }
@@ -56,45 +56,45 @@ namespace Aoc._2019._07
 
     public class Analyzer
     {
-        private int phase;
+        private long phase;
         private Computer computer;
-        private List<int> output;
+        private List<long> output;
 
         public bool IsHalted => computer?.IsHalted ?? false;
         public bool IsPaused => computer?.IsPaused ?? false;
 
-        private int PopOutput()
+        private long PopOutput()
         {
             var result = output.First();
             output.RemoveAt(0);
             return result;
         }
 
-        public Analyzer(int phase)
+        public Analyzer(long phase)
         {
             this.phase = phase;
         }
 
-        public int Run(int input, int[] code)
+        public long Run(long input, long[] code)
         {
             computer = new Computer(code);
-            computer.Exec(new List<int> { this.phase, input }, out output);
+            computer.Exec(new List<long> { this.phase, input }, out output);
             return PopOutput();
         }
 
-        public int Continue(int input)
+        public long Continue(long input)
         {
             computer.Continue(input, output);
             return PopOutput();
         }
 
-        public static int Exec(int[] phases, int[] code)
+        public static long Exec(long[] phases, long[] code)
         {
             var analyzers =
                 from phase in phases
                 select new Analyzer(phase);
 
-            int output = 0;
+            long output = 0;
             foreach (var analyzer in analyzers)
             {
                 output = analyzer.Run(output, code);
@@ -103,14 +103,14 @@ namespace Aoc._2019._07
             return output;
         }
 
-        public static int ExecFeedback(int[] phases, int[] code)
+        public static long ExecFeedback(long[] phases, long[] code)
         {
             var analyzers = (
                 from phase in phases
                 select new Analyzer(phase)
             ).ToArray();
 
-            int output = 0;
+            long output = 0;
             while (!analyzers.Last().IsHalted)
             {
                 foreach (var analyzer in analyzers)
