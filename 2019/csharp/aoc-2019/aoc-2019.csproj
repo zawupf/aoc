@@ -12,6 +12,7 @@
     <ProjectReference Include="..\08\08.csproj" />
     <ProjectReference Include="..\09\09.csproj" />
     <ProjectReference Include="..\10\10.csproj" />
+    <ProjectReference Include="..\11\11.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

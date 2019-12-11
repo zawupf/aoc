@@ -18,7 +18,8 @@ namespace Aoc._2019
             // Run(7, new _07.Run());
             // Run(8, new _08.Run());
             // Run(9, new _09.Run());
-            Run(10, new _10.Run());
+            // Run(10, new _10.Run());
+            Run(11, new _11.Run());
 
             return;
 

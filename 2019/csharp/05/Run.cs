@@ -75,15 +75,21 @@ namespace Aoc._2019._05
             this.code = code.Clone() as long[];
             this.code[1] = noun ?? code[1];
             this.code[2] = verb ?? code[2];
+            Reset();
         }
 
-        public long[] Exec(in List<long> inputs, out List<long> outputs)
+        public void Reset()
         {
-            this.inputs = inputs;
             position = 0;
             relativeBase = 0;
             IsHalted = false;
             IsPaused = false;
+        }
+
+        public long[] Exec(in List<long> inputs, out List<long> outputs)
+        {
+            Reset();
+            this.inputs = inputs;
             while (HandleOpcode()) ;
             outputs = this.outputs;
             return code;

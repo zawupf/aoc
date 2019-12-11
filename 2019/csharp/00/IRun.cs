@@ -11,17 +11,17 @@ namespace Aoc._2019
 
     public class BaseRun
     {
-        private string InputPrefix { get; }
+        protected string InputPrefix { get; }
 
         protected BaseRun(string InputPrefix = "")
         {
             this.InputPrefix = InputPrefix;
         }
 
-        protected IEnumerable<string> ReadLines(
+        public IEnumerable<string> ReadLines(
             string path) => File.ReadLines(InputPrefix + path);
 
-        protected string ReadAllText(
+        public string ReadAllText(
             string path) => File.ReadAllText(InputPrefix + path).TrimEnd();
     }
 }
