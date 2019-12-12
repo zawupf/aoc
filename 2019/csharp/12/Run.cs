@@ -276,9 +276,9 @@ namespace Aoc._2019._12
 
         public long CycleSteps2()
         {
-            long stepsX = ViewX().CycleSteps();
-            long stepsY = ViewY().CycleSteps();
-            long stepsZ = ViewZ().CycleSteps();
+            long stepsX = ViewX().ViewY().CycleSteps();
+            long stepsY = ViewY().ViewZ().CycleSteps();
+            long stepsZ = ViewZ().ViewX().CycleSteps();
             return LCD(stepsX, LCD(stepsY, stepsZ));
 
             long GCD(long a, long b)

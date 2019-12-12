@@ -89,7 +89,7 @@ namespace Aoc._2019._12.Tests
         {
             var run = new Run("../../../../");
             Assert.Equal("7179", run.Job1());
-            // Assert.Equal("", run.Job2());
+            Assert.Equal("428576638953552", run.Job2());
         }
     }
 }
