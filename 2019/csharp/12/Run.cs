@@ -20,9 +20,7 @@ namespace Aoc._2019._12
 
         public string Job2()
         {
-            // return Planet.Parse(ReadLines("12/input1.txt"))
-            // return Planet.Parse("<x=-8, y=-10, z=0>\n<x=5, y=5, z=10>\n<x=2, y=-7, z=3>\n<x=9, y=-8, z=-3>")
-            return Planet.Parse("<x=-1, y=0, z=2>\n<x=2, y=-10, z=-7>\n<x=4, y=-8, z=8>\n<x=3, y=5, z=-1>")
+            return Planet.Parse(ReadLines("12/input1.txt"))
                 .CycleSteps2()
                 .ToString();
         }
@@ -149,6 +147,27 @@ namespace Aoc._2019._12
         {
             return PotentialEnergy() * KineticEnergy();
         }
+
+        public Moon ViewX()
+        {
+            var (px, py, pz) = Position;
+            var (vx, vy, vz) = Velocity;
+            return new Moon((0, py, pz), (0, vy, vz));
+        }
+
+        public Moon ViewY()
+        {
+            var (px, py, pz) = Position;
+            var (vx, vy, vz) = Velocity;
+            return new Moon((px, 0, pz), (vx, 0, vz));
+        }
+
+        public Moon ViewZ()
+        {
+            var (px, py, pz) = Position;
+            var (vx, vy, vz) = Velocity;
+            return new Moon((px, py, 0), (vx, vy, 0));
+        }
     }
 
     public class Planet
@@ -257,39 +276,40 @@ namespace Aoc._2019._12
 
         public long CycleSteps2()
         {
-            long steps = 0;
-            var initialPlanet = Clone();
-            var initialPotentialEnergy = initialPlanet.PotentialEnergy();
-            var initialKineticEnergy = initialPlanet.KineticEnergy();
-            var initialTotalEnergy = initialPlanet.TotalEnergy();
-            var (pot, kin, tot) = (true, true, true);
-            foreach (var _ in Steps(false).Skip(1))
-            {
-                ++steps;
-                if (pot && initialPotentialEnergy == PotentialEnergy())
-                {
-                    pot = false;
-                    Console.WriteLine($"pot after: {steps}");
-                }
-                if (initialKineticEnergy == KineticEnergy())
-                {
-                    kin = false;
-                    Console.WriteLine($"kin after: {steps}");
-                }
-                if (initialTotalEnergy == TotalEnergy())
-                {
-                    tot = false;
-                    Console.WriteLine($"tot after: {steps}");
-                }
-                if (Math.Abs(PotentialEnergy() - KineticEnergy()) < 2)
-                {
-                    Console.WriteLine($"same egy: {steps}");
-                }
+            long stepsX = ViewX().CycleSteps();
+            long stepsY = ViewY().CycleSteps();
+            long stepsZ = ViewZ().CycleSteps();
+            return LCD(stepsX, LCD(stepsY, stepsZ));
 
-                if (!pot && !kin && !tot)
-                    break;
+            long GCD(long a, long b)
+            {
+                if (b == 0) return a;
+                return GCD(b, a % b);
             }
-            return steps;
+
+            long LCD(long a, long b)
+            {
+                return (a * b) / GCD(a, b);
+            }
+
+        }
+
+        private Planet ViewX()
+        {
+            var moons = (from moon in Moons select moon.ViewX()).ToArray();
+            return new Planet(moons);
+        }
+
+        private Planet ViewY()
+        {
+            var moons = (from moon in Moons select moon.ViewY()).ToArray();
+            return new Planet(moons);
+        }
+
+        private Planet ViewZ()
+        {
+            var moons = (from moon in Moons select moon.ViewZ()).ToArray();
+            return new Planet(moons);
         }
     }
 }

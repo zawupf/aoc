@@ -77,8 +77,11 @@ namespace Aoc._2019._12.Tests
             var planet = Planet.Parse("<x=-1, y=0, z=2>\n<x=2, y=-10, z=-7>\n<x=4, y=-8, z=8>\n<x=3, y=5, z=-1>");
             Assert.Equal(2772, planet.CycleSteps());
 
-            // planet = Planet.Parse("<x=-8, y=-10, z=0>\n<x=5, y=5, z=10>\n<x=2, y=-7, z=3>\n<x=9, y=-8, z=-3>");
-            // Assert.Equal(4686774924, planet.CycleSteps());
+            planet = Planet.Parse("<x=-1, y=0, z=2>\n<x=2, y=-10, z=-7>\n<x=4, y=-8, z=8>\n<x=3, y=5, z=-1>");
+            Assert.Equal(2772, planet.CycleSteps2());
+
+            planet = Planet.Parse("<x=-8, y=-10, z=0>\n<x=5, y=5, z=10>\n<x=2, y=-7, z=3>\n<x=9, y=-8, z=-3>");
+            Assert.Equal(4686774924, planet.CycleSteps2());
         }
 
         [Fact]
@@ -86,7 +89,7 @@ namespace Aoc._2019._12.Tests
         {
             var run = new Run("../../../../");
             Assert.Equal("7179", run.Job1());
-            Assert.Equal("", run.Job2());
+            // Assert.Equal("", run.Job2());
         }
     }
 }
