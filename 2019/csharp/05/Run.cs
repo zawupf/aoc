@@ -105,6 +105,11 @@ namespace Aoc._2019._05
             return code;
         }
 
+        public void Patch(long position, long value)
+        {
+            code[position] = value;
+        }
+
         public enum Opcode
         {
             Add = 1,
