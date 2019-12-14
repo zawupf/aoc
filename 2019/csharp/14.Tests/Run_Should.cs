@@ -39,20 +39,20 @@ namespace Aoc._2019._14.Tests
         {
             var run = new Run("../../../../");
             var factory = Factory.Parse(run.ReadLines(path));
-            Assert.Equal(0, factory.Available("FUEL"));
-            Assert.Equal(int.MaxValue, factory.Available("ORE"));
+            factory.Insert(new Chemical(long.MaxValue, "ORE"));
             Assert.Equal(oreCount, factory.Take("1 FUEL"));
         }
 
         [Theory]
         [InlineData(82892753, "14/sample3.txt")]
         [InlineData(5586022, "14/sample4.txt")]
-        // [InlineData(460664, "14/sample5.txt")] // FIXME: too slow
+        [InlineData(460664, "14/sample5.txt")]
         public void Factory_Buy_works(int fuelCount, string path)
         {
             var run = new Run("../../../../");
             var factory = Factory.Parse(run.ReadLines(path));
-            Assert.Equal(fuelCount, factory.BuyFuel(1000000000000));
+            factory.Insert("1000000000000 ORE");
+            Assert.Equal(fuelCount, factory.BuyFuel());
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Aoc._2019._14.Tests
         {
             var run = new Run("../../../../");
             Assert.Equal("97422", run.Job1());
-            // Assert.Equal("", run.Job2()); // FIXME: too slow
+            Assert.Equal("13108426", run.Job2());
         }
     }
 }

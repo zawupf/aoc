@@ -11,31 +11,33 @@ namespace Aoc._2019._14
         public string Job1()
         {
             var factory = Factory.Parse(ReadLines("14/input1.txt"));
+            factory.Insert(new Chemical(long.MaxValue, "ORE"));
             return factory.Take("1 FUEL").ToString();
         }
 
         public string Job2()
         {
             var factory = Factory.Parse(ReadLines("14/input1.txt"));
-            return factory.BuyFuel(1000000000000).ToString();
+            factory.Insert("1000000000000 ORE");
+            return factory.BuyFuel().ToString();
         }
     }
 
     public readonly struct Chemical
     {
-        public int Quantity { get; }
+        public long Quantity { get; }
         public string Name { get; }
 
-        public Chemical(int quantity, string name)
+        public Chemical(long quantity, string name)
         {
             (Quantity, Name) = (quantity, name);
         }
 
-        public int CountFor(int quantity)
+        public long CountFor(long quantity)
         {
             return quantity / Quantity + (quantity % Quantity == 0 ? 0 : 1);
         }
-        public Chemical Times(int times)
+        public Chemical Times(long times)
         {
             return new Chemical(Quantity * times, Name);
         }
@@ -44,7 +46,7 @@ namespace Aoc._2019._14
         {
             var data = text
                 .Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            return new Chemical(int.Parse(data[0]), data[1]);
+            return new Chemical(long.Parse(data[0]), data[1]);
         }
 
         public override string ToString()
@@ -85,12 +87,14 @@ namespace Aoc._2019._14
         }
     }
 
+    class OutOfOreException : Exception { }
+
     public class Factory
     {
         private Dictionary<string, Reaction> reactions =
             new Dictionary<string, Reaction>();
-        private Dictionary<string, int> availableChemicals
-            = new Dictionary<string, int>();
+        private Dictionary<string, long> availableChemicals
+            = new Dictionary<string, long>();
 
         public static Factory Parse(IEnumerable<string> lines)
         {
@@ -106,41 +110,51 @@ namespace Aoc._2019._14
         public void Add(Reaction reaction)
         {
             reactions.Add(reaction.Output.Name, reaction);
+            availableChemicals[reaction.Output.Name] =
+                availableChemicals.GetValueOrDefault(reaction.Output.Name, 0);
+            foreach (var r in reaction.Inputs)
+            {
+                availableChemicals[r.Name] =
+                    availableChemicals.GetValueOrDefault(r.Name, 0);
+            }
         }
 
-        public int Available(string chemical)
+        public void Insert(string chemical)
         {
-            return availableChemicals.GetValueOrDefault(
-                chemical, chemical == "ORE" ? int.MaxValue : 0);
+            Insert(Chemical.Parse(chemical));
         }
 
-        public int Take(string chemical)
+        public void Insert(Chemical chemical)
+        {
+            availableChemicals[chemical.Name] += chemical.Quantity;
+        }
+
+        public long Take(string chemical)
         {
             return Take(Chemical.Parse(chemical));
         }
 
-        public int Take(Chemical chemical)
+        public long Take(Chemical chemical)
         {
-            if (chemical.Name == "ORE")
-                return chemical.Quantity;
-
-            int available = Available(chemical.Name);
+            long available = availableChemicals[chemical.Name];
             if (available >= chemical.Quantity)
             {
                 availableChemicals[chemical.Name] =
                     available - chemical.Quantity;
-                return 0;
+                return chemical.Name == "ORE" ? chemical.Quantity : 0;
             }
             else
             {
-                int missing = chemical.Quantity - Available(chemical.Name);
-                int oreCount = Produce(new Chemical(missing, chemical.Name));
-                availableChemicals[chemical.Name] =
-                    Available(chemical.Name) - chemical.Quantity;
+                if (chemical.Name == "ORE")
+                    throw new OutOfOreException();
+
+                long missing = chemical.Quantity - availableChemicals[chemical.Name];
+                long oreCount = Produce(new Chemical(missing, chemical.Name));
+                availableChemicals[chemical.Name] -= chemical.Quantity;
                 return oreCount;
             }
 
-            int Produce(Chemical chemical)
+            long Produce(Chemical chemical)
             {
                 var reaction = reactions[chemical.Name];
                 var reactionCount = reaction.Output.CountFor(chemical.Quantity);
@@ -149,41 +163,61 @@ namespace Aoc._2019._14
                     select Take(chem.Times(reactionCount))
                 ).Sum();
                 var produced = reaction.Output.Quantity * reactionCount;
-                availableChemicals[chemical.Name] =
-                    Available(chemical.Name) + produced;
+                availableChemicals[chemical.Name] += produced;
                 return oreCount;
             }
         }
 
-        public long BuyFuel(long oreCount)
+        public long BuyFuel()
         {
-            var fuel = new Chemical(1, "FUEL");
-            long chunkSize = 0;
-            long chunkCost = 0;
-            do
-            {
-                ++chunkSize;
-                chunkCost += Take(fuel);
-            } while (!Empty());
-            var chunkCount = oreCount / chunkCost;
+            var initialChemicals =
+                new Dictionary<string, long>(availableChemicals);
 
-            var fuelCount = chunkCount * chunkSize;
-            var ore = oreCount % chunkCost;
-            while (true)
+            var (minFuel, maxFuel) = FindMinMaxFuel();
+            if (minFuel == 0)
+                return 0;
+
+            return FindMaxFuel(minFuel, maxFuel);
+
+            long FindMaxFuel(long min, long max)
             {
-                var cost = Take(fuel);
-                ore -= cost;
-                if (ore >= 0)
-                    ++fuelCount;
-                else
-                    break;
+                while (min != max - 1)
+                {
+                    var fuel = (min + max) / 2;
+                    bool ok = TryTake(fuel);
+                    if (ok)
+                        min = fuel;
+                    else
+                        max = fuel;
+                }
+                return min;
             }
 
-            return fuelCount;
-
-            bool Empty()
+            (long, long) FindMinMaxFuel()
             {
-                return availableChemicals.Values.All(value => value == 0);
+                var fuel = 1;
+                while (TryTake(fuel)) fuel *= 2;
+                return (fuel / 2, fuel);
+            }
+
+            bool TryTake(long fuel)
+            {
+                RestoreChemicals();
+                try
+                {
+                    Take(new Chemical(fuel, "FUEL"));
+                    return true;
+                }
+                catch (OutOfOreException)
+                {
+                    return false;
+                }
+            }
+
+            void RestoreChemicals()
+            {
+                availableChemicals =
+                    new Dictionary<string, long>(initialChemicals);
             }
         }
     }
