@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Diagnostics.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,6 +61,18 @@ namespace Aoc._2019._05
 
         public bool IsHalted { get; private set; }
         public bool IsPaused { get; private set; }
+
+        public Computer Clone()
+        {
+            var computer = new Computer(code);
+            computer.position = position;
+            computer.relativeBase = relativeBase;
+            computer.inputs = new List<long>(inputs);
+            computer.outputs = new List<long>(outputs);
+            computer.IsHalted = IsHalted;
+            computer.IsPaused = IsPaused;
+            return computer;
+        }
 
         public static long[] Compile(string sourceCode)
         {
