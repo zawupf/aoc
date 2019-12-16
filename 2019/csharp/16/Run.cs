@@ -12,40 +12,33 @@ namespace Aoc._2019._16
         public string Job1()
         {
             var fft = new FFT();
-            var result = fft.Phases(ReadAllText("16/input1.txt"), 4).ElementAt(99);
+            var result = fft.Phases(ReadAllText("16/input1.txt"), 1).ElementAt(99);
             Console.WriteLine($"length: {result.Count()}");
             return fft.Current(0, 8);
         }
 
         public string Job2()
         {
-            return "in work";
+            // return "in work";
+            var fft = new FFT();
+            var result = fft.Phases(ReadAllText("16/input1.txt"), 100).ElementAt(99);
+            Console.WriteLine($"length: {result.Count()}");
+            return fft.Current(0, 8);
         }
     }
 
     public class FFT // Flawed Frequency Transmission
     {
-        private int[] basePattern;
-        private IEnumerable<int> current;
+        private int[] current;
 
-        public FFT()
-        {
-            this.basePattern = new[] { 0, 1, 0, -1 };
-        }
-
-        public FFT(int[] basePattern)
-        {
-            this.basePattern = basePattern;
-        }
-
-        public IEnumerable<IEnumerable<int>> Phases(string input, int count = 1)
+        public IEnumerable<int[]> Phases(string input, int count = 1)
         {
             return Phases(ParseInput(input, count));
         }
 
-        public IEnumerable<IEnumerable<int>> Phases(IEnumerable<int> input)
+        public IEnumerable<int[]> Phases(IEnumerable<int> input)
         {
-            current = input;
+            current = input.ToArray();
 
             while (NextPhase())
             {
@@ -57,44 +50,45 @@ namespace Aoc._2019._16
         {
             return string.Join(
                 "",
-                current.Skip(offset).Take(count).Select(value => value.ToString())
+                current[offset..(offset + count)].Select(value => value.ToString())
             );
         }
 
         private bool NextPhase()
         {
-            current = (
-                from position in Enumerable.Range(1, current.Count())
-                select Calculate(position)
-            ).ToArray();
+            var partialSums = new List<int>();
+            var result = new int[current.Length];
+            for (int i = 0; i < current.Length; ++i)
+                result[i] = Calculate(i);
+            current = result;
             return true;
-        }
 
-        private int Calculate(int position)
-        {
-            var sum = (
-                from value in current.Zip(Pattern(position))
-                    // where value.Second != 0
-                select value.First * value.Second
-            ).Sum();
-            return Math.Abs(sum) % 10;
-        }
-
-        private IEnumerable<int> Pattern(int position)
-        {
-            return RegularPattern(position).Skip(1);
-
-            IEnumerable<int> RegularPattern(int position)
+            int Calculate(int shift)
             {
-                while (true)
+                InitPartialSums(shift);
+                var sum = 0;
+                bool add = true;
+                foreach (var s in partialSums)
                 {
-                    foreach (var value in basePattern)
-                    {
-                        for (int i = 0; i < position; i++)
-                        {
-                            yield return value;
-                        }
-                    }
+                    if (add) sum += s;
+                    else sum -= s;
+                    add = !add;
+                }
+
+                return Math.Abs(sum) % 10;
+            }
+
+            void InitPartialSums(int shift)
+            {
+                partialSums.Clear();
+                var offset = shift;
+                var length = shift + 1;
+                var step = 2 * length;
+                for (int i = offset; i < current.Length; i += step)
+                {
+                    var end = i + length;
+                    if (end > current.Length) end = current.Length;
+                    partialSums.Add(current[i..end].Sum());
                 }
             }
         }
