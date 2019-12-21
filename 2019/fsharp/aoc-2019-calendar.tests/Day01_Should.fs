@@ -1,6 +1,5 @@
 module Tests01
 
-open System
 open Xunit
 open Day01
 
@@ -13,5 +12,5 @@ let ``Day01 fuel works`` mass expectedFuel = Assert.Equal(expectedFuel, fuel mas
 
 [<Fact>]
 let ``Day01 Stars``() =
-    Assert.Equal("3421505", job1 "../../../../")
-    Assert.Equal("5129386", job2 "../../../../")
+    Assert.Equal("3421505", job1())
+    Assert.Equal("5129386", job2())

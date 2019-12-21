@@ -1,13 +1,13 @@
 module Day08
 
 open System
-open System.IO
+open Utils
 
 
-let job1 prefix =
+let job1() =
     raise (NotImplementedException())
-    File.ReadLines(prefix + "inputs/Day08.txt") |> string
+    readInputLines "08" |> string
 
-let job2 prefix =
+let job2() =
     raise (NotImplementedException())
-    File.ReadLines(prefix + "inputs/Day08.txt") |> string
+    readInputLines "08" |> string

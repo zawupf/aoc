@@ -1,6 +1,5 @@
 module Tests04
 
-open System
 open Xunit
 open Day04
 

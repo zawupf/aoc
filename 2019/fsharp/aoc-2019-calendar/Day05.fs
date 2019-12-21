@@ -1,11 +1,10 @@
 module Day05
 
-open System
-open System.IO
-open Day02.Computer
+open Utils
+open Computer
 
-let job1 prefix =
-    let source = File.ReadAllText(prefix + "inputs/Day05.txt")
+let job1() =
+    let source = readInputText "05"
 
     let context: Context = compile source
     context.input.Enqueue(1)
@@ -14,8 +13,8 @@ let job1 prefix =
     |> Array.last
     |> string
 
-let job2 prefix =
-    let source = File.ReadAllText(prefix + "inputs/Day05.txt")
+let job2() =
+    let source = readInputText "05"
 
     let context: Context = compile source
     context.input.Enqueue(5)

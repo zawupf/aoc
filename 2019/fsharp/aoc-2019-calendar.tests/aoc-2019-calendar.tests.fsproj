@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>aoc_2019_calendar.tests</RootNamespace>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\aoc-2019-calendar\aoc-2019-calendar.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computer_Should.fs" />
     <Compile Include="Day01_Should.fs" />
     <Compile Include="Day02_Should.fs" />
     <Compile Include="Day03_Should.fs" />

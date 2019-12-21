@@ -1,7 +1,6 @@
 module Day03
 
-open System
-open System.IO
+open Utils
 
 type Move =
     | Up of int
@@ -84,12 +83,12 @@ let minSignalDelay lines =
     |> Seq.map (fun pt -> wires |> Seq.sumBy (countSteps pt))
     |> Seq.min
 
-let job1 prefix =
-    File.ReadLines(prefix + "inputs/Day03.txt")
+let job1() =
+    readInputLines "03"
     |> minDistance
     |> string
 
-let job2 prefix =
-    File.ReadLines(prefix + "inputs/Day03.txt")
+let job2() =
+    readInputLines "03"
     |> minSignalDelay
     |> string

@@ -1,7 +1,6 @@
 ﻿module Day01
 
-open System
-open System.IO
+open Utils
 
 let fuel mass =
     let fuel = mass / 3 - 2
@@ -16,12 +15,12 @@ let totalFuel mass =
         else currentTotalFuel
     _totalFuel mass 0
 
-let job1 prefix =
-    File.ReadLines(prefix + "inputs/Day01.txt")
+let job1() =
+    readInputLines "01"
     |> Seq.sumBy (int >> fuel)
     |> string
 
-let job2 prefix =
-    File.ReadLines(prefix + "inputs/Day01.txt")
+let job2() =
+    readInputLines "01"
     |> Seq.sumBy (int >> totalFuel)
     |> string

@@ -3,8 +3,8 @@
 let run day fn1 fn2 =
     printfn "\nDay %d" day
     try
-        printfn "Result 1: %s" (fn1 "")
-        printfn "Result 1: %s" (fn2 "")
+        printfn "Result 1: %s" (fn1())
+        printfn "Result 1: %s" (fn2())
     with
         | :? NotImplementedException -> ()
 
@@ -14,8 +14,8 @@ let main argv =
     // run 2 Day02.job1 Day02.job2
     // run 3 Day03.job1 Day03.job2
     // run 4 Day04.job1 Day04.job2
-    // run 5 Day05.job1 Day05.job2
-    run 6 Day06.job1 Day06.job2
+    run 5 Day05.job1 Day05.job2
+    // run 6 Day06.job1 Day06.job2
     // run 7 Day07.job1 Day07.job2
     // run 8 Day08.job1 Day08.job2
     0 // return an integer exit code
