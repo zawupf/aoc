@@ -19,7 +19,7 @@ let private _findInputFile name =
 let private _readLines filename = File.ReadLines(filename)
 let readInputLines name = _readLines (_findInputFile name)
 
-let private _readAllText filename = File.ReadAllText(filename)
+let private _readAllText filename = File.ReadAllText(filename).Trim()
 let readInputText name = _readAllText (_findInputFile name)
 
 let permutations list =

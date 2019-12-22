@@ -16,6 +16,17 @@
     <Compile Include="Day06_Should.fs" />
     <Compile Include="Day07_Should.fs" />
     <Compile Include="Day08_Should.fs" />
+    <Compile Include="Day09_Should.fs" />
+    <Compile Include="Day10_Should.fs" />
+    <Compile Include="Day11_Should.fs" />
+    <Compile Include="Day12_Should.fs" />
+    <Compile Include="Day13_Should.fs" />
+    <Compile Include="Day14_Should.fs" />
+    <Compile Include="Day15_Should.fs" />
+    <Compile Include="Day16_Should.fs" />
+    <Compile Include="Day17_Should.fs" />
+    <Compile Include="Day18_Should.fs" />
+    <Compile Include="Day19_Should.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
