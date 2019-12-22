@@ -103,7 +103,8 @@ let private output context =
     Some(Output value)
 
 let private jump pred context =
-    if pred then context.position <- readParameter context 1
+    if pred
+    then context.position <- readParameter context 1
     else context.position <- context.position + 3
     None
 
@@ -114,18 +115,14 @@ let private jumpIfFalse context = jump ((readParameter context 0) = 0) context
 let private lessThan context =
     let par = readParameter context
     let out = writeParameter context
-    out 2
-        (if (par 0) < (par 1) then 1
-         else 0)
+    out 2 (if (par 0) < (par 1) then 1 else 0)
     context.position <- context.position + 4
     None
 
 let private equals context =
     let par = readParameter context
     let out = writeParameter context
-    out 2
-        (if (par 0) = (par 1) then 1
-         else 0)
+    out 2 (if (par 0) = (par 1) then 1 else 0)
     context.position <- context.position + 4
     None
 
@@ -154,6 +151,8 @@ let rec run context =
         | Halted -> evt
         | Paused -> evt
         | Output _ -> evt
+
+let isHalted context = Opcode.Halt = opcode context
 
 let rec runSilent context =
     let event = run context
