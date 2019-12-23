@@ -11,70 +11,99 @@ type private Opcode =
     | JumpIfFalse = 6
     | LessThan = 7
     | Equals = 8
+    | AdjustRelativeBase = 9
     | Halt = 99
 
 type private Mode =
     | Positional
     | Immediate
+    | Relative
 
 type Context =
-    { memory: int []
+    { mutable memory: int64 []
       mutable position: int
-      input: Queue<int>
-      output: Queue<int> }
+      mutable relativeBase: int
+      input: Queue<int64>
+      output: Queue<int64> }
 
 type Event =
     | Halted
     | Paused
-    | Output of int
+    | Output of int64
 
 let compile (source: string) =
     { position = 0
-      memory = source.Split ',' |> Array.map int
-      input = new Queue<int>()
-      output = new Queue<int>() }
+      relativeBase = 0
+      memory = source.Split ',' |> Array.map int64
+      input = new Queue<int64>()
+      output = new Queue<int64>() }
+
+let ensureMemory position context =
+    let resize() =
+        let rec guessNewLength len =
+            if position < len then len else guessNewLength (2 * len)
+
+        let oldLength = context.memory.Length
+        let newLength = guessNewLength (2 * oldLength)
+        context.memory <- Array.append context.memory (Array.zeroCreate (newLength - oldLength))
+        ()
+
+    if position >= context.memory.Length then resize()
+    ()
+
+let private readMemory position context =
+    ensureMemory position context
+    context.memory.[position]
+
+let private writeMemory position value context =
+    ensureMemory position context
+    context.memory.[position] <- value
 
 let private opcode context =
-    let _opcode = context.memory.[context.position] % 100
+    let _opcode = (readMemory context.position context) % 100L
     match _opcode with
-    | 1 -> Opcode.Add
-    | 2 -> Opcode.Mul
-    | 3 -> Opcode.Input
-    | 4 -> Opcode.Output
-    | 5 -> Opcode.JumpIfTrue
-    | 6 -> Opcode.JumpIfFalse
-    | 7 -> Opcode.LessThan
-    | 8 -> Opcode.Equals
-    | 99 -> Opcode.Halt
-    | _ -> failwith "Invalid opcode"
+    | 1L -> Opcode.Add
+    | 2L -> Opcode.Mul
+    | 3L -> Opcode.Input
+    | 4L -> Opcode.Output
+    | 5L -> Opcode.JumpIfTrue
+    | 6L -> Opcode.JumpIfFalse
+    | 7L -> Opcode.LessThan
+    | 8L -> Opcode.Equals
+    | 9L -> Opcode.AdjustRelativeBase
+    | 99L -> Opcode.Halt
+    | _ -> failwithf "Invalid opcode %d" _opcode
 
-let private modes context = context.memory.[context.position] / 100
+let private modes context = (readMemory context.position context) / 100L
 
 let private mode index modes =
-    let pow (a: int) (x: int) =
+    let pow (a: int64) (x: int) =
         let mutable y = x
-        let mutable result = 1
+        let mutable result = 1L
         while y <> 0 do
             result <- result * a
             y <- y - 1
         result
 
-    let pow10 = pow 10
-    match modes / pow10 (index) % 10 with
-    | 0 -> Positional
-    | 1 -> Immediate
+    let pow10 = pow 10L
+    match modes / (pow10 index) % 10L with
+    | 0L -> Positional
+    | 1L -> Immediate
+    | 2L -> Relative
     | _ -> failwith "Invalid read mode"
 
 let private readParameter context index =
-    let posOrVal = context.memory.[context.position + index + 1]
+    let posOrVal = readMemory (context.position + index + 1) context
     match mode index (modes context) with
-    | Positional -> context.memory.[posOrVal]
+    | Positional -> readMemory (int posOrVal) context
     | Immediate -> posOrVal
+    | Relative -> readMemory (context.relativeBase + int posOrVal) context
 
 let private writeParameter context index value =
-    let pos = context.memory.[context.position + index + 1]
+    let pos = int (readMemory (context.position + index + 1) context)
     match mode index (modes context) with
-    | Positional -> context.memory.[pos] <- value
+    | Positional -> writeMemory pos value context
+    | Relative -> writeMemory (context.relativeBase + pos) value context
     | _ -> failwith "Invalid write mode"
 
 let private binaryOp op context =
@@ -104,26 +133,32 @@ let private output context =
 
 let private jump pred context =
     if pred
-    then context.position <- readParameter context 1
+    then context.position <- int (readParameter context 1)
     else context.position <- context.position + 3
     None
 
-let private jumpIfTrue context = jump ((readParameter context 0) <> 0) context
+let private jumpIfTrue context = jump ((readParameter context 0) <> 0L) context
 
-let private jumpIfFalse context = jump ((readParameter context 0) = 0) context
+let private jumpIfFalse context = jump ((readParameter context 0) = 0L) context
 
 let private lessThan context =
     let par = readParameter context
     let out = writeParameter context
-    out 2 (if (par 0) < (par 1) then 1 else 0)
+    out 2 (if (par 0) < (par 1) then 1L else 0L)
     context.position <- context.position + 4
     None
 
 let private equals context =
     let par = readParameter context
     let out = writeParameter context
-    out 2 (if (par 0) = (par 1) then 1 else 0)
+    out 2 (if (par 0) = (par 1) then 1L else 0L)
     context.position <- context.position + 4
+    None
+
+let private adjustRelativeBase context =
+    let value = int (readParameter context 0)
+    context.relativeBase <- context.relativeBase + value
+    context.position <- context.position + 2
     None
 
 let private halt() = Some(Halted)
@@ -139,6 +174,7 @@ let private handleOpcode context =
     | Opcode.JumpIfFalse -> jumpIfFalse context
     | Opcode.LessThan -> lessThan context
     | Opcode.Equals -> equals context
+    | Opcode.AdjustRelativeBase -> adjustRelativeBase context
     | Opcode.Halt -> halt()
     | _ -> failwith "Invalid opcode"
 

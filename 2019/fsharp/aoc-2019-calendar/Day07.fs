@@ -22,7 +22,7 @@ let private pipe input context =
 let thrusterSignal source phases =
     phases
     |> List.map (makeAmplifier source)
-    |> List.fold pipe (Some 0)
+    |> List.fold pipe (Some 0L)
     |> Option.get
 
 let thrusterSignalWithFeedback source phases =
@@ -37,18 +37,18 @@ let thrusterSignalWithFeedback source phases =
         else
             pipeline output
 
-    Some 0
+    Some 0L
     |> pipeline
     |> Option.get
 
 let maxThrusterSignal source =
-    [ 0; 1; 2; 3; 4 ]
+    [ 0L; 1L; 2L; 3L; 4L ]
     |> permutations
     |> Seq.map (thrusterSignal source)
     |> Seq.max
 
 let maxThrusterSignalWithFeedback source =
-    [ 5; 6; 7; 8; 9 ]
+    [ 5L; 6L; 7L; 8L; 9L ]
     |> permutations
     |> Seq.map (thrusterSignalWithFeedback source)
     |> Seq.max
