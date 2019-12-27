@@ -2,22 +2,21 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._08
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var image = Image.Parse(25, 6, ReadAllText("08/input1.txt"));
+            var image = Image.Parse(25, 6, ReadInputText("08"));
             return image.Checksum().ToString();
         }
 
         public string Job2()
         {
-            var image = Image.Parse(25, 6, ReadAllText("08/input1.txt"));
+            var image = Image.Parse(25, 6, ReadInputText("08"));
             return image.Render();
         }
     }

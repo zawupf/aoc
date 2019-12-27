@@ -2,25 +2,22 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._11
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var run = new Run(InputPrefix);
-            var robot = new Robot(run.ReadAllText("11/input1.txt"));
+            var robot = new Robot(ReadInputText("11"));
             var steps = robot.Walk(Robot.Field.Color.Black).Last();
             return robot.PaintedPanelsCount().ToString();
         }
 
         public string Job2()
         {
-            var run = new Run(InputPrefix);
-            var robot = new Robot(run.ReadAllText("11/input1.txt"));
+            var robot = new Robot(ReadInputText("11"));
             var steps = robot.Walk(Robot.Field.Color.White).Last();
             return robot.Image();
         }

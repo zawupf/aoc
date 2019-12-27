@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._14.Tests
 {
@@ -30,27 +31,25 @@ namespace Aoc._2019._14.Tests
         }
 
         [Theory]
-        [InlineData(31, "14/sample1.txt")]
-        [InlineData(165, "14/sample2.txt")]
-        [InlineData(13312, "14/sample3.txt")]
-        [InlineData(180697, "14/sample4.txt")]
-        [InlineData(2210736, "14/sample5.txt")]
+        [InlineData(31, "14-sample1")]
+        [InlineData(165, "14-sample2")]
+        [InlineData(13312, "14-sample3")]
+        [InlineData(180697, "14-sample4")]
+        [InlineData(2210736, "14-sample5")]
         public void Factory_Take_works(int oreCount, string path)
         {
-            var run = new Run("../../../../");
-            var factory = Factory.Parse(run.ReadLines(path));
+            var factory = Factory.Parse(ReadInputLines(path));
             factory.Insert(new Chemical(long.MaxValue, "ORE"));
             Assert.Equal(oreCount, factory.Take("1 FUEL"));
         }
 
         [Theory]
-        [InlineData(82892753, "14/sample3.txt")]
-        [InlineData(5586022, "14/sample4.txt")]
-        [InlineData(460664, "14/sample5.txt")]
+        [InlineData(82892753, "14-sample3")]
+        [InlineData(5586022, "14-sample4")]
+        [InlineData(460664, "14-sample5")]
         public void Factory_Buy_works(int fuelCount, string path)
         {
-            var run = new Run("../../../../");
-            var factory = Factory.Parse(run.ReadLines(path));
+            var factory = Factory.Parse(ReadInputLines(path));
             factory.Insert("1000000000000 ORE");
             Assert.Equal(fuelCount, factory.BuyFuel());
         }
@@ -58,7 +57,7 @@ namespace Aoc._2019._14.Tests
         [Fact]
         public void Stars()
         {
-            var run = new Run("../../../../");
+            var run = new Run();
             Assert.Equal("97422", run.Job1());
             Assert.Equal("13108426", run.Job2());
         }

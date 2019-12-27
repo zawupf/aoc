@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._14
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var factory = Factory.Parse(ReadLines("14/input1.txt"));
+            var factory = Factory.Parse(ReadInputLines("14"));
             factory.Insert(new Chemical(long.MaxValue, "ORE"));
             return factory.Take("1 FUEL").ToString();
         }
 
         public string Job2()
         {
-            var factory = Factory.Parse(ReadLines("14/input1.txt"));
+            var factory = Factory.Parse(ReadInputLines("14"));
             factory.Insert("1000000000000 ORE");
             return factory.BuyFuel().ToString();
         }

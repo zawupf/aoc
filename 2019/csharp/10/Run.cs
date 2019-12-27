@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._10
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var asteroids = Asteroids.Parse(ReadAllText("10/input1.txt"));
+            var asteroids = Asteroids.Parse(ReadInputText("10"));
             return asteroids.BestLocationCount().ToString();
         }
 
         public string Job2()
         {
-            var asteroids = Asteroids.Parse(ReadAllText("10/input1.txt"));
+            var asteroids = Asteroids.Parse(ReadInputText("10"));
             var (_, location) = asteroids.BestLocation();
             var shots = asteroids.Vaporize(location);
             var (x, y) = shots.ElementAt(199);

@@ -2,13 +2,12 @@
 using System.Linq;
 using System.Collections.Generic;
 using Aoc._2019._05;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._07
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
             var result = MaxThrusterSignal(ReadCode());
@@ -50,7 +49,7 @@ namespace Aoc._2019._07
 
         private long[] ReadCode()
         {
-            return Computer.Compile(ReadAllText("07/input1.txt"));
+            return Computer.Compile(ReadInputText("07"));
         }
     }
 

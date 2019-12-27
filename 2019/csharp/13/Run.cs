@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._13
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var game = Game.Load(ReadAllText("13/input1.txt"));
+            var game = Game.Load(ReadInputText("13"));
             game.Start();
             var blockCount = game.Count(Game.Obstacle.Block);
             return blockCount.ToString();
@@ -18,7 +17,7 @@ namespace Aoc._2019._13
 
         public string Job2()
         {
-            var game = Game.Load(ReadAllText("13/input1.txt"));
+            var game = Game.Load(ReadInputText("13"));
             game.AutoPlay();
             return game.Score.ToString();
         }

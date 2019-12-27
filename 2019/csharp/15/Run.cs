@@ -3,23 +3,22 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Aoc._2019._05;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._15
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var robot = Robot.Boot(ReadAllText("15/input1.txt"));
+            var robot = Robot.Boot(ReadInputText("15"));
             var steps = robot.ScanGrid(true);
             return steps.ToString();
         }
 
         public string Job2()
         {
-            var robot = Robot.Boot(ReadAllText("15/input1.txt"));
+            var robot = Robot.Boot(ReadInputText("15"));
             robot.ScanGrid(true);
             robot.ClearGrid();
             robot.ScanGrid(false);

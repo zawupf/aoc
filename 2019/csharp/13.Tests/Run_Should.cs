@@ -8,7 +8,7 @@ namespace Aoc._2019._13.Tests
         [Fact]
         public void Stars()
         {
-            var run = new Run("../../../../");
+            var run = new Run();
             Assert.Equal("173", run.Job1());
             Assert.Equal("8942", run.Job2());
         }

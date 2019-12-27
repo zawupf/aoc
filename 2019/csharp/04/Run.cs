@@ -3,10 +3,8 @@ using System.Linq;
 
 namespace Aoc._2019._04
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
             var query =

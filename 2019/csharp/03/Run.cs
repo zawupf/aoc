@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._03
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            var lines = ReadLines("03/input1.txt").ToArray();
+            var lines = ReadInputLines("03").ToArray();
             var distance = Distance(lines);
             return distance.ToString();
         }
 
         public string Job2()
         {
-            var lines = ReadLines("03/input1.txt").ToArray();
+            var lines = ReadInputLines("03").ToArray();
             var steps = Steps(lines);
             return steps.ToString();
         }

@@ -24,7 +24,7 @@ namespace Aoc._2019._02.Tests
         [Fact]
         public void Stars()
         {
-            var run = new Run("../../../../");
+            var run = new Run();
             Assert.Equal("3765464", run.Job1());
             Assert.Equal("7610", run.Job2());
         }

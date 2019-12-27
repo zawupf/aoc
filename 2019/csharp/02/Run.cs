@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Linq;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._02
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
             var code = ReadCode();
@@ -36,7 +35,7 @@ namespace Aoc._2019._02
         private int[] ReadCode()
         {
             var code = (
-                from number in ReadAllText("02/input1.txt").Split(',')
+                from number in ReadInputText("02").Split(',')
                 select int.Parse(number)
             ).ToArray();
             return code;

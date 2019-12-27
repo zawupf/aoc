@@ -1,16 +1,15 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._01
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
             var fuels =
-                from line in ReadLines("01/input1.txt")
+                from line in ReadInputLines("01")
                 select int.Parse(line) into mass
                 select RequiredFuel(mass)
                 ;
@@ -21,7 +20,7 @@ namespace Aoc._2019._01
         public string Job2()
         {
             var fuels =
-                from line in ReadLines("01/input1.txt")
+                from line in ReadInputLines("01")
                 select int.Parse(line) into mass
                 select RequiredTotalFuel(mass)
                 ;

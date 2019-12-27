@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._16
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
             var fft = new FFT();
-            var result = fft.Phases(ReadAllText("16/input1.txt"), 1).ElementAt(99);
+            var result = fft.Phases(ReadInputText("16"), 1).ElementAt(99);
             Console.WriteLine($"length: {result.Count()}");
             return fft.Current(0, 8);
         }
@@ -21,7 +19,7 @@ namespace Aoc._2019._16
         {
             // return "in work";
             var fft = new FFT();
-            var result = fft.Phases(ReadAllText("16/input1.txt"), 100).ElementAt(99);
+            var result = fft.Phases(ReadInputText("16"), 100).ElementAt(99);
             Console.WriteLine($"length: {result.Count()}");
             return fft.Current(0, 8);
         }

@@ -2,16 +2,15 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using static Aoc._2019.Utils;
 
 namespace Aoc._2019._12
 {
-    public class Run : BaseRun, IRun
+    public class Run : IRun
     {
-        public Run(string InputPrefix = "") : base(InputPrefix) { }
-
         public string Job1()
         {
-            return Planet.Parse(ReadLines("12/input1.txt"))
+            return Planet.Parse(ReadInputLines("12"))
                 .Steps(false)
                 .ElementAt(1000)
                 .TotalEnergy()
@@ -20,7 +19,7 @@ namespace Aoc._2019._12
 
         public string Job2()
         {
-            return Planet.Parse(ReadLines("12/input1.txt"))
+            return Planet.Parse(ReadInputLines("12"))
                 .CycleSteps2()
                 .ToString();
         }
