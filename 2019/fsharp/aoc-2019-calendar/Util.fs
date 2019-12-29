@@ -34,3 +34,14 @@ let permutations list =
                             yield l :: perm
         }
     _permutations list Set.empty
+
+let greatestCommonDivisor a b =
+    let rec gcd x y =
+        if y = 0 then x else gcd y (x % y)
+
+    let (x, y) =
+        match (abs a, abs b) with
+        | a, b when a < b -> b, a
+        | a, b -> a, b
+
+    gcd x y
