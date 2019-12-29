@@ -16,11 +16,23 @@ let private _findInputFile name =
     let subpath = _join "inputs" (sprintf "Day%s.txt" name)
     _findFile (Directory.GetCurrentDirectory()) subpath
 
+let useCache getterFn =
+    let mutable cache = Map.empty
+    fun key ->
+        match cache.TryFind(key) with
+        | Some value -> value
+        | None ->
+            let value = getterFn key
+            cache <- cache |> Map.add key value
+            value
+
 let private _readLines filename = File.ReadLines(filename)
-let readInputLines name = _readLines (_findInputFile name)
+
+let readInputLines = useCache (_findInputFile >> _readLines)
 
 let private _readAllText filename = File.ReadAllText(filename).Trim()
-let readInputText name = _readAllText (_findInputFile name)
+
+let readInputText = useCache (_findInputFile >> _readAllText)
 
 let permutations list =
     let rec _permutations list taken =
@@ -39,9 +51,7 @@ let greatestCommonDivisor a b =
     let rec gcd x y =
         if y = 0 then x else gcd y (x % y)
 
-    let (x, y) =
-        match (abs a, abs b) with
-        | a, b when a < b -> b, a
-        | a, b -> a, b
-
-    gcd x y
+    match (abs a, abs b) with
+    | a, b when a < b -> b, a
+    | a, b -> a, b
+    ||> gcd
