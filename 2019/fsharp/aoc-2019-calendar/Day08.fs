@@ -33,15 +33,13 @@ let private checksum image =
 
 let private compose a b =
     Array.zip a b
-    |> Array.map (fun (a, b) ->
-        match a with
-        | '2' -> b
-        | color -> color)
+    |> Array.map (function
+        | '2', color -> color
+        | color, _ -> color)
 
 let private paint line =
     line
-    |> Array.map (fun color ->
-        match color with
+    |> Array.map (function
         | '0' -> ' '
         | '1' -> '*'
         | _ -> '.')

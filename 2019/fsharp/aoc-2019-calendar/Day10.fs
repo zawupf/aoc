@@ -9,11 +9,10 @@ let parse lines =
     |> Seq.collect (fun (y, line) ->
         line
         |> Seq.indexed
-        |> Seq.choose (fun (x, char) ->
-            match char with
-            | '#' -> Some(x, y)
-            | '.' -> None
-            | c -> failwithf "Invalid char: '%c'" c))
+        |> Seq.choose (function
+            | x, '#' -> Some(x, y)
+            | _, '.' -> None
+            | _, c -> failwithf "Invalid char: '%c'" c))
     |> Seq.toList
 
 let private equal (x1, y1) (x2, y2) = x1 = x2 && y1 = y2
