@@ -19,5 +19,6 @@ let main argv =
     // run 7 Day07.job1 Day07.job2
     // run 8 Day08.job1 Day08.job2
     // run 9 Day09.job1 Day09.job2
-    run 10 Day10.job1 Day10.job2
+    // run 10 Day10.job1 Day10.job2
+    run 11 Day11.job1 Day11.job2
     0 // return an integer exit code

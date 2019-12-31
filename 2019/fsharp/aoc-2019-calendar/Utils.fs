@@ -55,3 +55,42 @@ let greatestCommonDivisor a b =
     | a, b when a < b -> b, a
     | a, b -> a, b
     ||> gcd
+
+type BBox =
+    { x: int * int
+      y: int * int }
+
+module BBox =
+    let empty =
+        { x = (System.Int32.MaxValue, System.Int32.MinValue)
+          y = (System.Int32.MaxValue, System.Int32.MinValue) }
+
+    let merge { x = (minX, maxX); y = (minY, maxY) } (x, y) =
+        { x = (min x minX, max x maxX)
+          y = (min y minY, max y maxY) }
+
+    let ofList list = list |> List.fold merge empty
+
+    let ofArray array = array |> Array.fold merge empty
+
+    let ofSeq seq = seq |> Seq.fold merge empty
+
+    let ofMap map =
+        map
+        |> Map.toSeq
+        |> Seq.map fst
+        |> ofSeq
+
+
+let render toChar map =
+    let bbox = map |> BBox.ofMap
+    System.String.Join
+        ("",
+         seq {
+             for y in fst bbox.y .. snd bbox.y do
+                 yield '\n'
+                 for x in fst bbox.x .. snd bbox.x do
+                     yield map
+                           |> Map.tryFind (x, y)
+                           |> toChar
+         })
