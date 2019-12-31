@@ -8,12 +8,11 @@ open Day08
 let ``Day08 Stars``() =
     Assert.Equal("2806", job1())
     Assert.Equal
-        (String.Join
-            ("",
+        (Utils.String.join ""
              [| "\n**** ***    **  **  ***  "
                 "\n   * *  *    * *  * *  * "
                 "\n  *  ***     * *  * ***  "
                 "\n *   *  *    * **** *  * "
                 "\n*    *  * *  * *  * *  * "
-                "\n**** ***   **  *  * ***  " |]), job2())
+                "\n**** ***   **  *  * ***  " |], job2())
     ()

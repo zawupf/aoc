@@ -45,7 +45,7 @@ let private paint line =
         | _ -> '.')
 
 let render width image =
-    let join (lines: string seq) = String.Join("", lines)
+    let join (lines: string seq) = Utils.String.join "" lines
     image
     |> Seq.reduce compose
     |> paint

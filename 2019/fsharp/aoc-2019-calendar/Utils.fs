@@ -1,5 +1,8 @@
 module Utils
 
+module String =
+    let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
+
 open System.IO
 
 let private _join dir name = Path.Join([| dir; name |])
@@ -82,15 +85,14 @@ module BBox =
         |> ofSeq
 
 
-let render toChar map =
+let render toString map =
     let bbox = map |> BBox.ofMap
-    System.String.Join
-        ("",
-         seq {
-             for y in fst bbox.y .. snd bbox.y do
-                 yield '\n'
-                 for x in fst bbox.x .. snd bbox.x do
-                     yield map
-                           |> Map.tryFind (x, y)
-                           |> toChar
+    String.join ""
+        (seq {
+            for y in fst bbox.y .. snd bbox.y do
+                yield "\n"
+                for x in fst bbox.x .. snd bbox.x do
+                    yield map
+                          |> Map.tryFind (x, y)
+                          |> toString
          })

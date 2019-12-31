@@ -3,6 +3,7 @@ module TestsComputer
 open System
 open Xunit
 open Computer
+open Utils
 
 [<Theory>]
 [<InlineData("1,0,0,0,99", "2,0,0,0,99")>]
@@ -12,7 +13,7 @@ open Computer
 let ``Computer Day02 exec works`` (code: string) expected =
     let context = compile code
     runSilent context |> ignore
-    let result = String.Join(',', context.memory |> Array.map string)
+    let result = String.join "," (context.memory |> Array.map string)
     Assert.Equal(expected, result)
 
 [<Theory>]
@@ -20,7 +21,7 @@ let ``Computer Day02 exec works`` (code: string) expected =
 let ``Computer Day05 immediate works`` (code: string) expected =
     let context = compile code
     runSilent context |> ignore
-    let result = String.Join(',', context.memory |> Array.map string)
+    let result = String.join "," (context.memory |> Array.map string)
     Assert.Equal(expected, result)
 
 [<Theory>]
@@ -76,7 +77,7 @@ let exec2 source =
     let context = compile source
     runSilent context |> ignore
     let result = context.output.ToArray() |> Array.map string
-    String.Join(',', result)
+    String.join "," result
 
 [<Fact>]
 let ``Computer Day09 latest features work``() =

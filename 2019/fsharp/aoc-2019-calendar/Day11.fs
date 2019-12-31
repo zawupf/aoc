@@ -129,7 +129,7 @@ let job2() =
     |> (fun state ->
         state.grid
         |> render (function
-            | Some White -> '#'
+            | Some White -> "#"
             | Some Black
-            | None -> ' '))
+            | None -> " "))
     |> string
