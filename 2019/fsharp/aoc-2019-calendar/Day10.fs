@@ -25,7 +25,7 @@ let private distance a b =
 
 let private direction a b =
     let (x, y) = transition a b
-    let gcd = greatestCommonDivisor x y
+    let gcd = GCD x y
     x / gcd, y / gcd
 
 let private numVisible asteroids pos =

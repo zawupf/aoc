@@ -50,14 +50,35 @@ let permutations list =
         }
     _permutations list Set.empty
 
-let greatestCommonDivisor a b =
+let inline isZero value = value = LanguagePrimitives.GenericZero
+
+let inline greatestCommonDivisor a b =
     let rec gcd x y =
-        if y = 0 then x else gcd y (x % y)
+        if y |> isZero then x else gcd y (x % y)
 
     match (abs a, abs b) with
     | a, b when a < b -> b, a
     | a, b -> a, b
     ||> gcd
+
+let inline GCD a b = greatestCommonDivisor a b
+
+let inline leastCommonMultiple a b = abs a / GCD a b * abs b
+let inline LCM a b = leastCommonMultiple a b
+
+module List =
+    let inline private lcm a b = LCM a b
+
+    let inline private lcmm list =
+        let rec _lcmm =
+            function
+            | [ a; b ] -> lcm a b
+            | a :: list -> lcm a (_lcmm list)
+            | _ -> failwith "At least 2 values are required"
+        _lcmm list
+
+    let inline leastCommonMultiple list = list |> lcmm
+    let inline LCM list = leastCommonMultiple list
 
 type BBox =
     { x: int * int
