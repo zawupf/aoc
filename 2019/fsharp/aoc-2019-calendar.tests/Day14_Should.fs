@@ -5,6 +5,6 @@ open Day14
 
 [<Fact>]
 let ``Day14 Stars``() =
-    // Assert.Equal("", job1())
-    // Assert.Equal("", job2())
+    Assert.Equal("97422", job1())
+    Assert.Equal("13108426", job2())
     ()
