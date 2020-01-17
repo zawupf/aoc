@@ -1,5 +1,4 @@
-use std::ops::Add;
-use std::ops::Mul;
+use std::ops::{Add, Mul};
 use std::str::FromStr;
 
 pub struct Computer<T> {
@@ -10,6 +9,7 @@ pub struct Computer<T> {
 impl<T> Computer<T>
 where
     T: FromStr + Into<Opcode> + Into<Position> + Copy + Add<Output = T> + Mul<Output = T>,
+    for<'a> &'a T: Add<Output = T> + Mul<Output = T>,
 {
     fn new(memory: Vec<T>) -> Computer<T> {
         Computer {
@@ -27,15 +27,16 @@ where
 
     pub fn run(&mut self) -> Status {
         use Opcode::*;
-        match self.opcode() {
-            Add => self.add(),
-            Mul => self.mul(),
-            Halt => {
-                self.halt();
-                return Status::Halted;
+        loop {
+            match self.opcode() {
+                Add => self.add(),
+                Mul => self.mul(),
+                Halt => {
+                    self.halt();
+                    return Status::Halted;
+                }
             }
         }
-        self.run()
     }
 
     fn opcode(&self) -> Opcode {
@@ -43,28 +44,24 @@ where
     }
 
     fn add(&mut self) {
-        let a = self.par(0);
-        let b = self.par(1);
-        self.out(2, a + b);
+        self.out(2, self.par(0) + self.par(1));
         self.position += 4;
     }
 
     fn mul(&mut self) {
-        let a = self.par(0);
-        let b = self.par(1);
-        self.out(2, a * b);
+        self.out(2, self.par(0) * self.par(1));
         self.position += 4;
     }
 
     fn halt(&mut self) {}
 
-    fn par(&self, i: usize) -> T {
-        let Position::Value(position) = self.memory[self.position + i + 1].into();
-        self.memory[position]
+    fn par(&self, i: usize) -> &T {
+        let Position(position) = self.memory[self.position + i + 1].into();
+        &self.memory[position]
     }
 
     fn out(&mut self, i: usize, value: T) {
-        let Position::Value(position) = self.memory[self.position + i + 1].into();
+        let Position(position) = self.memory[self.position + i + 1].into();
         self.memory[position] = value;
     }
 }
@@ -72,6 +69,7 @@ where
 impl<T> FromStr for Computer<T>
 where
     T: FromStr + Into<Opcode> + Into<Position> + Copy + Add<Output = T> + Mul<Output = T>,
+    for<'a> &'a T: Add<Output = T> + Mul<Output = T>,
 {
     type Err = <T as FromStr>::Err;
     fn from_str(source: &str) -> Result<Self, <Self as FromStr>::Err> {
@@ -79,19 +77,17 @@ where
     }
 }
 
-pub enum Position {
-    Value(usize),
-}
+pub struct Position(usize);
 
 impl From<i32> for Position {
     fn from(value: i32) -> Self {
-        Position::Value(value as usize)
+        Position(value as usize)
     }
 }
 
 impl From<i64> for Position {
     fn from(value: i64) -> Self {
-        Position::Value(value as usize)
+        Position(value as usize)
     }
 }
 
