@@ -27,6 +27,12 @@
     <Compile Include="Day17_Should.fs" />
     <Compile Include="Day18_Should.fs" />
     <Compile Include="Day19_Should.fs" />
+    <Compile Include="Day20_Should.fs" />
+    <Compile Include="Day21_Should.fs" />
+    <Compile Include="Day22_Should.fs" />
+    <Compile Include="Day23_Should.fs" />
+    <Compile Include="Day24_Should.fs" />
+    <Compile Include="Day25_Should.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />

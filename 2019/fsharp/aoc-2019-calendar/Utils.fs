@@ -3,6 +3,8 @@ module Utils
 module String =
     let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
     let trim (string: string) = string.Trim()
+    let split (sep: char) (string: string) = string.Split(sep)
+    let substring i (string: string) = string.Substring(i)
 
 open System.IO
 

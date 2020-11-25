@@ -1,4 +1,5 @@
 ﻿open System
+open Day22
 
 let run day fn1 fn2 =
     printfn "\nDay %d" day
@@ -23,5 +24,23 @@ let main argv =
     // run 11 Day11.job1 Day11.job2
     // run 12 Day12.job1 Day12.job2
     // run 13 Day13.job1 Day13.job2
-    run 14 Day14.job1 Day14.job2
+    // run 14 Day14.job1 Day14.job2
+    // run 15 Day15.job1 Day15.job2
+    // run 16 Day16.job1 Day16.job2
+    // run 17 Day17.job1 Day17.job2
+    // run 18 Day18.job1 Day18.job2
+    // run 19 Day19.job1 Day19.job2
+    // run 20 Day20.job1 Day20.job2
+    // run 21 Day21.job1 Day21.job2
+    // run 22 Day22.job1 Day22.job2
+
+    let (l, n) = (11, 4)
+    deck l
+    |> dealWithIncrement2 n
+    |> Seq.toList
+    |> (printfn "%d %d %d %d %A" l n (l/n) (l%n))
+
+    // run 23 Day23.job1 Day23.job2
+    // run 24 Day24.job1 Day24.job2
+    // run 25 Day25.job1 Day25.job2
     0 // return an integer exit code
