@@ -1,17 +1,16 @@
 using System.Linq;
 using System.Collections.Generic;
-using static Aoc2020Calendar.Utils;
 
 namespace Aoc2020Calendar
 {
     public class Day00 : IDay
     {
-        public string Day { get; } = nameof(Day00)[3..];
+        public override string Day { get; } = nameof(Day00)[3..];
 
-        public string Result1()
+        public override string Result1()
         {
             var fuels =
-                from line in ReadInputLines(Day)
+                from line in InputLines
                 select int.Parse(line) into mass
                 select RequiredFuel(mass)
                 ;
@@ -19,10 +18,10 @@ namespace Aoc2020Calendar
             return fuels.Sum().ToString();
         }
 
-        public string Result2()
+        public override string Result2()
         {
             var fuels =
-                from line in ReadInputLines(Day)
+                from line in InputLines
                 select int.Parse(line) into mass
                 select RequiredTotalFuel(mass)
                 ;
