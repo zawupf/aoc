@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Aoc2020Calendar.Tests
+namespace Aoc2020.Tests
 {
     public class Day00Tests
     {

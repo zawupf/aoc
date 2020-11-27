@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: 2020/csharp/Aoc2020CalendarTests
+        working-directory: 2020/csharp/Aoc2020.Tests
 
     steps:
       - uses: actions/checkout@v2

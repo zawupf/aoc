@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Aoc2020Calendar
+namespace Aoc2020
 {
     public abstract class IDay
     {

@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aoc2020Calendar\Aoc2020Calendar.csproj" />
+    <ProjectReference Include="..\Aoc2020\Aoc2020.csproj" />
   </ItemGroup>
 
 </Project>

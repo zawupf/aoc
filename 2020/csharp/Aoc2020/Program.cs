@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aoc2020Calendar
+namespace Aoc2020
 {
     class Program
     {

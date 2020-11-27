@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Aoc2020Calendar
+namespace Aoc2020
 {
     public class Day00 : IDay
     {
