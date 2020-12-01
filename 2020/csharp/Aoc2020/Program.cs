@@ -8,8 +8,8 @@ namespace Aoc2020
         {
             Console.WriteLine("Hello, Advent Of Code 2020!");
 
-            Run<Day00>();
-            // Run<Day01>();
+            // Run<Day00>();
+            Run<Day01>();
             // Run<Day02>();
             // Run<Day03>();
             // Run<Day04>();
