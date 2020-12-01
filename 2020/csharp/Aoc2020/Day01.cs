@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aoc2020
@@ -23,39 +24,42 @@ namespace Aoc2020
 
         static public (int, int) FindTwoEntriesWithSum(int sum, int[] entries)
         {
-            var (head, tail) = (entries[0], entries[1..]);
-            while (tail.Length != 0)
-            {
-                foreach (var current in tail)
-                {
-                    if (head + current == sum)
-                    {
-                        return (head, current);
-                    }
-                }
-                (head, tail) = (tail[0], tail[1..]);
-            }
+            return Combine2(entries).Where(sumIs2020).First();
 
-            throw new ArgumentException($"No two entires with sum {sum} found");
+            bool sumIs2020((int, int) entry) => entry.Item1 + entry.Item2 == sum;
         }
 
         static public (int, int, int) FindThreeEntriesWithSum(int sum, int[] entries)
         {
-            var (head, tail) = (entries[0], entries[1..]);
-            while (tail.Length != 0)
-            {
-                try
-                {
-                    var (first, second) = FindTwoEntriesWithSum(sum - head, tail);
-                    return (head, first, second);
-                }
-                catch (System.ArgumentException)
-                {
-                    (head, tail) = (tail[0], tail[1..]);
-                }
-            }
+            return Combine3(entries).Where(sumIs2020).First();
 
-            throw new ArgumentException($"No three values with sum {sum} found");
+            bool sumIs2020((int, int, int) entry) => entry.Item1 + entry.Item2 + entry.Item3 == sum;
+        }
+
+        static public IEnumerable<(int, int)> Combine2(IEnumerable<int> entries)
+        {
+            var (head, tail) = (entries.First(), entries.Skip(1));
+            while (tail.Any())
+            {
+                foreach (var current in tail)
+                {
+                    yield return (head, current);
+                }
+                (head, tail) = (tail.First(), tail.Skip(1));
+            }
+        }
+
+        static public IEnumerable<(int, int, int)> Combine3(IEnumerable<int> entries)
+        {
+            var (head, tail) = (entries.First(), entries.Skip(1));
+            while (tail.Any())
+            {
+                foreach (var (first, second) in Combine2(tail))
+                {
+                    yield return (head, first, second);
+                }
+                (head, tail) = (tail.First(), tail.Skip(1));
+            }
         }
     }
 }
