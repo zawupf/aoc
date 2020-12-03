@@ -35,7 +35,7 @@ namespace Aoc2020
         {
             return fuelChunks(mass).Sum();
 
-            IEnumerable<int> fuelChunks(int mass)
+            static IEnumerable<int> fuelChunks(int mass)
             {
                 var fuel = RequiredFuel(mass);
                 if (fuel > 0)
