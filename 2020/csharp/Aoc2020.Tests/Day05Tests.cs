@@ -6,7 +6,6 @@ namespace Aoc2020.Tests
 {
     public class Day05Tests
     {
-        // : row 102, column 4, seat ID 820
         [Theory]
         [InlineData("FBFBBFFRLR", 44, 5, 357)]
         [InlineData("BFFFBBFRRR", 70, 7, 567)]
