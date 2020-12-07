@@ -11,7 +11,7 @@ let run day fn1 fn2 =
 let main argv =
     // run 0 Day00.job1 Day00.job2 // Testing
     run 1 Day01.job1 Day01.job2
-    // run 2 Day02.job1 Day02.job2
+    run 2 Day02.job1 Day02.job2
     // run 3 Day03.job1 Day03.job2
     // run 4 Day04.job1 Day04.job2
     // run 5 Day05.job1 Day05.job2
