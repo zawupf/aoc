@@ -2,6 +2,8 @@
 .vscode/
 bin/
 obj/
+dist/
 Cargo.lock
 target/
 __pycache__/
+node_modules/
