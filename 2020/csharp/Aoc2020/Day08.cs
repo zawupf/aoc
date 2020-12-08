@@ -23,35 +23,42 @@ namespace Aoc2020
 
         public static Code MutateCode(IEnumerable<string> lines)
         {
-            Instruction[] instructions = Instruction.ParseMany(lines);
-            foreach (var instruction in instructions)
+            var code = Code.Parse(lines);
+            while (code.State == Code.Status.Ok)
             {
+                var instruction = code.Instructions[code.Current];
                 var (type, _) = instruction;
-
-                if (type == "nop")
-                {
-                    instruction.Type = "jmp";
-                }
-                else if (type == "jmp")
-                {
-                    instruction.Type = "nop";
-                }
-                else
-                {
-                    continue;
-                }
-
-                Code code = new(instructions);
-                code.Run();
-                if (code.State == Code.Status.NormalEnd)
-                {
-                    return code;
-                }
-
-                instruction.Type = type;
+                var newType = MutateType(type);
+                TryRunWithNewType(type, newType, instruction);
+                code.Next();
             }
 
-            return null;
+            return code;
+
+            static string MutateType(string type) => type switch
+            {
+                "nop" => "jmp",
+                "jmp" => "nop",
+                _ => type,
+            };
+
+            void TryRunWithNewType(string type, string newType, Instruction instruction)
+            {
+                if (type == newType)
+                {
+                    return;
+                }
+
+                var snapshot = code.Snapshot;
+                instruction.Type = newType;
+
+                code.Run();
+                if (code.State != Code.Status.NormalEnd)
+                {
+                    instruction.Type = type;
+                    code.Snapshot = snapshot;
+                }
+            }
         }
     }
 
@@ -71,7 +78,13 @@ namespace Aoc2020
         public int Current { get; set; } = 0;
         public int Accumulator { get; set; } = 0;
         public Status State { get; set; } = Status.Ok;
-        private readonly HashSet<int> Visited = new();
+        private HashSet<int> Visited = new();
+
+        public (int, int, Status, HashSet<int>) Snapshot
+        {
+            get => (Current, Accumulator, State, new(Visited));
+            set => (Current, Accumulator, State, Visited) = value;
+        }
 
         public static Code Parse(IEnumerable<string> lines) =>
             new(Instruction.ParseMany(lines));
