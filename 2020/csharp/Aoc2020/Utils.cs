@@ -1,3 +1,4 @@
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
@@ -26,6 +27,19 @@ namespace Aoc2020
                 return File.Exists(filepath)
                     ? filepath
                     : FindFile(Directory.GetParent(dir).FullName, path);
+            }
+        }
+
+        static public IEnumerable<(T, T)> Combine2<T>(IEnumerable<T> entries)
+        {
+            var (head, tail) = (entries.First(), entries.Skip(1));
+            while (tail.Any())
+            {
+                foreach (var current in tail)
+                {
+                    yield return (head, current);
+                }
+                (head, tail) = (tail.First(), tail.Skip(1));
             }
         }
     }
