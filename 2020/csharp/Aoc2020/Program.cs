@@ -22,7 +22,7 @@ namespace Aoc2020
             Run<Day11>();
             Run<Day12>();
             Run<Day13>();
-            // Run<Day14>();
+            Run<Day14>();
             // Run<Day15>();
             // Run<Day16>();
             // Run<Day17>();
