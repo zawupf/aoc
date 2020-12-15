@@ -29,30 +29,30 @@ namespace Aoc2020
             var turns =
                 startingNumbers
                 .Aggregate(
-                    new Dictionary<int, (int prev, int? prePrev)>(),
+                    new Dictionary<int, (int prev, int prePrev)>(),
                     (dict, number) =>
                     {
                         last = number;
-                        dict.Add(last, (++turn, null));
+                        dict.Add(last, (++turn, 0));
                         return dict;
                     }
                 );
 
+            var invalid = (0, 0);
             while (true)
             {
-                int next = (turns.TryGetValue(last, out var historyLast) && historyLast.prePrev != null)
-                    ? (historyLast.prev - (int)historyLast.prePrev)
-                    : 0;
+                int next = Diff(turns.GetValueOrDefault(last, invalid));
 
                 yield return next;
 
-                int? nextPrePrev = turns.TryGetValue(next, out var historyNext)
-                    ? historyNext.prev
-                    : null;
+                int nextPrePrev = First(turns.GetValueOrDefault(next, invalid));
                 turns[next] = (++turn, nextPrePrev);
 
                 last = next;
             }
+
+            int Diff((int a, int b) v) => v.b != 0 ? v.a - v.b : 0;
+            int First((int a, int b) v) => v.a;
         }
     }
 }
