@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  test:
+  test_2020:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -19,6 +19,23 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Test
+        run: dotnet test --configuration Release --no-restore --verbosity normal
+
+  test_2021:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 2021/csharp/Aoc2021.Tests
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
       - name: Install dependencies
         run: dotnet restore
       - name: Test
