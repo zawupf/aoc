@@ -2,12 +2,12 @@ module Day01
 
 open Utils
 
-let smartCompareCount offset (list: int list) =
-    list
-    |> List.skip offset
-    |> List.zip (list |> List.rev |> List.skip offset |> List.rev)
-    |> List.filter (fun (a, b) -> b > a)
-    |> List.length
+let smartCompareCount offset (seq: int seq) =
+    seq
+    |> Seq.skip offset
+    |> Seq.zip seq
+    |> Seq.filter (fun (a, b) -> b > a)
+    |> Seq.length
 
 let countIncreasedSeaDepths = smartCompareCount 1
 
