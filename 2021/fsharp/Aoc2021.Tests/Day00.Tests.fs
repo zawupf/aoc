@@ -8,7 +8,8 @@ open Day00
 [<InlineData(14, 2)>]
 [<InlineData(1969, 654)>]
 [<InlineData(100756, 33583)>]
-let ``Day00 fuel works`` mass expectedFuel = Assert.Equal(expectedFuel, fuel mass)
+let ``Day00 fuel works`` mass expectedFuel =
+    Assert.Equal(expectedFuel, fuel mass)
 
 [<Fact>]
 let ``Day00 Stars`` () =
