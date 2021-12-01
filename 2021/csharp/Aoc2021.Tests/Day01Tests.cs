@@ -3,24 +3,24 @@ namespace Aoc2021.Tests;
 public class Day01Tests
 {
     [Fact]
-    public void FindTwoEntriesWithSumWorks()
+    public void CountIncreasedSeaDepths()
     {
-        int[] expenseReport = { 1721, 979, 366, 299, 675, 1456 };
-        Assert.Equal((1721, 299), Day01.FindTwoEntriesWithSum(2020, expenseReport));
+        int[] seaDepths = { 199, 200, 208, 210, 200, 207, 240, 269, 260, 263 };
+        Assert.Equal(7, Day01.CountIncreasedSeaDepths(seaDepths));
     }
 
     [Fact]
-    public void FindThreeEntriesWithSumWorks()
+    public void CountIncreasedSeaDepthWindows()
     {
-        int[] expenseReport = { 1721, 979, 366, 299, 675, 1456 };
-        Assert.Equal((979, 366, 675), Day01.FindThreeEntriesWithSum(2020, expenseReport));
+        int[] seaDepths = { 199, 200, 208, 210, 200, 207, 240, 269, 260, 263 };
+        Assert.Equal(5, Day01.CountIncreasedSeaDepthWindows(seaDepths));
     }
 
     [Fact]
     public void Stars()
     {
         Day01 run = new();
-        Assert.Equal("1018944", run.Result1());
-        Assert.Equal("8446464", run.Result2());
+        Assert.Equal("1583", run.Result1());
+        Assert.Equal("1627", run.Result2());
     }
 }
