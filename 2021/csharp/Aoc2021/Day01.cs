@@ -18,34 +18,20 @@ public class Day01 : IDay
         return result.ToString(CultureInfo.InvariantCulture);
     }
 
+    private static int SmartCompareCount(int offset, IEnumerable<int> sequence)
+    {
+        return sequence
+            .Zip(sequence.Skip(offset))
+            .Count((pair) => pair.Second > pair.First);
+    }
+
     public static int CountIncreasedSeaDepths(IEnumerable<int> seaDepths)
     {
-        int count = 0;
-        int previousSeaDepth = seaDepths.First();
-        (int count, int previousSeaDepth) result = seaDepths.Skip(1).Aggregate(
-            (count, previousSeaDepth),
-            (acc, currentSeaDepth) =>
-            {
-                (int count, int previousSeaDepth) = acc;
-                int newCount = count + (currentSeaDepth > previousSeaDepth ? 1 : 0);
-                return (newCount, currentSeaDepth);
-            });
-        return result.count;
+        return SmartCompareCount(1, seaDepths);
     }
 
     public static int CountIncreasedSeaDepthWindows(IEnumerable<int> seaDepths)
     {
-        int first = seaDepths.First();
-        int second = seaDepths.Skip(1).First();
-        List<int> result = new();
-        (List<int> windows, _, _) = seaDepths.Skip(2).Aggregate(
-            (result, first, second),
-            (acc, third) =>
-            {
-                (List<int> result, int first, int second) = acc;
-                result.Add(first + second + third);
-                return (result, second, third);
-            });
-        return CountIncreasedSeaDepths(windows);
+        return SmartCompareCount(3, seaDepths);
     }
 }

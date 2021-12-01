@@ -2,17 +2,16 @@ module Day01
 
 open Utils
 
-let countIncreasedSeaDepths (seaDepths: int list) =
-    seaDepths
-    |> List.pairwise
+let smartCompareCount offset (list: int list) =
+    list
+    |> List.skip offset
+    |> List.zip (list |> List.rev |> List.skip offset |> List.rev)
     |> List.filter (fun (a, b) -> b > a)
     |> List.length
 
-let countIncreasedSeaDepthWindows seaDepths =
-    seaDepths
-    |> List.windowed 3
-    |> List.map List.sum
-    |> countIncreasedSeaDepths
+let countIncreasedSeaDepths = smartCompareCount 1
+
+let countIncreasedSeaDepthWindows = smartCompareCount 3
 
 
 let input =
