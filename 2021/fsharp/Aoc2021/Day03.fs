@@ -2,27 +2,37 @@ module Day03
 
 open Utils
 
-let mostCharAt (lines: string list) (index: int) =
-    let sign =
+type Bits =
+    | ZeroesWin
+    | OnesWin
+
+module Bits =
+    let count (lines: string list) (index: int) =
         lines
         |> List.sumBy (fun line -> if line.[index] = '1' then 1 else -1)
         |> System.Math.Sign
+        |> function
+            | -1 -> ZeroesWin
+            | _ -> OnesWin
 
-    match sign with
-    | 1 -> '1'
-    | -1 -> '0'
-    | _ -> '1'
+    let toChar =
+        function
+        | ZeroesWin -> '0'
+        | OnesWin -> '1'
+
+    let not =
+        function
+        | ZeroesWin -> OnesWin
+        | OnesWin -> ZeroesWin
+
+let mostCharAt (lines: string list) (index: int) =
+    index |> Bits.count lines |> Bits.toChar
 
 let leastCharAt (lines: string list) (index: int) =
-    let sign =
-        lines
-        |> List.sumBy (fun line -> if line.[index] = '1' then 1 else -1)
-        |> System.Math.Sign
-
-    match sign with
-    | 1 -> '0'
-    | -1 -> '1'
-    | _ -> '0'
+    index
+    |> Bits.count lines
+    |> Bits.not
+    |> Bits.toChar
 
 let bitstringToInt bits = System.Convert.ToInt32(bits, 2)
 
