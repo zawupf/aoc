@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Aoc2021.Tests;
 
 public class Day04Tests
