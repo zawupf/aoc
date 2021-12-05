@@ -1,15 +1,22 @@
 module Utils
 
 module String =
-    let join separator (chunks: Collections.seq<_>) =
-        System.String.Join(separator, chunks)
+    let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
 
     let trim (string: string) = string.Trim()
+
     let split (sep: char) (string: string) = string.Split(sep)
+
+    let splitNoEmpty (sep: char) (string: string) =
+        string.Split(sep, System.StringSplitOptions.RemoveEmptyEntries)
+
     let substring i (string: string) = string.Substring(i)
 
     let parseInts line =
-        line |> split ' ' |> List.ofArray |> List.map int
+        line
+        |> splitNoEmpty ' '
+        |> List.ofArray
+        |> List.map int
 
 open System.IO
 
