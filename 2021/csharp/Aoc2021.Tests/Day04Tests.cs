@@ -40,14 +40,14 @@ public class Day04Tests
     public void WinningWorks()
     {
         Day04.Game game = Day04.Game.FromLines(input);
-        Assert.Equal(4512, game.PlayWinningBoard().Score);
+        Assert.Equal(4512, game.Play().First().Score);
     }
 
     [Fact]
     public void LoosingWorks()
     {
         Day04.Game game = Day04.Game.FromLines(input);
-        Assert.Equal(1924, game.PlayLoosingBoard().Score);
+        Assert.Equal(1924, game.Play().Last().Score);
     }
 
     [Fact]

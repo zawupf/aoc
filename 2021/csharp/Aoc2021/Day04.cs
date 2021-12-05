@@ -8,7 +8,8 @@ public class Day04 : IDay
     {
         return Game
             .FromLines(InputLines)
-            .PlayWinningBoard()
+            .Play()
+            .First()
             .Score
             .ToString(CultureInfo.InvariantCulture);
     }
@@ -17,33 +18,16 @@ public class Day04 : IDay
     {
         return Game
             .FromLines(InputLines)
-            .PlayLoosingBoard()
+            .Play()
+            .Last()
             .Score
             .ToString(CultureInfo.InvariantCulture);
     }
 
     public record Game(List<int> Numbers, List<Board> Boards)
     {
-        public Board PlayWinningBoard()
+        public IEnumerable<Board> Play()
         {
-            foreach (int number in Numbers)
-            {
-                foreach (Board board in Boards)
-                {
-                    if (board.Play(number))
-                    {
-                        return board;
-                    }
-                }
-            }
-
-            throw new ApplicationException("No Winner!");
-        }
-
-        public Board PlayLoosingBoard()
-        {
-            Board? lastWinningBoard = null;
-
             foreach (int number in Numbers)
             {
                 List<int> winners = new();
@@ -53,7 +37,7 @@ public class Day04 : IDay
                     if (board.Play(number))
                     {
                         winners.Add(i);
-                        lastWinningBoard = board;
+                        yield return board;
                     }
                 }
 
@@ -63,8 +47,6 @@ public class Day04 : IDay
                     Boards.RemoveAt(i);
                 }
             }
-
-            return lastWinningBoard ?? throw new ApplicationException("No Winner!");
         }
 
         public static Game FromLines(IEnumerable<string> lines)
