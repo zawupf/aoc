@@ -10,7 +10,7 @@ module Board =
     let ofLines lines =
         let cells =
             lines
-            |> List.map String.parseInts
+            |> List.map (String.parseInts ' ')
             |> List.concat
             |> List.map (fun number -> { Number = number; Marked = false })
 
@@ -45,7 +45,8 @@ module Board =
             | true ->
                 let sumOfUnmarked =
                     cells
-                    |> List.sumBy (fun cell -> if cell.Marked then 0 else cell.Number)
+                    |> List.sumBy (fun cell ->
+                        if cell.Marked then 0 else cell.Number)
 
                 n * sumOfUnmarked |> Some
 

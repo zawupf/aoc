@@ -1,7 +1,8 @@
 module Utils
 
 module String =
-    let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
+    let join separator (chunks: Collections.seq<_>) =
+        System.String.Join(separator, chunks)
 
     let trim (string: string) = string.Trim()
 
@@ -12,9 +13,9 @@ module String =
 
     let substring i (string: string) = string.Substring(i)
 
-    let parseInts line =
+    let parseInts sep line =
         line
-        |> splitNoEmpty ' '
+        |> splitNoEmpty sep
         |> List.ofArray
         |> List.map int
 
