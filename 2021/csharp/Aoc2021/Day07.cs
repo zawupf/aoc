@@ -33,31 +33,30 @@ public class Day07 : IDay
         Func<int, int> distanceToFuel
     )
     {
-        Dictionary<int, int>? positionCount = positions
+        List<(int position, int count)> positionCount = positions
             .GroupBy(
                 position => position,
-                (position, positions) => (position, count: positions.Count())
+                (position, positions) => (position, positions.Count())
             )
-            .ToDictionary(
-                item => item.position,
-                item => item.count
-            );
+            .ToList();
 
-        (int position, int fuel) result = CalculateFuels().MinBy(position => position.fuel);
+        (int position, int fuel) result = Fuels().MinBy(position => position.fuel);
         return result;
 
-        IEnumerable<(int position, int fuel)> CalculateFuels()
+        List<(int position, int fuel)> Fuels()
         {
-            int min = positionCount.Keys.Min();
-            int max = positionCount.Keys.Max();
+            int min = positionCount.MinBy(pc => pc.position).position;
+            int max = positionCount.MaxBy(pc => pc.position).position;
 
-            return Enumerable.Range(min, max - min + 1).Select(position => (position, CalculateFuel(position)));
+            return Enumerable.Range(min, max - min + 1)
+                .Select(position => (position, Fuel(position)))
+                .ToList();
         }
 
-        int CalculateFuel(int position)
+        int Fuel(int position)
         {
             return positionCount
-                .Select(item => item.Value * distanceToFuel(Math.Abs(item.Key - position)))
+                .Select(item => item.count * distanceToFuel(Math.Abs(item.position - position)))
                 .Sum();
         }
     }
