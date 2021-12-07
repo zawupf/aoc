@@ -7,7 +7,7 @@ Run<Day03>();
 Run<Day04>();
 Run<Day05>();
 Run<Day06>();
-// Run<Day07>();
+Run<Day07>();
 // Run<Day08>();
 // Run<Day09>();
 // Run<Day10>();
