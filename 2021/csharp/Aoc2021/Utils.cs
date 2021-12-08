@@ -26,6 +26,16 @@ public static class Utils
         }
     }
 
+    public static IEnumerable<IEnumerable<T>> Permutations<T>(IEnumerable<T> list, int length)
+    {
+        return length == 1
+            ? list.Select(t => new T[] { t })
+            : Permutations(list, length - 1)
+                .SelectMany(
+                    t => list.Where(o => !t.Contains(o)),
+                    (t1, t2) => t1.Concat(new T[] { t2 }));
+    }
+
     public static IEnumerable<(T, T)> Combine2<T>(IEnumerable<T> entries)
     {
         (T head, IEnumerable<T> tail) = (entries.First(), entries.Skip(1));
