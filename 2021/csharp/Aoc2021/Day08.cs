@@ -122,8 +122,6 @@ public class Day08 : IDay
 
     private static string SortSegments(IEnumerable<char> segments)
     {
-        List<char> digit = segments.ToList();
-        digit.Sort();
-        return string.Join("", digit);
+        return string.Join("", segments.OrderBy(c => c));
     }
 }

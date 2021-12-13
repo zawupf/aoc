@@ -28,8 +28,8 @@ public class Day10 : IDay
         List<long> scores = lines
             .Where(line => SyntaxErrorScore(line) == 0)
             .Select(CompletionScore)
+            .OrderBy(score => score)
             .ToList();
-        scores.Sort();
         return scores[scores.Count / 2];
 
         static long CompletionScore(string line)

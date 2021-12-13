@@ -69,13 +69,11 @@ public class Day09 : IDay
     {
         int[][] grid = BuildGrid(lines);
 
-        List<int> sizes = LowPoints(grid)
+        return LowPoints(grid)
             .Select(p => basinSize(p.x, p.y))
-            .ToList();
-        sizes.Sort();
-        sizes.Reverse();
-
-        return sizes.Take(3).Aggregate(1, (acc, v) => acc * v);
+            .OrderByDescending(size => size)
+            .Take(3)
+            .Aggregate(1, (acc, v) => acc * v);
 
         int basinSize(int x, int y)
         {
