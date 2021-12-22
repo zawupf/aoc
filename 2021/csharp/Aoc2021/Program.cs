@@ -1,4 +1,4 @@
-﻿Console.WriteLine("Hello, Advent Of Code 2021!");
+Console.WriteLine("Hello, Advent Of Code 2021!");
 
 // Run<Day00>();
 Run<Day01>();
@@ -21,7 +21,7 @@ Run<Day16>();
 // Run<Day18>();
 // Run<Day19>();
 Run<Day20>();
-// Run<Day21>();
+Run<Day21>();
 // Run<Day22>();
 // Run<Day23>();
 // Run<Day24>();
