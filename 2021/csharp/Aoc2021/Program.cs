@@ -20,7 +20,7 @@ Run<Day16>();
 // Run<Day17>();
 // Run<Day18>();
 // Run<Day19>();
-// Run<Day20>();
+Run<Day20>();
 // Run<Day21>();
 // Run<Day22>();
 // Run<Day23>();
