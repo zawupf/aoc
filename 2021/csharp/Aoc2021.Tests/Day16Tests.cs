@@ -29,6 +29,6 @@ public class Day16Tests
     {
         Day16 run = new();
         Assert.Equal("949", run.Result1());
-        Assert.Equal("1114600142730", run.Result2()); // WRONG: 2203613086
+        Assert.Equal("1114600142730", run.Result2());
     }
 }
