@@ -39,21 +39,24 @@ public class Day21Tests
     {
         Assert.Equal(
             new int[] { 10, 3, 14, 9, 20, 16, 26, 22 },
-            Day21.WarmupGame.Init(input)
+            Day21.WarmupGame
+                .Init(input)
                 .Play()
                 .Select(game => game.CurrentPlayer.Score)
                 .Take(8)
         );
         Assert.Equal(
             new int[] { 742, 990, 745, 1000 },
-            Day21.WarmupGame.Init(input)
+            Day21.WarmupGame
+                .Init(input)
                 .Play()
                 .Select(game => game.CurrentPlayer.Score)
                 .TakeLast(4)
         );
         Assert.Equal(
             739785,
-            Day21.WarmupGame.Init(input)
+            Day21.WarmupGame
+                .Init(input)
                 .Play()
                 .Last()
                 .Result1
@@ -63,12 +66,14 @@ public class Day21Tests
     [Fact]
     public void DiracGameWorks()
     {
-        // Assert.Equal(
-        //     444356092776315L,
-        //     Day21.DiracGame.Init(input)
-        //         .Play()
-        //         .MasterOfTheUniversesCount
-        // );
+        Assert.Equal(
+            444356092776315L,
+            Day21.DiracGame
+                .Init(input)
+                .Play()
+                .Last()
+                .MasterOfTheMultiverseCount
+        );
     }
 
     [Fact]
@@ -76,6 +81,6 @@ public class Day21Tests
     {
         Day21 run = new();
         Assert.Equal("926610", run.Result1());
-        // Assert.Equal("", run.Result2());
+        Assert.Equal("146854918035875", run.Result2());
     }
 }
