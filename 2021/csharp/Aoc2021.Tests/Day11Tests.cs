@@ -14,10 +14,7 @@ public class Day11Tests
         4846848554
         5283751526
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void TotalFlashCount100Works()

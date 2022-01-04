@@ -25,10 +25,7 @@ public class Day13Tests
         fold along y=7
         fold along x=5
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void DotCount1Works()

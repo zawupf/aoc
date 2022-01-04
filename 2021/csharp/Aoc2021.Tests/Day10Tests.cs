@@ -14,10 +14,7 @@ public class Day10Tests
         <{([([[(<>()){}]>(<<{{
         <{([{{}}[<[[[<>{}]]]>[]]
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void TotalSyntaxErrorScoreWorks()

@@ -23,10 +23,7 @@ public class Day04Tests
         22 11 13  6  5
          2  0 12  3  7
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void InputDataIsCorrect()

@@ -11,10 +11,7 @@ public class Day20Tests
         ..#..
         ..###
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void PixelCountAfter2EnhancementsWorks()

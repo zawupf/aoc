@@ -22,10 +22,7 @@ public class Day14Tests
         CC -> N
         CN -> C
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void MaxMinDiffWorks()

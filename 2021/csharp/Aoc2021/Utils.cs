@@ -63,4 +63,12 @@ public static class Utils
     {
         return bool.Parse(value);
     }
+
+    public static List<string> Lines(this string text)
+    {
+        return text.Trim()
+            .Split('\n')
+            .Select(line => line.Trim())
+            .ToList();
+    }
 }

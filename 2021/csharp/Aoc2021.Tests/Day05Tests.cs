@@ -14,10 +14,7 @@ public class Day05Tests
         0,0 -> 8,8
         5,5 -> 8,2
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void InputDataIsCorrect()

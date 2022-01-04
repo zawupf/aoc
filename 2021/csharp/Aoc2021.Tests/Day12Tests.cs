@@ -11,10 +11,7 @@ public class Day12Tests
         A-end
         b-end
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     private static readonly List<string> input2 = @"
         dc-end
@@ -28,10 +25,7 @@ public class Day12Tests
         kj-HN
         kj-dc
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     private static readonly List<string> input3 = @"
         fs-end
@@ -53,10 +47,7 @@ public class Day12Tests
         pj-fs
         start-RW
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void PathCountWorks()

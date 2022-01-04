@@ -6,10 +6,7 @@ public class Day21Tests
         Player 1 starting position: 4
         Player 2 starting position: 8
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void DeterministicDieWorks()

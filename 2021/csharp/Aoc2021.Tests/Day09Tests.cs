@@ -9,10 +9,7 @@ public class Day09Tests
         8767896789
         9899965678
     "
-    .Trim()
-    .Split('\n')
-    .Select(line => line.Trim())
-    .ToList();
+    .Lines();
 
     [Fact]
     public void RiskLevelSumWorks()
