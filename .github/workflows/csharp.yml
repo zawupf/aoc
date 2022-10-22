@@ -1,42 +1,42 @@
-name: 'C#'
+# name: 'C#'
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+# on:
+#   push:
+#     branches: [master]
+#   pull_request:
+#     branches: [master]
 
-jobs:
-  test_2020:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 2020/csharp/Aoc2020.Tests
+# jobs:
+#   test_2020:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: 2020/csharp/Aoc2020.Tests
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Test
-        run: dotnet test --configuration Release --no-restore --verbosity normal
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Setup .NET Core
+#         uses: actions/setup-dotnet@v1
+#         with:
+#           dotnet-version: 5.0.x
+#       - name: Install dependencies
+#         run: dotnet restore
+#       - name: Test
+#         run: dotnet test --configuration Release --no-restore --verbosity normal
 
-  test_2021:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 2021/csharp/Aoc2021.Tests
+#   test_2021:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: 2021/csharp/Aoc2021.Tests
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Test
-        run: dotnet test --configuration Release --no-restore --verbosity normal
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Setup .NET Core
+#         uses: actions/setup-dotnet@v1
+#         with:
+#           dotnet-version: 6.0.x
+#       - name: Install dependencies
+#         run: dotnet restore
+#       - name: Test
+#         run: dotnet test --configuration Release --no-restore --verbosity normal
