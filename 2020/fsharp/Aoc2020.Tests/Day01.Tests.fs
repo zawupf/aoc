@@ -41,11 +41,7 @@ let ``combine2 works`` () =
     let result = [ 1; 2; 3 ] |> combine2
     Assert.Equal<IEnumerable<int * int * int>>(expected, result)
 
-    let expected =
-        [ (1, 2, 3)
-          (1, 2, 4)
-          (1, 3, 4)
-          (2, 3, 4) ]
+    let expected = [ (1, 2, 3); (1, 2, 4); (1, 3, 4); (2, 3, 4) ]
 
     let result = [ 1; 2; 3; 4 ] |> combine2
     Assert.Equal<IEnumerable<int * int * int>>(expected, result)

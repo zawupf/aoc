@@ -7,12 +7,10 @@ type Layer = string
 
 type Image = Layer seq
 
-let private parseImage width height string = string |> Seq.chunkBySize (width * height)
+let private parseImage width height string =
+    string |> Seq.chunkBySize (width * height)
 
-let private pixelStats layer =
-    layer
-    |> Seq.countBy id
-    |> Map.ofSeq
+let private pixelStats layer = layer |> Seq.countBy id |> Map.ofSeq
 
 let private checksum image =
     image
@@ -20,9 +18,7 @@ let private checksum image =
         let ps = layer |> pixelStats
 
         let count char =
-            ps
-            |> Map.tryFind char
-            |> Option.defaultValue 0
+            ps |> Map.tryFind char |> Option.defaultValue 0
 
         let count0 = count '0'
         let count1 = count '1'
@@ -46,23 +42,17 @@ let private paint line =
 
 let render width image =
     let join (lines: string seq) = Utils.String.join "" lines
+
     image
     |> Seq.reduce compose
     |> paint
     |> Seq.chunkBySize width
-    |> Seq.map
-        (String
-         >> sprintf "\n%s")
+    |> Seq.map (String >> sprintf "\n%s")
     |> join
 
 
-let job1() =
-    readInputText "08"
-    |> parseImage 25 6
-    |> checksum
-    |> string
+let job1 () =
+    readInputText "08" |> parseImage 25 6 |> checksum |> string
 
-let job2() =
-    readInputText "08"
-    |> parseImage 25 6
-    |> render 25
+let job2 () =
+    readInputText "08" |> parseImage 25 6 |> render 25

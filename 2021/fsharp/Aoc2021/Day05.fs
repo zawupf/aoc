@@ -6,8 +6,7 @@ type Point = { X: int; Y: int }
 
 module Point =
     let ofString string =
-        let numbers =
-            string |> String.split ',' |> Array.map int
+        let numbers = string |> String.split ',' |> Array.map int
 
         { X = numbers.[0]; Y = numbers.[1] }
 
@@ -15,8 +14,7 @@ type Line = { P1: Point; P2: Point }
 
 module Line =
     let ofString (string: string) =
-        let points =
-            string.Split(" -> ") |> Array.map Point.ofString
+        let points = string.Split(" -> ") |> Array.map Point.ofString
 
         { P1 = points.[0]; P2 = points.[1] }
 
@@ -26,9 +24,7 @@ module Line =
         let dx = Math.Sign(p2.X - p1.X)
         let dy = Math.Sign(p2.Y - p1.Y)
 
-        let n =
-            Math.Max(Math.Abs(p2.X - p1.X), Math.Abs(p2.Y - p1.Y))
-            + 1
+        let n = Math.Max(Math.Abs(p2.X - p1.X), Math.Abs(p2.Y - p1.Y)) + 1
 
         seq {
             let mutable p = p1
@@ -69,11 +65,7 @@ let countMostDangerousPoints filter lines =
 let input = "05" |> readInputLines |> Seq.toList
 
 let job1 () =
-    input
-    |> countMostDangerousPoints WithoutDiagonals
-    |> string
+    input |> countMostDangerousPoints WithoutDiagonals |> string
 
 let job2 () =
-    input
-    |> countMostDangerousPoints WithDiagonals
-    |> string
+    input |> countMostDangerousPoints WithDiagonals |> string

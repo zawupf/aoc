@@ -3,14 +3,14 @@ module Day02
 open Utils
 open Computer
 
-let job1() =
+let job1 () =
     let code = readInputText "02"
 
     let context: Context = patch (compile code) 12L 2L
     runSilent context |> ignore
     context.memory.[0] |> string
 
-let job2() =
+let job2 () =
     let code = readInputText "02"
 
     let originalContext = compile code

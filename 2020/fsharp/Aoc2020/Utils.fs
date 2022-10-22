@@ -14,18 +14,20 @@ let private _exists = File.Exists
 
 let rec private _findFile dir path =
     let filepath = _join dir path
-    if _exists filepath
-    then filepath
-    else _findFile (Directory.GetParent(dir).FullName) path
+
+    if _exists filepath then
+        filepath
+    else
+        _findFile (Directory.GetParent(dir).FullName) path
 
 let private _findInputFile name =
-    let subpath =
-        _join "_inputs" (sprintf "Day%s.txt" name)
+    let subpath = _join "_inputs" (sprintf "Day%s.txt" name)
 
     _findFile (Directory.GetCurrentDirectory()) subpath
 
 let useCache getterFn =
     let mutable cache = Map.empty
+
     fun key ->
         match cache.TryFind(key) with
         | Some value -> value
@@ -40,8 +42,7 @@ let readInputLines = useCache (_findInputFile >> _readLines)
 
 let private _readAllText filename = File.ReadAllText(filename).Trim()
 
-let readInputText =
-    useCache (_findInputFile >> _readAllText)
+let readInputText = useCache (_findInputFile >> _readAllText)
 
 let permutations list =
     let rec _permutations list taken =
@@ -60,7 +61,8 @@ let permutations list =
 let inline isZero value = value = LanguagePrimitives.GenericZero
 
 let inline greatestCommonDivisor a b =
-    let rec gcd x y = if y |> isZero then x else gcd y (x % y)
+    let rec gcd x y =
+        if y |> isZero then x else gcd y (x % y)
 
     match (abs a, abs b) with
     | a, b when a < b -> b, a
@@ -104,16 +106,19 @@ module BBox =
 
     let ofSeq seq = seq |> Seq.fold merge empty
 
-    let ofMap map = map |> Map.toSeq |> Seq.map fst |> ofSeq
+    let ofMap map =
+        map |> Map.toSeq |> Seq.map fst |> ofSeq
 
 
 let render toString map =
     let bbox = map |> BBox.ofMap
+
     String.join
         ""
         (seq {
             for y in fst bbox.Y .. snd bbox.Y do
                 yield "\n"
+
                 for x in fst bbox.X .. snd bbox.X do
                     yield map |> Map.tryFind (x, y) |> toString
-         })
+        })

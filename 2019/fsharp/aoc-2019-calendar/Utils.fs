@@ -14,9 +14,11 @@ let private _exists = File.Exists
 
 let rec private _findFile dir path =
     let filepath = _join dir path
-    if _exists filepath
-    then filepath
-    else _findFile (Directory.GetParent(dir).FullName) path
+
+    if _exists filepath then
+        filepath
+    else
+        _findFile (Directory.GetParent(dir).FullName) path
 
 let private _findInputFile name =
     let subpath = _join "inputs" (sprintf "Day%s.txt" name)
@@ -24,6 +26,7 @@ let private _findInputFile name =
 
 let useCache getterFn =
     let mutable cache = Map.empty
+
     fun key ->
         match cache.TryFind(key) with
         | Some value -> value
@@ -51,6 +54,7 @@ let permutations list =
                         for perm in _permutations list (Set.add l taken) do
                             yield l :: perm
         }
+
     _permutations list Set.empty
 
 let inline isZero value = value = LanguagePrimitives.GenericZero
@@ -78,14 +82,13 @@ module List =
             | [ a; b ] -> lcm a b
             | a :: list -> lcm a (_lcmm list)
             | _ -> failwith "At least 2 values are required"
+
         _lcmm list
 
     let inline leastCommonMultiple list = list |> lcmm
     let inline LCM list = leastCommonMultiple list
 
-type BBox =
-    { x: int * int
-      y: int * int }
+type BBox = { x: int * int; y: int * int }
 
 module BBox =
     let empty =
@@ -103,20 +106,18 @@ module BBox =
     let ofSeq seq = seq |> Seq.fold merge empty
 
     let ofMap map =
-        map
-        |> Map.toSeq
-        |> Seq.map fst
-        |> ofSeq
+        map |> Map.toSeq |> Seq.map fst |> ofSeq
 
 
 let render toString map =
     let bbox = map |> BBox.ofMap
-    String.join ""
+
+    String.join
+        ""
         (seq {
             for y in fst bbox.y .. snd bbox.y do
                 yield "\n"
+
                 for x in fst bbox.x .. snd bbox.x do
-                    yield map
-                          |> Map.tryFind (x, y)
-                          |> toString
-         })
+                    yield map |> Map.tryFind (x, y) |> toString
+        })

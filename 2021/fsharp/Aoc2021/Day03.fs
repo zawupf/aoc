@@ -29,10 +29,7 @@ let mostCharAt (lines: string list) (index: int) =
     index |> Bits.count lines |> Bits.toChar
 
 let leastCharAt (lines: string list) (index: int) =
-    index
-    |> Bits.count lines
-    |> Bits.not
-    |> Bits.toChar
+    index |> Bits.count lines |> Bits.not |> Bits.toChar
 
 let bitstringToInt bits = System.Convert.ToInt32(bits, 2)
 
@@ -84,13 +81,7 @@ module LifeSupportRate =
 let report = "03" |> readInputLines |> Seq.toList
 
 let job1 () =
-    report
-    |> PowerConsumtionRate.ofReport
-    |> PowerConsumtionRate.result
-    |> string
+    report |> PowerConsumtionRate.ofReport |> PowerConsumtionRate.result |> string
 
 let job2 () =
-    report
-    |> LifeSupportRate.ofReport
-    |> LifeSupportRate.result
-    |> string
+    report |> LifeSupportRate.ofReport |> LifeSupportRate.result |> string

@@ -18,6 +18,6 @@ let ``Day03 minSignalDelay works`` expected (input: string) =
     ()
 
 [<Fact>]
-let ``Day03 Stars``() =
-    Assert.Equal("8015", job1())
-    Assert.Equal("163676", job2())
+let ``Day03 Stars`` () =
+    Assert.Equal("8015", job1 ())
+    Assert.Equal("163676", job2 ())

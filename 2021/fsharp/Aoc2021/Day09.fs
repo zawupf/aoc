@@ -8,9 +8,7 @@ type Grid = int array array
 module Grid =
     let build (lines: string list) =
         lines
-        |> List.map (fun line ->
-            line.ToCharArray()
-            |> Array.map (fun c -> int c - int '0'))
+        |> List.map (fun line -> line.ToCharArray() |> Array.map (fun c -> int c - int '0'))
         |> List.toArray
 
     let height (grid: Grid) (x, y) = grid.[y].[x]
@@ -22,11 +20,7 @@ module Grid =
         x >= 0 && x < nx && y >= 0 && y < ny
 
     let adjacentPoints (grid: Grid) (x, y) =
-        [ x - 1, y
-          x + 1, y
-          x, y - 1
-          x, y + 1 ]
-        |> List.filter (grid |> contains)
+        [ x - 1, y; x + 1, y; x, y - 1; x, y + 1 ] |> List.filter (grid |> contains)
 
     let lowPoints (grid: Grid) =
         let nx, ny = grid |> dimensions
@@ -36,9 +30,7 @@ module Grid =
                 for x = 0 to nx - 1 do
                     let h = (x, y) |> height grid
 
-                    if (x, y)
-                       |> adjacentPoints grid
-                       |> List.forall (fun p -> h < (p |> height grid)) then
+                    if (x, y) |> adjacentPoints grid |> List.forall (fun p -> h < (p |> height grid)) then
                         yield x, y
         }
 
@@ -46,21 +38,15 @@ module Grid =
         let rec build basinPoints p =
             p
             |> adjacentPoints grid
-            |> List.filter (fun p ->
-                basinPoints |> Set.contains p |> not
-                && (p |> height grid) <> 9)
-            |> List.fold
-                (fun acc p -> p |> build (acc |> Set.add p))
-                basinPoints
+            |> List.filter (fun p -> basinPoints |> Set.contains p |> not && (p |> height grid) <> 9)
+            |> List.fold (fun acc p -> p |> build (acc |> Set.add p)) basinPoints
 
         p |> build (Set.empty |> Set.add p)
 
 let riskLevelSum lines =
     let grid = lines |> Grid.build
 
-    grid
-    |> Grid.lowPoints
-    |> Seq.sumBy (fun p -> 1 + (p |> Grid.height grid))
+    grid |> Grid.lowPoints |> Seq.sumBy (fun p -> 1 + (p |> Grid.height grid))
 
 let basinProduct lines =
     let grid = lines |> Grid.build

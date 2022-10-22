@@ -4,7 +4,7 @@ open Xunit
 open Day17
 
 [<Fact>]
-let ``Day17 Stars``() =
+let ``Day17 Stars`` () =
     // Assert.Equal("", job1())
     // Assert.Equal("", job2())
     ()

@@ -19,11 +19,7 @@ let totalFuel mass =
     _totalFuel mass 0
 
 let job1 () =
-    readInputLines "00"
-    |> Seq.sumBy (int >> fuel)
-    |> string
+    readInputLines "00" |> Seq.sumBy (int >> fuel) |> string
 
 let job2 () =
-    readInputLines "00"
-    |> Seq.sumBy (int >> totalFuel)
-    |> string
+    readInputLines "00" |> Seq.sumBy (int >> totalFuel) |> string

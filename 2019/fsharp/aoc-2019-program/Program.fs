@@ -3,11 +3,12 @@ open Day22
 
 let run day fn1 fn2 =
     printfn "\nDay %d" day
+
     try
-        printfn "Result 1: %s" (fn1())
-        printfn "Result 2: %s" (fn2())
-    with
-        | :? NotImplementedException -> ()
+        printfn "Result 1: %s" (fn1 ())
+        printfn "Result 2: %s" (fn2 ())
+    with :? NotImplementedException ->
+        ()
 
 [<EntryPoint>]
 let main argv =
@@ -35,10 +36,11 @@ let main argv =
     // run 22 Day22.job1 Day22.job2
 
     let (l, n) = (11, 4)
+
     deck l
     |> dealWithIncrement2 n
     |> Seq.toList
-    |> (printfn "%d %d %d %d %A" l n (l/n) (l%n))
+    |> (printfn "%d %d %d %d %A" l n (l / n) (l % n))
 
     // run 23 Day23.job1 Day23.job2
     // run 24 Day24.job1 Day24.job2

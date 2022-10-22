@@ -6,8 +6,8 @@ let run day fn1 fn2 =
     try
         printfn "Result 1: %s" (fn1 ())
         printfn "Result 2: %s" (fn2 ())
-    with
-    | :? NotImplementedException -> ()
+    with :? NotImplementedException ->
+        ()
 
 [<EntryPoint>]
 let main argv =

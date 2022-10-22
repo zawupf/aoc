@@ -20,7 +20,7 @@ type private Mode =
     | Relative
 
 type Context =
-    { mutable memory: int64 []
+    { mutable memory: int64[]
       mutable position: int
       mutable relativeBase: int
       input: Queue<int64>
@@ -39,7 +39,7 @@ let compile (source: string) =
       output = new Queue<int64>() }
 
 let ensureMemory position context =
-    let resize() =
+    let resize () =
         let rec guessNewLength len =
             if position < len then len else guessNewLength (2 * len)
 
@@ -48,7 +48,9 @@ let ensureMemory position context =
         context.memory <- Array.append context.memory (Array.zeroCreate (newLength - oldLength))
         ()
 
-    if position >= context.memory.Length then resize()
+    if position >= context.memory.Length then
+        resize ()
+
     ()
 
 let private readMemory position context =
@@ -61,6 +63,7 @@ let private writeMemory position value context =
 
 let private opcode context =
     let _opcode = (readMemory context.position context) % 100L
+
     match _opcode with
     | 1L -> Opcode.Add
     | 2L -> Opcode.Mul
@@ -74,18 +77,22 @@ let private opcode context =
     | 99L -> Opcode.Halt
     | _ -> failwithf "Invalid opcode %d" _opcode
 
-let private modes context = (readMemory context.position context) / 100L
+let private modes context =
+    (readMemory context.position context) / 100L
 
 let private mode index modes =
     let pow (a: int64) (x: int) =
         let mutable y = x
         let mutable result = 1L
+
         while y <> 0 do
             result <- result * a
             y <- y - 1
+
         result
 
     let pow10 = pow 10L
+
     match modes / (pow10 index) % 10L with
     | 0L -> Positional
     | 1L -> Immediate
@@ -94,6 +101,7 @@ let private mode index modes =
 
 let private readParameter context index =
     let posOrVal = readMemory (context.position + index + 1) context
+
     match mode index (modes context) with
     | Positional -> readMemory (int posOrVal) context
     | Immediate -> posOrVal
@@ -101,6 +109,7 @@ let private readParameter context index =
 
 let private writeParameter context index value =
     let pos = int (readMemory (context.position + index + 1) context)
+
     match mode index (modes context) with
     | Positional -> writeMemory pos value context
     | Relative -> writeMemory (context.relativeBase + pos) value context
@@ -132,14 +141,18 @@ let private output context =
     Some(Output value)
 
 let private jump pred context =
-    if pred
-    then context.position <- int (readParameter context 1)
-    else context.position <- context.position + 3
+    if pred then
+        context.position <- int (readParameter context 1)
+    else
+        context.position <- context.position + 3
+
     None
 
-let private jumpIfTrue context = jump ((readParameter context 0) <> 0L) context
+let private jumpIfTrue context =
+    jump ((readParameter context 0) <> 0L) context
 
-let private jumpIfFalse context = jump ((readParameter context 0) = 0L) context
+let private jumpIfFalse context =
+    jump ((readParameter context 0) = 0L) context
 
 let private lessThan context =
     let par = readParameter context
@@ -161,10 +174,11 @@ let private adjustRelativeBase context =
     context.position <- context.position + 2
     None
 
-let private halt() = Some(Halted)
+let private halt () = Some(Halted)
 
 let private handleOpcode context =
     let _opcode = opcode context
+
     match _opcode with
     | Opcode.Add -> add context
     | Opcode.Mul -> mul context
@@ -175,14 +189,15 @@ let private handleOpcode context =
     | Opcode.LessThan -> lessThan context
     | Opcode.Equals -> equals context
     | Opcode.AdjustRelativeBase -> adjustRelativeBase context
-    | Opcode.Halt -> halt()
+    | Opcode.Halt -> halt ()
     | _ -> failwith "Invalid opcode"
 
 let rec run context =
     let event = handleOpcode context
+
     match event with
     | None -> run context
-    | Some(evt) ->
+    | Some (evt) ->
         match evt with
         | Halted -> evt
         | Paused -> evt
@@ -192,6 +207,7 @@ let isHalted context = Opcode.Halt = opcode context
 
 let rec runSilent context =
     let event = run context
+
     match event with
     | Halted
     | Paused -> event

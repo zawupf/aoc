@@ -7,6 +7,7 @@ open Computer
 let private test context =
     context.input.Enqueue(1L)
     runSilent context |> ignore
+
     match context.output.Count with
     | 1 -> context.output.Dequeue()
     | _ ->
@@ -18,14 +19,8 @@ let private boost context =
     runSilent context |> ignore
     context.output.Dequeue()
 
-let job1() =
-    readInputText "09"
-    |> compile
-    |> test
-    |> string
+let job1 () =
+    readInputText "09" |> compile |> test |> string
 
-let job2() =
-    readInputText "09"
-    |> compile
-    |> boost
-    |> string
+let job2 () =
+    readInputText "09" |> compile |> boost |> string

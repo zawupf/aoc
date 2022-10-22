@@ -41,25 +41,11 @@ let ``Day04 input data is correct`` () =
 
 [<Fact>]
 let ``Day04 win game works`` () =
-    Assert.Equal(
-        4512,
-        input
-        |> Game.ofLines
-        |> Game.play
-        |> Seq.head
-        |> Board.score
-    )
+    Assert.Equal(4512, input |> Game.ofLines |> Game.play |> Seq.head |> Board.score)
 
 [<Fact>]
 let ``Day04 loose game works`` () =
-    Assert.Equal(
-        1924,
-        input
-        |> Game.ofLines
-        |> Game.play
-        |> Seq.last
-        |> Board.score
-    )
+    Assert.Equal(1924, input |> Game.ofLines |> Game.play |> Seq.last |> Board.score)
 
 [<Fact>]
 let ``Day04 Stars`` () =

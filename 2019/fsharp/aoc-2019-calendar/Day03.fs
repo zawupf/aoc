@@ -11,6 +11,7 @@ type Move =
 let parseMove (text: string) =
     let move = text.[0]
     let distance = int text.[1..]
+
     match move with
     | 'U' -> Up distance
     | 'D' -> Down distance
@@ -19,9 +20,7 @@ let parseMove (text: string) =
     | _ -> failwith "Invalid move"
 
 let parseMoves (line: string) =
-    line.Split ','
-    |> Seq.ofArray
-    |> Seq.map parseMove
+    line.Split ',' |> Seq.ofArray |> Seq.map parseMove
 
 let jump (x, y) =
     function
@@ -32,26 +31,15 @@ let jump (x, y) =
 
 let walk (x, y) =
     function
-    | Up distance ->
-        seq {
-            for d in 1 .. distance -> x, y + d
-        }
-    | Down distance ->
-        seq {
-            for d in 1 .. distance -> x, y - d
-        }
-    | Left distance ->
-        seq {
-            for d in 1 .. distance -> x - d, y
-        }
-    | Right distance ->
-        seq {
-            for d in 1 .. distance -> x + d, y
-        }
+    | Up distance -> seq { for d in 1..distance -> x, y + d }
+    | Down distance -> seq { for d in 1..distance -> x, y - d }
+    | Left distance -> seq { for d in 1..distance -> x - d, y }
+    | Right distance -> seq { for d in 1..distance -> x + d, y }
 
 let walkMany moves =
     seq {
         let mutable p = (0, 0)
+
         for move in moves do
             let points = walk p move
             p <- jump p move
@@ -59,17 +47,11 @@ let walkMany moves =
     }
 
 let countSteps pt points =
-    (points
-     |> Seq.takeWhile (fun p -> p <> pt)
-     |> Seq.length)
-    + 1
+    (points |> Seq.takeWhile (fun p -> p <> pt) |> Seq.length) + 1
 
 let minDistance lines =
     lines
-    |> Seq.map
-        (parseMoves
-         >> walkMany
-         >> Set.ofSeq)
+    |> Seq.map (parseMoves >> walkMany >> Set.ofSeq)
     |> Set.intersectMany
     |> Seq.map (fun (x, y) -> abs x + abs y)
     |> Seq.min
@@ -83,12 +65,8 @@ let minSignalDelay lines =
     |> Seq.map (fun pt -> wires |> Seq.sumBy (countSteps pt))
     |> Seq.min
 
-let job1() =
-    readInputLines "03"
-    |> minDistance
-    |> string
+let job1 () =
+    readInputLines "03" |> minDistance |> string
 
-let job2() =
-    readInputLines "03"
-    |> minSignalDelay
-    |> string
+let job2 () =
+    readInputLines "03" |> minSignalDelay |> string

@@ -44,6 +44,7 @@ let private appendRotationAndAngle laser ((x, y), asteroids) =
         match Math.Atan2(float x, float -y) with
         | a when a < 0. -> a + 2. * Math.PI
         | a -> a
+
     asteroids
     |> List.sortBy (distance laser)
     |> List.mapi (fun index asteroid -> asteroid, (index, angle))
@@ -54,10 +55,8 @@ let private compareRotationThenAngle (_, (i1, a1)) (_, (i2, a2)) =
     | c -> c
 
 let vaporizeOrder asteroids =
-    let laser =
-        asteroids
-        |> maxVisible
-        |> snd
+    let laser = asteroids |> maxVisible |> snd
+
     asteroids
     |> List.filter (not << equal laser)
     |> List.groupBy (direction laser)
@@ -65,14 +64,10 @@ let vaporizeOrder asteroids =
     |> List.sortWith compareRotationThenAngle
     |> List.map fst
 
-let job1() =
-    readInputLines "10"
-    |> parse
-    |> maxVisible
-    |> fst
-    |> string
+let job1 () =
+    readInputLines "10" |> parse |> maxVisible |> fst |> string
 
-let job2() =
+let job2 () =
     readInputLines "10"
     |> parse
     |> vaporizeOrder

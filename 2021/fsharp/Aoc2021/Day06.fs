@@ -7,7 +7,7 @@ let simulateFishPopulation (fishTimers: int list) =
         fishTimers
         |> List.countBy (fun timer -> timer)
         |> List.fold
-            (fun (timers: int64 []) (timer, count) ->
+            (fun (timers: int64[]) (timer, count) ->
                 timers.[timer] <- count
                 timers)
             [| 0L; 0L; 0L; 0L; 0L; 0L; 0L; 0L; 0L |]
@@ -25,20 +25,10 @@ let simulateFishPopulation (fishTimers: int list) =
     }
 
 let input =
-    "06"
-    |> readInputText
-    |> String.split ','
-    |> Array.map int
-    |> Array.toList
+    "06" |> readInputText |> String.split ',' |> Array.map int |> Array.toList
 
 let job1 () =
-    input
-    |> simulateFishPopulation
-    |> Seq.item 80
-    |> string
+    input |> simulateFishPopulation |> Seq.item 80 |> string
 
 let job2 () =
-    input
-    |> simulateFishPopulation
-    |> Seq.item 256
-    |> string
+    input |> simulateFishPopulation |> Seq.item 256 |> string

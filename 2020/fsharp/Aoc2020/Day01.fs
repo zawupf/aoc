@@ -18,19 +18,17 @@ let pairWithTuple tuples first =
 
 let combine items' =
     let items = items' |> Seq.toArray
+
     items
     |> Seq.indexed
-    |> Seq.collect (fun (index, first) ->
-        first
-        |> pairWithItem (items |> Seq.skip (index + 1)))
+    |> Seq.collect (fun (index, first) -> first |> pairWithItem (items |> Seq.skip (index + 1)))
 
 let combine2 items' =
     let items = items' |> Seq.toArray
+
     items
     |> Seq.indexed
-    |> Seq.collect (fun (index, first) ->
-        first
-        |> pairWithTuple (items |> Seq.skip (index + 1) |> combine))
+    |> Seq.collect (fun (index, first) -> first |> pairWithTuple (items |> Seq.skip (index + 1) |> combine))
 
 let job1 () =
     readInputLines "01"

@@ -18,10 +18,7 @@ let report =
 
 [<Fact>]
 let ``Day03 power consumption works`` () =
-    Assert.Equal(
-        { Gamma = 22; Epsilon = 9 },
-        report |> PowerConsumtionRate.ofReport
-    )
+    Assert.Equal({ Gamma = 22; Epsilon = 9 }, report |> PowerConsumtionRate.ofReport)
 
 [<Fact>]
 let ``Day03 life support works`` () =

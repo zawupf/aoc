@@ -12,9 +12,11 @@ type Slope = int * int
 let walk ((dx, dy): Slope) (map: Object array array) =
     let height = map |> Array.length
     let width = map.[0] |> Array.length
+
     seq {
         let mutable x = 0
-        for y in 0 .. dy .. (height - 1) do
+
+        for y in 0..dy .. (height - 1) do
             let x' = x % width
             let object = map.[y].[x']
             yield object

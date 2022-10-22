@@ -5,33 +5,17 @@ open Day22
 open Utils
 
 [<Fact>]
-let ``Day22 dealIntoNewStack works``() =
-    Assert.Equal<List<_>>
-        ([ 9; 8; 7; 6; 5; 4; 3; 2; 1; 0 ],
-         deck 10
-         |> dealIntoNewStack
-         |> Seq.toList)
+let ``Day22 dealIntoNewStack works`` () =
+    Assert.Equal<List<_>>([ 9; 8; 7; 6; 5; 4; 3; 2; 1; 0 ], deck 10 |> dealIntoNewStack |> Seq.toList)
 
 [<Fact>]
-let ``Day22 cut works``() =
-    Assert.Equal<List<_>>
-        ([ 3; 4; 5; 6; 7; 8; 9; 0; 1; 2 ],
-         deck 10
-         |> cut 3
-         |> Seq.toList)
-    Assert.Equal<List<_>>
-        ([ 6; 7; 8; 9; 0; 1; 2; 3; 4; 5 ],
-         deck 10
-         |> cut -4
-         |> Seq.toList)
+let ``Day22 cut works`` () =
+    Assert.Equal<List<_>>([ 3; 4; 5; 6; 7; 8; 9; 0; 1; 2 ], deck 10 |> cut 3 |> Seq.toList)
+    Assert.Equal<List<_>>([ 6; 7; 8; 9; 0; 1; 2; 3; 4; 5 ], deck 10 |> cut -4 |> Seq.toList)
 
 [<Fact>]
-let ``Day22 dealWithIncrement works``() =
-    Assert.Equal<List<_>>
-        ([ 0; 7; 4; 1; 8; 5; 2; 9; 6; 3 ],
-         deck 10
-         |> dealWithIncrement 3
-         |> Seq.toList)
+let ``Day22 dealWithIncrement works`` () =
+    Assert.Equal<List<_>>([ 0; 7; 4; 1; 8; 5; 2; 9; 6; 3 ], deck 10 |> dealWithIncrement 3 |> Seq.toList)
 
 [<Theory>]
 [<InlineData("""
@@ -67,11 +51,7 @@ let ``Day22 dealWithIncrement works``() =
 """)>]
 let ``Day22 shuffle works`` input =
     let data lines =
-        let all =
-            lines
-            |> String.trim
-            |> String.split '\n'
-            |> Array.map String.trim
+        let all = lines |> String.trim |> String.split '\n' |> Array.map String.trim
 
         let expected =
             all
@@ -82,19 +62,14 @@ let ``Day22 shuffle works`` input =
             |> Array.toList
 
         let result =
-            all
-            |> Array.take ((all |> Array.length) - 1)
-            |> shuffle 10
-            |> Seq.toList
+            all |> Array.take ((all |> Array.length) - 1) |> shuffle 10 |> Seq.toList
 
         expected, result
 
-    input
-    |> data
-    |> Assert.Equal<List<_>>
+    input |> data |> Assert.Equal<List<_>>
 
 [<Fact>]
-let ``Day22 Stars``() =
-    Assert.Equal("3939", job1())
+let ``Day22 Stars`` () =
+    Assert.Equal("3939", job1 ())
     // Assert.Equal("", job2())
     ()

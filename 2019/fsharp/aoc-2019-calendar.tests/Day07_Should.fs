@@ -8,7 +8,8 @@ open Day07
 [<InlineData(54321, "3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0")>]
 [<InlineData(65210,
              "3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0")>]
-let ``Day07 maxThrusterSignal works`` expected source = Assert.Equal(expected, maxThrusterSignal source)
+let ``Day07 maxThrusterSignal works`` expected source =
+    Assert.Equal(expected, maxThrusterSignal source)
 
 [<Theory>]
 [<InlineData(139629729, "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5")>]
@@ -18,7 +19,7 @@ let ``Day07 maxThrusterSignalWithFeedback works`` expected source =
     Assert.Equal(expected, maxThrusterSignalWithFeedback source)
 
 [<Fact>]
-let ``Day07 Stars``() =
-    Assert.Equal("11828", job1())
-    Assert.Equal("1714298", job2())
+let ``Day07 Stars`` () =
+    Assert.Equal("11828", job1 ())
+    Assert.Equal("1714298", job2 ())
     ()

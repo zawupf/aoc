@@ -42,7 +42,7 @@ let exec source input =
     context.output.Dequeue()
 
 [<Fact>]
-let ``Computer Day05 equals works``() =
+let ``Computer Day05 equals works`` () =
     Assert.Equal(1L, exec "3,9,8,9,10,9,4,9,99,-1,8" 8L)
     Assert.Equal(0L, exec "3,9,8,9,10,9,4,9,99,-1,8" 9L)
 
@@ -50,7 +50,7 @@ let ``Computer Day05 equals works``() =
     Assert.Equal(0L, exec "3,3,1108,-1,8,3,4,3,99" 9L)
 
 [<Fact>]
-let ``Computer Day05 lessThan works``() =
+let ``Computer Day05 lessThan works`` () =
     Assert.Equal(0L, exec "3,9,7,9,10,9,4,9,99,-1,8" 8L)
     Assert.Equal(1L, exec "3,9,7,9,10,9,4,9,99,-1,8" 7L)
 
@@ -58,7 +58,7 @@ let ``Computer Day05 lessThan works``() =
     Assert.Equal(1L, exec "3,3,1107,-1,8,3,4,3,99" 7L)
 
 [<Fact>]
-let ``Computer Day05 jump works``() =
+let ``Computer Day05 jump works`` () =
     Assert.Equal(0L, exec "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9" 0L)
     Assert.Equal(1L, exec "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9" -1L)
 
@@ -66,9 +66,10 @@ let ``Computer Day05 jump works``() =
     Assert.Equal(1L, exec "3,3,1105,-1,9,1101,0,0,12,4,12,99,1" -1L)
 
 [<Fact>]
-let ``Computer Day05 complex code works``() =
+let ``Computer Day05 complex code works`` () =
     let code =
         "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
+
     Assert.Equal(999L, exec code 7L)
     Assert.Equal(1000L, exec code 8L)
     Assert.Equal(1001L, exec code 9L)
@@ -80,7 +81,7 @@ let exec2 source =
     String.join "," result
 
 [<Fact>]
-let ``Computer Day09 latest features work``() =
+let ``Computer Day09 latest features work`` () =
     let code = "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99"
     Assert.Equal(code, exec2 code)
     Assert.Equal(16, (exec2 "1102,34915192,34915192,7,4,7,99,0").Length)

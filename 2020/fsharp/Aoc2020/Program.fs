@@ -2,10 +2,12 @@ open System
 
 let run day fn1 fn2 =
     printfn "\nDay %d" day
+
     try
         printfn "Result 1: %s" (fn1 ())
         printfn "Result 2: %s" (fn2 ())
-    with :? NotImplementedException -> ()
+    with :? NotImplementedException ->
+        ()
 
 [<EntryPoint>]
 let main argv =

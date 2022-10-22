@@ -80,9 +80,10 @@ module Robot =
             | Down -> x, y + 1
             | Left -> x - 1, y
             | Right -> x + 1, y
+
         { state with
-              position = position
-              face = face }
+            position = position
+            face = face }
 
     let work = paint >> move
 
@@ -90,7 +91,10 @@ module Robot =
         state.grid
         |> Map.tryFind state.position
         |> Option.defaultWith (fun () ->
-            if state.grid |> Map.isEmpty then state.startColor else Black)
+            if state.grid |> Map.isEmpty then
+                state.startColor
+            else
+                Black)
 
     let boot startColor source =
         { position = (0, 0)
@@ -100,29 +104,23 @@ module Robot =
           brain = compile source }
 
     let rec walk state =
-        state.brain.input.Enqueue
-            (state
-             |> color
-             |> Color.toLong)
+        state.brain.input.Enqueue(state |> color |> Color.toLong)
 
         match runSilent state.brain with
         | Output _ -> failwith "Output event not possible in silent mode"
         | Halted -> state |> work
-        | Paused ->
-            state
-            |> work
-            |> walk
+        | Paused -> state |> work |> walk
 
 open Robot
 
-let job1() =
+let job1 () =
     readInputText "11"
     |> boot Black
     |> walk
     |> (fun state -> state.grid |> Map.count)
     |> string
 
-let job2() =
+let job2 () =
     readInputText "11"
     |> boot White
     |> walk

@@ -14,8 +14,7 @@ let countIncreasedSeaDepths = smartCompareCount 1
 let countIncreasedSeaDepthWindows = smartCompareCount 3
 
 
-let input =
-    readInputLines "01" |> List.ofSeq |> List.map int
+let input = readInputLines "01" |> List.ofSeq |> List.map int
 
 let job1 () =
     input |> countIncreasedSeaDepths |> string
