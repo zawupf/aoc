@@ -2,7 +2,11 @@
 
 let tryJob job =
     try
-        job () |> Some
+        let stopWatch = Diagnostics.Stopwatch.StartNew()
+        let value = job ()
+        stopWatch.Stop()
+        let time = stopWatch.Elapsed.TotalMilliseconds
+        Some(value, time)
     with :? NotImplementedException ->
         None
 
@@ -15,15 +19,15 @@ let run day job1 job2 =
     | _ -> ()
 
     match result1 with
-    | Some value -> printfn "Result 1: %s" value
+    | Some (value, time) -> printfn "Result 1: %s (%.3fms)" value time
     | _ -> ()
 
     match result2 with
-    | Some value -> printfn "Result 2: %s" value
+    | Some (value, time) -> printfn "Result 2: %s (%.3fms)" value time
     | _ -> ()
 
 [<EntryPoint>]
-let main argv =
+let main _argv =
     run 1 Day01.job1 Day01.job2
     run 2 Day02.job1 Day02.job2
     run 3 Day03.job1 Day03.job2
