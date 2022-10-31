@@ -15,7 +15,8 @@ let run day job1 job2 =
     let result2 = tryJob job2
 
     match result1, result2 with
-    | Some _, Some _ -> printfn "\nDay %d" day
+    | Some _, _
+    | _, Some _ -> printfn "\nDay %d" day
     | _ -> ()
 
     match result1 with
