@@ -20,11 +20,11 @@ let run day job1 job2 =
     | _ -> ()
 
     match result1 with
-    | Some (value, time) -> printfn "Result 1: %s (%.3fms)" value time
+    | Some(value, time) -> printfn "Result 1: %s (%.3fms)" value time
     | _ -> ()
 
     match result2 with
-    | Some (value, time) -> printfn "Result 2: %s (%.3fms)" value time
+    | Some(value, time) -> printfn "Result 2: %s (%.3fms)" value time
     | _ -> ()
 
 let runDay =

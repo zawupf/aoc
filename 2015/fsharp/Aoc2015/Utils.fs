@@ -11,7 +11,8 @@ let (|Regex|_|) pattern input =
         None
 
 module String =
-    let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
+    let join separator (chunks: Collections.seq<_>) =
+        System.String.Join(separator, chunks)
 
     let trim (string: string) = string.Trim()
 

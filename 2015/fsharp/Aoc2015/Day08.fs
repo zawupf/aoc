@@ -33,7 +33,8 @@ let decodeOverhead literal =
     (literal |> String.length) - (literal |> decodeCharCount)
 
 let encodeCharCount (string: string) =
-    string |> Seq.fold (fun len c -> len + if c = '"' || c = '\\' then 2 else 1) 2
+    string
+    |> Seq.fold (fun len c -> len + if c = '"' || c = '\\' then 2 else 1) 2
 
 let encodeOverhead literal =
     (literal |> encodeCharCount) - (literal |> String.length)

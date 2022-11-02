@@ -31,7 +31,9 @@ let rec findRoutes (route, distance) roads =
                 yield!
                     findRoutes
                         (next :: route, distance + d)
-                        (roads |> List.filter (fun (a, b, _) -> a <> current && b <> current))
+                        (roads
+                         |> List.filter (fun (a, b, _) ->
+                             a <> current && b <> current))
     }
 
 
@@ -42,7 +44,8 @@ let routes roads =
         for start in cities do
             yield!
                 findRoutes ([ start ], 0) roads
-                |> Seq.filter (fun (route, _) -> route |> Seq.length = cities.Length)
+                |> Seq.filter (fun (route, _) ->
+                    route |> Seq.length = cities.Length)
     }
 
 let input = readInputLines "09"

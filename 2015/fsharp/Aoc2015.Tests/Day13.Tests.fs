@@ -24,7 +24,11 @@ David would gain 41 happiness units by sitting next to Carol.
 [<Fact>]
 let ``Day13 total happiness works`` () =
     let map = sample |> String.trim |> String.split '\n' |> parse
-    Assert.Equal(330, [| "David"; "Alice"; "Bob"; "Carol" |] |> totalHappiness map)
+
+    Assert.Equal(
+        330,
+        [| "David"; "Alice"; "Bob"; "Carol" |] |> totalHappiness map
+    )
 
 [<Fact>]
 let ``Day13 max total happiness works`` () =

@@ -12,7 +12,11 @@ let lookAndSay (s: string) =
 
     let say (sb: StringBuilder) (n: int, c: char) = sb.Append(n).Append(c)
 
-    s |> Seq.fold look [] |> List.rev |> List.fold say (StringBuilder()) |> string
+    s
+    |> Seq.fold look []
+    |> List.rev
+    |> List.fold say (StringBuilder())
+    |> string
 
 let play init =
     seq {

@@ -4,9 +4,11 @@ open Utils
 
 let parse input =
     let parseLine line =
+        let pattern =
+            @"^(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+)\.$"
+
         match line with
-        | Regex (@"^(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+)\.$")
-                [ person1; sympathy; happiness; person2 ] ->
+        | Regex pattern [ person1; sympathy; happiness; person2 ] ->
             let h =
                 match sympathy with
                 | "gain" -> happiness |> int
@@ -52,7 +54,10 @@ let maxTotalHappiness map =
 let insertMe map =
     map
     |> persons
-    |> Seq.fold (fun map person -> map |> Map.add ("Me", person) 0 |> Map.add (person, "Me") 0) map
+    |> Seq.fold
+        (fun map person ->
+            map |> Map.add ("Me", person) 0 |> Map.add (person, "Me") 0)
+        map
 
 let input = readInputLines "13"
 

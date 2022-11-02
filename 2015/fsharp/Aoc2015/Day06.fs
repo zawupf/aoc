@@ -14,9 +14,14 @@ type Action =
     | Toggle of Range
 
 let parseAction input =
-    let rx = Regex(@"^(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)$")
+    let rx =
+        Regex(@"^(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)$")
 
-    match rx.Match(input).Groups |> Seq.map (fun group -> group.Value) |> Seq.toList with
+    match
+        rx.Match(input).Groups
+        |> Seq.map (fun group -> group.Value)
+        |> Seq.toList
+    with
     | [ _; action; a; b; c; d ] ->
         let range = (int a, int b), (int c, int d)
 
@@ -47,17 +52,17 @@ let handleAction rules (grid: int[]) action =
 
 let rules1 (grid: int[]) action =
     match action with
-    | TurnOn (range) -> range, (fun _i -> 1)
-    | TurnOff (range) -> range, (fun _i -> 0)
-    | Toggle (range) -> range, (fun i -> 1 - grid.[i])
+    | TurnOn(range) -> range, (fun _i -> 1)
+    | TurnOff(range) -> range, (fun _i -> 0)
+    | Toggle(range) -> range, (fun i -> 1 - grid.[i])
 
 let handleAction1 = handleAction rules1
 
 let rules2 (grid: int[]) action =
     match action with
-    | TurnOn (range) -> range, (fun i -> grid.[i] + 1)
-    | TurnOff (range) -> range, (fun i -> max 0 (grid.[i] - 1))
-    | Toggle (range) -> range, (fun i -> grid.[i] + 2)
+    | TurnOn(range) -> range, (fun i -> grid.[i] + 1)
+    | TurnOff(range) -> range, (fun i -> max 0 (grid.[i] - 1))
+    | Toggle(range) -> range, (fun i -> grid.[i] + 2)
 
 let handleAction2 = handleAction rules2
 

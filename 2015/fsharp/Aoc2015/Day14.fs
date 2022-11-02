@@ -43,9 +43,11 @@ module Reindeer =
         |> snd
 
     let parse input =
+        let pattern =
+            @"^(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.$"
+
         match input with
-        | Regex @"^(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.$"
-                [ name; speed; flyTime; restTime ] ->
+        | Regex pattern [ name; speed; flyTime; restTime ] ->
             { Name = name
               Speed = speed |> int
               FlyTime = flyTime |> int

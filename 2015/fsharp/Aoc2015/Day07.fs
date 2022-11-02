@@ -30,11 +30,14 @@ module Circuit =
 
         let wireId, input =
             match wire with
-            | Regex @"^(\d+|\w+) -> (\w+)$" [ signal; id ] -> id, signal |> toInput |> SIGNAL
+            | Regex @"^(\d+|\w+) -> (\w+)$" [ signal; id ] ->
+                id, signal |> toInput |> SIGNAL
             | Regex @"^(\d+|\w+) AND (\d+|\w+) -> (\w+)$" [ in1; in2; id ] ->
                 id, (in1 |> toInput, in2 |> toInput) |> AND
-            | Regex @"^(\d+|\w+) OR (\d+|\w+) -> (\w+)$" [ in1; in2; id ] -> id, (in1 |> toInput, in2 |> toInput) |> OR
-            | Regex @"NOT (\d+|\w+) -> (\w+)$" [ input; id ] -> id, input |> toInput |> NOT
+            | Regex @"^(\d+|\w+) OR (\d+|\w+) -> (\w+)$" [ in1; in2; id ] ->
+                id, (in1 |> toInput, in2 |> toInput) |> OR
+            | Regex @"NOT (\d+|\w+) -> (\w+)$" [ input; id ] ->
+                id, input |> toInput |> NOT
             | Regex @"^(\d+|\w+) LSHIFT (\d+) -> (\w+)$" [ input; shift; id ] ->
                 id, (input |> toInput, shift |> int) |> LSHIFT
             | Regex @"^(\d+|\w+) RSHIFT (\d+) -> (\w+)$" [ input; shift; id ] ->
@@ -52,7 +55,10 @@ module Circuit =
 
                 match signal with
                 | InSignal signal -> signal, circuit
-                | InWireId wireId -> failwithf "Could not fully resolve signal of wire '%s'" wireId
+                | InWireId wireId ->
+                    failwithf
+                        "Could not fully resolve signal of wire '%s'"
+                        wireId
 
         match circuit |> Map.tryFind id with
         | None -> failwithf "Unknown wire: '%s'" id
@@ -64,28 +70,38 @@ module Circuit =
                 | InWireId id1 ->
                     let signal, circuit = resolve id1 circuit
                     signal, circuit |> Map.add id (signal |> SIGNAL)
-            | AND (in1, in2) ->
+            | AND(in1, in2) ->
                 let signal1, circuit = resolveSignal in1 circuit
                 let signal2, circuit = resolveSignal in2 circuit
                 let signal = signal1 &&& signal2
-                signal |> InSignal, circuit |> Map.add id (signal |> InSignal |> SIGNAL)
-            | OR (in1, in2) ->
+
+                signal |> InSignal,
+                circuit |> Map.add id (signal |> InSignal |> SIGNAL)
+            | OR(in1, in2) ->
                 let signal1, circuit = resolveSignal in1 circuit
                 let signal2, circuit = resolveSignal in2 circuit
                 let signal = signal1 ||| signal2
-                signal |> InSignal, circuit |> Map.add id (signal |> InSignal |> SIGNAL)
+
+                signal |> InSignal,
+                circuit |> Map.add id (signal |> InSignal |> SIGNAL)
             | NOT in1 ->
                 let signal, circuit = resolveSignal in1 circuit
                 let signal = ~~~signal
-                signal |> InSignal, circuit |> Map.add id (signal |> InSignal |> SIGNAL)
-            | LSHIFT (in1, n) ->
+
+                signal |> InSignal,
+                circuit |> Map.add id (signal |> InSignal |> SIGNAL)
+            | LSHIFT(in1, n) ->
                 let signal, circuit = resolveSignal in1 circuit
                 let signal = signal <<< n
-                signal |> InSignal, circuit |> Map.add id (signal |> InSignal |> SIGNAL)
-            | RSHIFT (in1, n) ->
+
+                signal |> InSignal,
+                circuit |> Map.add id (signal |> InSignal |> SIGNAL)
+            | RSHIFT(in1, n) ->
                 let signal, circuit = resolveSignal in1 circuit
                 let signal = signal >>> n
-                signal |> InSignal, circuit |> Map.add id (signal |> InSignal |> SIGNAL)
+
+                signal |> InSignal,
+                circuit |> Map.add id (signal |> InSignal |> SIGNAL)
 
     let run circuit =
         circuit
@@ -95,7 +111,8 @@ module Circuit =
     let get id circuit =
         match resolve id circuit |> fst with
         | InSignal signal -> signal
-        | InWireId wireId -> failwithf "Could not fully resolve signal of wire '%s'" wireId
+        | InWireId wireId ->
+            failwithf "Could not fully resolve signal of wire '%s'" wireId
 
 let input = readInputLines "07"
 
