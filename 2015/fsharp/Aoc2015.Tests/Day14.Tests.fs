@@ -34,7 +34,7 @@ let ``Day14 maxScoreAfter works`` () =
     Assert.Equal(
         689,
         [ comet; dancer ]
-        |> Seq.map Reindeer.parse
+        |> List.map Reindeer.parse
         |> Reindeer.maxScoreAfter 1000
     )
 

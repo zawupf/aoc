@@ -19,27 +19,27 @@ module Reindeer =
         * (fulltimeCount * reindeer.FlyTime
            + (min remainingTime reindeer.FlyTime))
 
-    let maxScoreAfter seconds (reindeers: Reindeer seq) =
-        let race = reindeers |> Seq.map (fun reindeer -> reindeer, 0)
+    let maxScoreAfter seconds (reindeers: Reindeer list) =
+        let race = reindeers |> List.map (fun reindeer -> reindeer, 0)
 
-        { 1..seconds }
-        |> Seq.fold
+        [ 1..seconds ]
+        |> List.fold
             (fun race seconds ->
                 let distances =
                     race
-                    |> Seq.map (fun (reindeer, score) ->
+                    |> List.map (fun (reindeer, score) ->
                         (reindeer |> distanceAfter seconds), (reindeer, score))
 
-                let maxDistance = distances |> Seq.maxBy fst |> fst
+                let maxDistance = distances |> List.maxBy fst |> fst
 
                 distances
-                |> Seq.map (fun (distance, (reindeer, score)) ->
+                |> List.map (fun (distance, (reindeer, score)) ->
                     if distance = maxDistance then
                         reindeer, score + 1
                     else
                         reindeer, score))
             race
-        |> Seq.maxBy snd
+        |> List.maxBy snd
         |> snd
 
     let parse input =
@@ -52,13 +52,10 @@ module Reindeer =
               RestTime = restTime |> int }
         | _ -> failwithf "Invalid input: %s" input
 
-let input = readInputLines "14"
+let input = readInputLines "14" |> Seq.toList |> List.map Reindeer.parse
 
 let job1 () =
-    input
-    |> Seq.map (Reindeer.parse >> Reindeer.distanceAfter 2503)
-    |> Seq.max
-    |> string
+    input |> List.map (Reindeer.distanceAfter 2503) |> List.max |> string
 
 let job2 () =
-    input |> Seq.map Reindeer.parse |> Reindeer.maxScoreAfter 2503 |> string
+    input |> Reindeer.maxScoreAfter 2503 |> string
