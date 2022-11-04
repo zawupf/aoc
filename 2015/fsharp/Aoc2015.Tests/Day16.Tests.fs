@@ -7,7 +7,7 @@ open Day16
 [<Fact>]
 let ``Day16 Stars`` () =
     try
-        Assert.Equal("", job1 ())
-        Assert.Equal("", job2 ())
+        Assert.Equal("103", job1 ())
+        Assert.Equal("405", job2 ())
     with :? System.NotImplementedException ->
         ()
