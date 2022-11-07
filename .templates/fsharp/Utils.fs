@@ -11,7 +11,8 @@ let (|Regex|_|) pattern input =
         None
 
 module String =
-    let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
+    let join separator (chunks: Collections.seq<_>) =
+        System.String.Join(separator, chunks)
 
     let trim (string: string) = string.Trim()
 
@@ -95,6 +96,14 @@ module Math =
 
     let inline leastCommonMultiple a b = abs a / GCD a b * abs b
     let inline LCM a b = leastCommonMultiple a b
+
+    let factorise n =
+        let rec loop n x factors =
+            if x = n then x :: factors
+            elif n % x = 0 then loop (n / x) x (x :: factors)
+            else loop n (x + 1) factors
+
+        loop n 2 []
 
 module List =
     let inline private lcm a b = Math.LCM a b
