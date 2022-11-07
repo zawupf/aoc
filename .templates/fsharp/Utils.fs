@@ -105,6 +105,25 @@ module Math =
 
         loop n 2 []
 
+    let divisors n =
+        let m = n |> double |> sqrt |> int
+
+        let realDivisors =
+            { 2..m }
+            |> Seq.fold
+                (fun divisors d ->
+                    match n % d with
+                    | 0 ->
+                        match n / d with
+                        | p when p = d -> d :: divisors
+                        | p -> d :: p :: divisors
+                    | _ -> divisors)
+                []
+
+        match n with
+        | 1 -> 1 :: realDivisors
+        | _ -> 1 :: n :: realDivisors
+
 module List =
     let inline private lcm a b = Math.LCM a b
 
