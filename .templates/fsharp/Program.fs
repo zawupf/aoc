@@ -20,11 +20,11 @@ let run day job1 job2 =
     | _ -> ()
 
     match result1 with
-    | Some (value, time) -> printfn "Result 1: %s (%.3fms)" value time
+    | Some(value, time) -> printfn "Result 1: %s (%.3fms)" value time
     | _ -> ()
 
     match result2 with
-    | Some (value, time) -> printfn "Result 2: %s (%.3fms)" value time
+    | Some(value, time) -> printfn "Result 2: %s (%.3fms)" value time
     | _ -> ()
 
 let runDay =
@@ -50,9 +50,9 @@ let runDay =
        (fun () -> run 20 Day20.job1 Day20.job2)
        (fun () -> run 21 Day21.job1 Day21.job2)
        (fun () -> run 22 Day22.job1 Day22.job2)
-       (fun () -> run 23 Day22.job1 Day23.job2)
-       (fun () -> run 24 Day22.job1 Day24.job2)
-       (fun () -> run 25 Day22.job1 Day25.job2) |]
+       (fun () -> run 23 Day23.job1 Day23.job2)
+       (fun () -> run 24 Day24.job1 Day24.job2)
+       (fun () -> run 25 Day25.job1 Day25.job2) |]
 
 module Bench =
     open BenchmarkDotNet.Attributes
