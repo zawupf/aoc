@@ -389,9 +389,9 @@ let main argv =
         run 20 Day20.job1 Day20.job2
         run 21 Day21.job1 Day21.job2
         run 22 Day22.job1 Day22.job2
-        run 23 Day22.job1 Day23.job2
-        run 24 Day22.job1 Day24.job2
-        run 25 Day22.job1 Day25.job2
+        run 23 Day23.job1 Day23.job2
+        run 24 Day24.job1 Day24.job2
+        run 25 Day25.job1 Day25.job2
     | [| "-b"; day; part |] -> Bench.bench day part
     | _ -> argv |> Seq.iter (fun arg -> runDay.[(arg |> int) - 1] ())
 
