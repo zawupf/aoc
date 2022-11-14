@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Day01.Tests.fs" />
+    <Compile Include="Day02.Tests.fs" />
+    <Compile Include="Day03.Tests.fs" />
+    <Compile Include="Day04.Tests.fs" />
+    <Compile Include="Day05.Tests.fs" />
+    <Compile Include="Day06.Tests.fs" />
+    <Compile Include="Day07.Tests.fs" />
+    <Compile Include="Day08.Tests.fs" />
+    <Compile Include="Day09.Tests.fs" />
+    <Compile Include="Day10.Tests.fs" />
+    <Compile Include="Day11.Tests.fs" />
+    <Compile Include="Day12.Tests.fs" />
+    <Compile Include="Day13.Tests.fs" />
+    <Compile Include="Day14.Tests.fs" />
+    <Compile Include="Day15.Tests.fs" />
+    <Compile Include="Day16.Tests.fs" />
+    <Compile Include="Day17.Tests.fs" />
+    <Compile Include="Day18.Tests.fs" />
+    <Compile Include="Day19.Tests.fs" />
+    <Compile Include="Day20.Tests.fs" />
+    <Compile Include="Day21.Tests.fs" />
+    <Compile Include="Day22.Tests.fs" />
+    <Compile Include="Day23.Tests.fs" />
+    <Compile Include="Day24.Tests.fs" />
+    <Compile Include="Day25.Tests.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aoc2016\Aoc2016.fsproj" />
+  </ItemGroup>
+
+</Project>
