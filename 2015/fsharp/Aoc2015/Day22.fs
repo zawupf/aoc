@@ -276,7 +276,7 @@ let play difficulty game =
 let parseBoss (lines: string[]) =
     let parseInt line =
         match line with
-        | Regex @" (\d+)$" [ n ] -> n |> int
+        | Regex @" (\d+)$" [ Int n ] -> n
         | _ -> failwith "Invalid input"
 
     { Name = "Boss"

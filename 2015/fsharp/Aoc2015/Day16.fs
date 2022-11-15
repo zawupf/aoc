@@ -23,8 +23,8 @@ let parseSue =
         |> Array.fold
             (fun map compound ->
                 match compound with
-                | Regex @"^(\w+): (\d+)$" [ compound; count ] ->
-                    map |> Map.add compound (int count)
+                | Regex @"^(\w+): (\d+)$" [ compound; Int count ] ->
+                    map |> Map.add compound count
                 | _ -> failwith $"Invalid compound: %s{compound}")
             Map.empty
     | sue -> failwith $"Invalid sue: %s{sue}"

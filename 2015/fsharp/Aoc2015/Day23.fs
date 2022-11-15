@@ -26,11 +26,11 @@ module Instruction =
         | Regex @"^hlf ([ab])$" [ r ] -> Half(reg r)
         | Regex @"^tpl ([ab])$" [ r ] -> Triple(reg r)
         | Regex @"^inc ([ab])$" [ r ] -> Increment(reg r)
-        | Regex @"^jmp ([+\-]\d+)$" [ offset ] -> Jump(offset |> int)
-        | Regex @"^jie ([ab]), ([+\-]\d+)$" [ r; offset ] ->
-            JumpIfEven(reg r, offset |> int)
-        | Regex @"^jio ([ab]), ([+\-]\d+)$" [ r; offset ] ->
-            JumpIfOne(reg r, offset |> int)
+        | Regex @"^jmp ([+\-]\d+)$" [ Int offset ] -> Jump(offset)
+        | Regex @"^jie ([ab]), ([+\-]\d+)$" [ r; Int offset ] ->
+            JumpIfEven(reg r, offset)
+        | Regex @"^jio ([ab]), ([+\-]\d+)$" [ r; Int offset ] ->
+            JumpIfOne(reg r, offset)
         | _ -> failwith "Invalid instruction"
 
 type Computer =

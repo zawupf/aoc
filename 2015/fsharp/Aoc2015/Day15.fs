@@ -16,13 +16,18 @@ module Ingredient =
             @"(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)"
 
         match input with
-        | Regex pattern [ name; capacity; durability; flavor; texture; calories ] ->
+        | Regex pattern [ name
+                          Int capacity
+                          Int durability
+                          Int flavor
+                          Int texture
+                          Int calories ] ->
             { Name = name
-              Capacity = capacity |> int
-              Durability = durability |> int
-              Flavor = flavor |> int
-              Texture = texture |> int
-              Calories = calories |> int }
+              Capacity = capacity
+              Durability = durability
+              Flavor = flavor
+              Texture = texture
+              Calories = calories }
         | _ -> failwith $"Invalid input: %s{input}"
 
     let properties (amount, ingredient) =

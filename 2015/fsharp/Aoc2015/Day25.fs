@@ -17,7 +17,7 @@ let codeAt row col =
 
 let parse input =
     match input with
-    | Regex @"row (\d+), column (\d+)" [ row; col ] -> int row, int col
+    | Regex @"row (\d+), column (\d+)" [ Int row; Int col ] -> row, col
     | _ -> failwith "Invalid input"
 
 let input = readInputText "25" |> parse

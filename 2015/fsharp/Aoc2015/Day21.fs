@@ -56,16 +56,16 @@ module Shop =
                 match line with
                 | Regex @"^(Weapons|Armor|Rings):" [ category ] ->
                     category, shop
-                | Regex itemPattern [ name; cost; damage; armor ] ->
+                | Regex itemPattern [ name; Int cost; Int damage; Int armor ] ->
                     match category with
                     | "Weapons" ->
                         category,
                         { shop with
                             Weapons =
                                 { Name = name
-                                  Cost = cost |> int
-                                  Damage = damage |> int
-                                  Armor = armor |> int }
+                                  Cost = cost
+                                  Damage = damage
+                                  Armor = armor }
                                 :: shop.Weapons }
                     | "Armor" ->
                         category,
@@ -171,7 +171,7 @@ Defense +3   80     0       3"""
 let parseBoss (lines: string[]) =
     let parseInt line =
         match line with
-        | Regex @" (\d+)$" [ n ] -> n |> int
+        | Regex @" (\d+)$" [ Int n ] -> n
         | _ -> failwith "Invalid input"
 
     { Name = "Boss"

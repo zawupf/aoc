@@ -38,10 +38,10 @@ module Circuit =
                 id, (in1 |> toInput, in2 |> toInput) |> OR
             | Regex @"NOT (\d+|\w+) -> (\w+)$" [ input; id ] ->
                 id, input |> toInput |> NOT
-            | Regex @"^(\d+|\w+) LSHIFT (\d+) -> (\w+)$" [ input; shift; id ] ->
-                id, (input |> toInput, shift |> int) |> LSHIFT
-            | Regex @"^(\d+|\w+) RSHIFT (\d+) -> (\w+)$" [ input; shift; id ] ->
-                id, (input |> toInput, shift |> int) |> RSHIFT
+            | Regex @"^(\d+|\w+) LSHIFT (\d+) -> (\w+)$" [ input; Int shift; id ] ->
+                id, (input |> toInput, shift) |> LSHIFT
+            | Regex @"^(\d+|\w+) RSHIFT (\d+) -> (\w+)$" [ input; Int shift; id ] ->
+                id, (input |> toInput, shift) |> RSHIFT
             | _ -> failwithf "Invalid wire: %s" wire
 
         circuit |> Map.add wireId input

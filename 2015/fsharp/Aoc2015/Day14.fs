@@ -47,11 +47,11 @@ module Reindeer =
             @"^(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.$"
 
         match input with
-        | Regex pattern [ name; speed; flyTime; restTime ] ->
+        | Regex pattern [ name; Int speed; Int flyTime; Int restTime ] ->
             { Name = name
-              Speed = speed |> int
-              FlyTime = flyTime |> int
-              RestTime = restTime |> int }
+              Speed = speed
+              FlyTime = flyTime
+              RestTime = restTime }
         | _ -> failwithf "Invalid input: %s" input
 
 let input = readInputLines "14" |> Seq.toList |> List.map Reindeer.parse

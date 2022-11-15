@@ -39,17 +39,17 @@ let rotate turn (dx, dy) =
 
 let next step pos dir =
     match step with
-    | Regex @"^([RL])(\d+)$" [ turn; dist ] ->
+    | Regex @"^([RL])(\d+)$" [ turn; Int dist ] ->
         let dir' = rotate turn dir
-        let pos' = move (int dist) pos dir'
+        let pos' = move dist pos dir'
         pos', dir'
     | _ -> failwith "Invalid step"
 
 let next2 visited step pos dir =
     match step with
-    | Regex @"^([RL])(\d+)$" [ turn; dist ] ->
+    | Regex @"^([RL])(\d+)$" [ turn; Int dist ] ->
         let dir' = rotate turn dir
-        let pos', visited', done' = move2 visited (int dist) pos dir'
+        let pos', visited', done' = move2 visited dist pos dir'
         pos', dir', visited', done'
     | _ -> failwith "Invalid step"
 

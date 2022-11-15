@@ -1,14 +1,24 @@
 module Utils
 
-open System.Text.RegularExpressions
+[<AutoOpen>]
+module FancyPatterns =
+    open System.Text.RegularExpressions
 
-let (|Regex|_|) pattern input =
-    let m = Regex.Match(input, pattern)
+    let (|Regex|_|) pattern input =
+        let m = Regex.Match(input, pattern)
 
-    if m.Success then
-        Some(List.tail [ for g in m.Groups -> g.Value ])
-    else
-        None
+        if m.Success then
+            Some(List.tail [ for g in m.Groups -> g.Value ])
+        else
+            None
+
+    let (|Int|_|) (str: string) =
+        let mutable intvalue = 0
+
+        if System.Int32.TryParse(str, &intvalue) then
+            Some(intvalue)
+        else
+            None
 
 module String =
     let join separator (chunks: Collections.seq<_>) =

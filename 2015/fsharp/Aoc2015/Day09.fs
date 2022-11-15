@@ -9,8 +9,8 @@ let parseRoads input =
     |> Seq.fold
         (fun roads line ->
             match line with
-            | Regex @"^(\w+) to (\w+) = (\d+)$" [ city1; city2; distance ] ->
-                roads |> insert city1 city2 (distance |> int)
+            | Regex @"^(\w+) to (\w+) = (\d+)$" [ city1; city2; Int distance ] ->
+                roads |> insert city1 city2 distance
             | _ -> failwithf "Invalid input: %s" line)
         []
 

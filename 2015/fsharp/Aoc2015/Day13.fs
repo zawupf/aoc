@@ -8,11 +8,11 @@ let parse input =
             @"^(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+)\.$"
 
         match line with
-        | Regex pattern [ person1; sympathy; happiness; person2 ] ->
+        | Regex pattern [ person1; sympathy; Int happiness; person2 ] ->
             let h =
                 match sympathy with
-                | "gain" -> happiness |> int
-                | "lose" -> (happiness |> int) * -1
+                | "gain" -> happiness
+                | "lose" -> happiness * -1
                 | _ -> failwithf "Invalid input: %s" line
 
             (person1, person2), h
