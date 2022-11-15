@@ -184,3 +184,12 @@ let render toString map =
                 for x in fst bbox.X .. snd bbox.X do
                     yield map |> Map.tryFind (x, y) |> toString
         })
+
+module Md5 =
+    let ofString (string: string) =
+        use md5 = System.Security.Cryptography.MD5.Create()
+
+        string
+        |> System.Text.Encoding.ASCII.GetBytes
+        |> md5.ComputeHash
+        |> System.Convert.ToHexString
