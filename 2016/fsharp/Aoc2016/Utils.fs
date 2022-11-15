@@ -35,6 +35,8 @@ module String =
 
     let substring i (string: string) = string.Substring(i)
 
+    let startsWith (prefix: string) (string: string) = string.StartsWith prefix
+
     let parseInts sep line =
         line |> splitNoEmpty sep |> List.ofArray |> List.map int
 
