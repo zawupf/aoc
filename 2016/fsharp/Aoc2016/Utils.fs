@@ -33,6 +33,9 @@ module String =
 
     let toCharArray (string: string) = string.ToCharArray()
 
+    let ofChars chars =
+        System.String(chars |> Seq.toArray) |> string
+
     let substring i (string: string) = string.Substring(i)
 
     let startsWith (prefix: string) (string: string) = string.StartsWith prefix
