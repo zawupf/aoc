@@ -47,7 +47,7 @@ module Room =
         |> System.String
         |> string
 
-let input = readInputLines "04" |> Seq.map Room.parse |> Seq.toArray
+let input = readInputLines "04" |> Array.map Room.parse |> Seq.toArray
 
 let job1 () =
     input

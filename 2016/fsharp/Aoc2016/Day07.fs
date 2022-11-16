@@ -52,7 +52,7 @@ let isSslSupported ip =
     |> Set.isEmpty
     |> not
 
-let input = readInputLines "07" |> Seq.toArray
+let input = readInputLines "07"
 
 let job1 () =
     input |> Seq.filter isTlsSupported |> Seq.length |> string

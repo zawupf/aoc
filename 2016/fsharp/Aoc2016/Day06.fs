@@ -9,7 +9,7 @@ let corrected chooser lines =
     |> Array.map (fun chars -> chars |> Seq.countBy id |> chooser snd |> fst)
     |> String.ofChars
 
-let input = readInputLines "06" |> Seq.toArray
+let input = readInputLines "06"
 
 let job1 () = input |> corrected Seq.maxBy
 

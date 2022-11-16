@@ -73,7 +73,7 @@ let useCache getterFn =
             cache <- cache |> Map.add key value
             value
 
-let private _readLines filename = File.ReadLines(filename)
+let private _readLines filename = File.ReadLines(filename) |> Seq.toArray
 
 let readInputLines = useCache (_findInputFile >> _readLines)
 
