@@ -151,6 +151,35 @@ module List =
     let inline leastCommonMultiple list = list |> lcmm
     let inline LCM list = leastCommonMultiple list
 
+type PriorityList<'a> = PriorityList of 'a list * 'a list
+
+module PriorityList =
+    let empty = PriorityList(List.empty, List.empty)
+
+    let length (PriorityList(high, low)) = List.length high + List.length low
+
+    type Priority =
+        | High
+        | Low
+
+    let push prio item (PriorityList(high, low)) =
+        match prio with
+        | High -> PriorityList(item :: high, low)
+        | Low -> PriorityList(high, item :: low)
+
+    let pop list =
+        match list with
+        | PriorityList(item :: high, low) -> item, PriorityList(high, low)
+        | PriorityList([], item :: low) -> item, PriorityList([], low)
+        | PriorityList([], []) -> failwith "Empty list!"
+
+    let tryPop list =
+        match list with
+        | PriorityList(item :: high, low) -> Some item, PriorityList(high, low)
+        | PriorityList([], item :: low) ->
+            Some item, PriorityList(List.empty, low)
+        | PriorityList([], []) -> None, list
+
 type Queue<'a> = Queue of 'a list * 'a list
 
 module Queue =
