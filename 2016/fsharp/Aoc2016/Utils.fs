@@ -30,6 +30,9 @@ module String =
 
     let toCharArray (string: string) = string.ToCharArray()
 
+    let toByteArray (string: string) =
+        string |> System.Text.Encoding.ASCII.GetBytes
+
     let ofChars chars =
         System.String(chars |> Seq.toArray) |> string
 
@@ -290,6 +293,6 @@ module Md5 =
         use md5 = System.Security.Cryptography.MD5.Create()
 
         string
-        |> System.Text.Encoding.ASCII.GetBytes
+        |> String.toByteArray
         |> md5.ComputeHash
         |> System.Convert.ToHexString
