@@ -151,6 +151,77 @@ module List =
     let inline leastCommonMultiple list = list |> lcmm
     let inline LCM list = leastCommonMultiple list
 
+type Queue<'a> = Queue of 'a list * 'a list
+
+module Queue =
+    let empty = Queue([], [])
+
+    let length (Queue(fs, bs)) = fs.Length + bs.Length
+
+    let enqueue item queue =
+        match queue with
+        | Queue(fs, bs) -> Queue(item :: fs, bs)
+
+    let dequeue queue =
+        match queue with
+        | Queue([], []) -> failwith "Empty queue!"
+        | Queue(fs, b :: bs) -> b, Queue(fs, bs)
+        | Queue(fs, []) ->
+            let bs = List.rev fs
+            bs.Head, Queue([], bs.Tail)
+
+    let tryDequeue queue =
+        match queue with
+        | Queue([], []) -> None, queue
+        | Queue(fs, b :: bs) -> Some b, Queue(fs, bs)
+        | Queue(fs, []) ->
+            let bs = List.rev fs
+            Some bs.Head, Queue([], bs.Tail)
+
+type PriorityQueue<'a> = PriorityQueue of Queue<'a> * Queue<'a> * Queue<'a>
+
+module PriorityQueue =
+    let empty = PriorityQueue(Queue.empty, Queue.empty, Queue.empty)
+
+    let length (PriorityQueue(high, normal, low)) =
+        Queue.length high + Queue.length normal + Queue.length low
+
+    type Priority =
+        | High
+        | Normal
+        | Low
+
+    let enqueue prio item (PriorityQueue(high, normal, low)) =
+        match prio with
+        | High -> PriorityQueue(Queue.enqueue item high, normal, low)
+        | Normal -> PriorityQueue(high, Queue.enqueue item normal, low)
+        | Low -> PriorityQueue(high, normal, Queue.enqueue item low)
+
+    let dequeue (PriorityQueue(high, normal, low)) =
+        match Queue.tryDequeue high with
+        | Some item, high' -> item, PriorityQueue(high', normal, low)
+        | None, _ ->
+            match Queue.tryDequeue normal with
+            | Some item, normal' -> item, PriorityQueue(high, normal', low)
+            | None, _ ->
+                match Queue.tryDequeue low with
+                | Some item, low' -> item, PriorityQueue(high, normal, low')
+                | None, _ -> failwith "Empty queue!"
+
+    let tryDequeue queue =
+        let (PriorityQueue(high, normal, low)) = queue
+
+        match Queue.tryDequeue high with
+        | Some item, high' -> Some item, PriorityQueue(high', normal, low)
+        | None, _ ->
+            match Queue.tryDequeue normal with
+            | Some item, normal' -> Some item, PriorityQueue(high, normal', low)
+            | None, _ ->
+                match Queue.tryDequeue low with
+                | Some item, low' ->
+                    Some item, PriorityQueue(high, normal, low')
+                | None, _ -> None, queue
+
 type BBox = { X: int * int; Y: int * int }
 
 module BBox =
