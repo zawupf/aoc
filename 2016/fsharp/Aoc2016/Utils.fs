@@ -17,6 +17,11 @@ module FancyPatterns =
         | true, intvalue -> Some intvalue
         | _ -> None
 
+    let (|Even|Odd|) number =
+        match number % 2 with
+        | 0 -> Even
+        | _ -> Odd
+
 module String =
     let join separator (chunks: Collections.seq<_>) =
         System.String.Join(separator, chunks)
