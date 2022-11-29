@@ -17,6 +17,11 @@ module FancyPatterns =
         | true, intvalue -> Some intvalue
         | _ -> None
 
+    let (|UInt|_|) (str: string) =
+        match System.UInt32.TryParse(str) with
+        | true, intvalue -> Some intvalue
+        | _ -> None
+
     let (|Even|Odd|) number =
         match number % 2 with
         | 0 -> Even
