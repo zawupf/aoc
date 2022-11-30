@@ -22,7 +22,8 @@ let ``Day08 countUniqueOutputDigits works`` () =
 let ``Day08 decodeSum works`` () =
     Assert.Equal(
         5353,
-        decodeSum [ "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf" ]
+        decodeSum
+            [ "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf" ]
     )
 
     Assert.Equal(61229, input |> decodeSum)

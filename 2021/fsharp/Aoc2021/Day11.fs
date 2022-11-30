@@ -8,7 +8,8 @@ type Grid = int array array
 module Grid =
     let build (lines: string list) =
         lines
-        |> List.map (fun line -> line.ToCharArray() |> Array.map (fun c -> int c - int '0'))
+        |> List.map (fun line ->
+            line.ToCharArray() |> Array.map (fun c -> int c - int '0'))
         |> List.toArray
 
     let contains (_grid: Grid) (x, y) =
@@ -68,7 +69,10 @@ module Grid =
                                 let power = grid.[y].[x] + 1
                                 grid.[y].[x] <- power
 
-                                if power = 10 then (x, y) :: flashes else flashes)
+                                if power = 10 then
+                                    (x, y) :: flashes
+                                else
+                                    flashes)
                             List.empty
 
                     loop (flashes' @ adjacentFlashes) (count + 1)

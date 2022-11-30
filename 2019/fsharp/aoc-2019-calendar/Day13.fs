@@ -29,7 +29,9 @@ module Game =
         let empty = { tiles = Map.empty; score = 0L }
 
         let count tile screen =
-            screen.tiles |> Map.filter (fun _key value -> value = tile) |> Map.count
+            screen.tiles
+            |> Map.filter (fun _key value -> value = tile)
+            |> Map.count
 
         let find tile screen =
             screen.tiles |> Map.tryFindKey (fun _key value -> value = tile)
@@ -45,7 +47,9 @@ module Game =
     let private handleOutput screen =
         function
         | [| -1L; 0L; score |] -> { screen with score = score }
-        | [| x; y; id |] -> { screen with tiles = screen.tiles |> Map.add (x, y) (id |> int |> Tile.ofInt) }
+        | [| x; y; id |] ->
+            { screen with
+                tiles = screen.tiles |> Map.add (x, y) (id |> int |> Tile.ofInt) }
         | _ -> failwith "Invalid output data"
 
     let private render game =
@@ -71,7 +75,7 @@ module Game =
 
                 let joystick =
                     match paddlePos, ballPos with
-                    | Some (paddle, _), Some (ball, _) -> compare ball paddle
+                    | Some(paddle, _), Some(ball, _) -> compare ball paddle
                     | _ -> 0
 
                 game.computer.input.Enqueue(joystick |> int64)
@@ -88,7 +92,11 @@ module Game =
         game
 
 let job1 () =
-    readInputText "13" |> Game.boot |> Game.start |> Game.count Game.Block |> string
+    readInputText "13"
+    |> Game.boot
+    |> Game.start
+    |> Game.count Game.Block
+    |> string
 
 let job2 () =
     readInputText "13"

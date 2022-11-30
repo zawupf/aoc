@@ -40,7 +40,11 @@ let ``Day06 parse works`` () =
     Assert.Equal("E", planetOf "F" orbits)
 
     Assert.Equal<List<_>>([], orbits |> allPlanetsOf "COM")
-    Assert.Equal<List<_>>([ "COM"; "B"; "C"; "D"; "E"; "J"; "K" ], orbits |> allPlanetsOf "L")
+
+    Assert.Equal<List<_>>(
+        [ "COM"; "B"; "C"; "D"; "E"; "J"; "K" ],
+        orbits |> allPlanetsOf "L"
+    )
 
 [<Fact>]
 let ``Day06 checksum works`` () =

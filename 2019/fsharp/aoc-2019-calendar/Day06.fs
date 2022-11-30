@@ -31,7 +31,9 @@ let allPlanetsOf moon (map: OrbitMap) =
 
 let checksum orbits =
     orbits
-    |> Map.fold (fun sum moon _planet -> sum + List.length (allPlanetsOf moon orbits)) 0
+    |> Map.fold
+        (fun sum moon _planet -> sum + List.length (allPlanetsOf moon orbits))
+        0
 
 let minimalTransferCount orbits =
     let planets1 = allPlanetsOf "YOU" orbits

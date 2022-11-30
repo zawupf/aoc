@@ -36,16 +36,27 @@ let input =
 [<Fact>]
 let ``Day04 input data is correct`` () =
     Assert.Equal(19, input |> List.length)
-    Assert.Equal("7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1", input |> List.head)
+
+    Assert.Equal(
+        "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1",
+        input |> List.head
+    )
+
     Assert.Equal("2  0 12  3  7", input |> List.last)
 
 [<Fact>]
 let ``Day04 win game works`` () =
-    Assert.Equal(4512, input |> Game.ofLines |> Game.play |> Seq.head |> Board.score)
+    Assert.Equal(
+        4512,
+        input |> Game.ofLines |> Game.play |> Seq.head |> Board.score
+    )
 
 [<Fact>]
 let ``Day04 loose game works`` () =
-    Assert.Equal(1924, input |> Game.ofLines |> Game.play |> Seq.last |> Board.score)
+    Assert.Equal(
+        1924,
+        input |> Game.ofLines |> Game.play |> Seq.last |> Board.score
+    )
 
 [<Fact>]
 let ``Day04 Stars`` () =

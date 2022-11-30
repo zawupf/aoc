@@ -35,14 +35,17 @@ module Board =
         let isAllMarked cells =
             cells |> List.forall (fun cell -> cell.Marked)
 
-        let bingo = rows |> List.exists isAllMarked || colums |> List.exists isAllMarked
+        let bingo =
+            rows |> List.exists isAllMarked || colums |> List.exists isAllMarked
 
         let score =
             match bingo with
             | false -> None
             | true ->
                 let sumOfUnmarked =
-                    cells |> List.sumBy (fun cell -> if cell.Marked then 0 else cell.Number)
+                    cells
+                    |> List.sumBy (fun cell ->
+                        if cell.Marked then 0 else cell.Number)
 
                 n * sumOfUnmarked |> Some
 
@@ -53,7 +56,12 @@ type Game =
 
 module Game =
     let ofLines lines =
-        let numbers = lines |> List.head |> String.split ',' |> Array.toList |> List.map int
+        let numbers =
+            lines
+            |> List.head
+            |> String.split ','
+            |> Array.toList
+            |> List.map int
 
         let boards =
             lines
@@ -68,11 +76,13 @@ module Game =
             let n = game.Numbers |> List.head
             let boards = game.Boards |> Seq.map (Board.play n)
 
-            let winners = boards |> Seq.filter (fun board -> board.Score |> Option.isSome)
+            let winners =
+                boards |> Seq.filter (fun board -> board.Score |> Option.isSome)
 
             yield! winners
 
-            let loosers = boards |> Seq.filter (fun board -> board.Score |> Option.isNone)
+            let loosers =
+                boards |> Seq.filter (fun board -> board.Score |> Option.isNone)
 
             let numbers = game.Numbers |> List.tail
 

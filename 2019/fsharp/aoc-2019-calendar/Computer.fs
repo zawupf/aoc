@@ -45,7 +45,12 @@ let ensureMemory position context =
 
         let oldLength = context.memory.Length
         let newLength = guessNewLength (2 * oldLength)
-        context.memory <- Array.append context.memory (Array.zeroCreate (newLength - oldLength))
+
+        context.memory <-
+            Array.append
+                context.memory
+                (Array.zeroCreate (newLength - oldLength))
+
         ()
 
     if position >= context.memory.Length then
@@ -197,7 +202,7 @@ let rec run context =
 
     match event with
     | None -> run context
-    | Some (evt) ->
+    | Some(evt) ->
         match evt with
         | Halted -> evt
         | Paused -> evt

@@ -7,7 +7,8 @@ let findPositionWithMinFuel distanceToFuel positions =
 
     let fuel (position: int) =
         positionCount
-        |> List.sumBy (fun (pos, count) -> count * (System.Math.Abs(position - pos) |> distanceToFuel))
+        |> List.sumBy (fun (pos, count) ->
+            count * (System.Math.Abs(position - pos) |> distanceToFuel))
 
     let min = positionCount |> List.minBy fst |> fst
     let max = positionCount |> List.maxBy fst |> fst

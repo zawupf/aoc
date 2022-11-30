@@ -81,7 +81,10 @@ module LifeSupportRate =
 let report = "03" |> readInputLines |> Seq.toList
 
 let job1 () =
-    report |> PowerConsumtionRate.ofReport |> PowerConsumtionRate.result |> string
+    report
+    |> PowerConsumtionRate.ofReport
+    |> PowerConsumtionRate.result
+    |> string
 
 let job2 () =
     report |> LifeSupportRate.ofReport |> LifeSupportRate.result |> string

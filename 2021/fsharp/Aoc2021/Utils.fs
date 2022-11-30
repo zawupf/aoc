@@ -1,7 +1,8 @@
 module Utils
 
 module String =
-    let join separator (chunks: Collections.seq<_>) = System.String.Join(separator, chunks)
+    let join separator (chunks: Collections.seq<_>) =
+        System.String.Join(separator, chunks)
 
     let trim (string: string) = string.Trim()
 

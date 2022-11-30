@@ -4,7 +4,8 @@ open Xunit
 open Utils
 open Day01
 
-let seaDepths = "199 200 208 210 200 207 240 269 260 263" |> String.parseInts ' '
+let seaDepths =
+    "199 200 208 210 200 207 240 269 260 263" |> String.parseInts ' '
 
 [<Fact>]
 let ``Day01 count increased sea depths works`` () =

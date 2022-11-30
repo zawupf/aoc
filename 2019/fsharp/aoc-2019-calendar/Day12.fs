@@ -29,22 +29,22 @@ module Moon =
     let toString moon = sprintf "Moon %A" moon
 
     let private updateVelocity moons moon =
-        let { pos = Pos (x, y, z)
-              vel = Vel (vx, vy, vz) } =
+        let { pos = Pos(x, y, z)
+              vel = Vel(vx, vy, vz) } =
             moon
 
-        let (Vel (dx, dy, dz)) =
+        let (Vel(dx, dy, dz)) =
             moons
             |> Seq.fold
-                (fun (Vel (vx, vy, vz)) { pos = Pos (mx, my, mz) } ->
+                (fun (Vel(vx, vy, vz)) { pos = Pos(mx, my, mz) } ->
                     Vel(vx + compare mx x, vy + compare my y, vz + compare mz z))
                 (Vel(0, 0, 0))
 
         { moon with vel = Vel(vx + dx, vy + dy, vz + dz) }
 
     let private updatePosition moon =
-        let { pos = Pos (x, y, z)
-              vel = Vel (vx, vy, vz) } =
+        let { pos = Pos(x, y, z)
+              vel = Vel(vx, vy, vz) } =
             moon
 
         { moon with pos = Pos(x + vx, y + vy, z + vz) }
@@ -52,18 +52,22 @@ module Moon =
     let rec applyGravity moons =
         seq {
             yield moons
-            yield! moons |> List.map ((updateVelocity moons) >> updatePosition) |> applyGravity
+
+            yield!
+                moons
+                |> List.map ((updateVelocity moons) >> updatePosition)
+                |> applyGravity
         }
 
-    let potentialEnergy { pos = Pos (x, y, z) } = (abs x) + (abs y) + (abs z)
+    let potentialEnergy { pos = Pos(x, y, z) } = (abs x) + (abs y) + (abs z)
 
-    let kineticEnergy { vel = Vel (vx, vy, vz) } = (abs vx) + (abs vy) + (abs vz)
+    let kineticEnergy { vel = Vel(vx, vy, vz) } = (abs vx) + (abs vy) + (abs vz)
 
     let totalEnergy moon =
         potentialEnergy moon * kineticEnergy moon
 
     let only axis moon =
-        let { pos = Pos (x, y, z) } = moon
+        let { pos = Pos(x, y, z) } = moon
 
         { moon with
             pos =

@@ -47,7 +47,14 @@ let ``Day10 max visible works`` sample x y n =
 [<InlineData("10-sample5", 201, 10, 9)>]
 [<InlineData("10-sample5", 299, 11, 1)>]
 let ``Day10 vaporize works`` sample nth x y =
-    Assert.Equal((x, y), sample |> readInputLines |> parse |> vaporizeOrder |> List.item (nth - 1))
+    Assert.Equal(
+        (x, y),
+        sample
+        |> readInputLines
+        |> parse
+        |> vaporizeOrder
+        |> List.item (nth - 1)
+    )
 
 [<Fact>]
 let ``Day10 Stars`` () =
