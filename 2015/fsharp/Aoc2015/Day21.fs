@@ -107,7 +107,9 @@ type Player =
 module Player =
     let takeDamageFrom (enemy: Player) (player: Player) =
         let damage = max 1 (enemy.Damage - player.Armor)
-        { player with HitPoints = player.HitPoints - damage }
+
+        { player with
+            HitPoints = player.HitPoints - damage }
 
     let isWinningAgainst (enemy: Player) (player: Player) =
         let hitCount (attacker: Player) (defender: Player) =

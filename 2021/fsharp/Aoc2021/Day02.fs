@@ -30,7 +30,8 @@ let moveFirstTry submarine commands =
 
             match direction with
             | "forward" ->
-                { submarine with HorizontalPosition = horizontalPosition + value }
+                { submarine with
+                    HorizontalPosition = horizontalPosition + value }
             | "down" -> { submarine with Depth = depth + value }
             | "up" -> { submarine with Depth = depth - value }
             | _ -> failwith "Invalid command direction")

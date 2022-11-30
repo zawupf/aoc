@@ -94,10 +94,18 @@ module Computer =
 
     let add value reg computer =
         match reg with
-        | RA -> { computer with RA = computer.RA + value }
-        | RB -> { computer with RB = computer.RB + value }
-        | RC -> { computer with RC = computer.RC + value }
-        | RD -> { computer with RD = computer.RD + value }
+        | RA ->
+            { computer with
+                RA = computer.RA + value }
+        | RB ->
+            { computer with
+                RB = computer.RB + value }
+        | RC ->
+            { computer with
+                RC = computer.RC + value }
+        | RD ->
+            { computer with
+                RD = computer.RD + value }
 
     let value data computer =
         match data with
@@ -105,10 +113,12 @@ module Computer =
         | Reg r -> computer |> get r
 
     let incPC offset computer =
-        { computer with PC = computer.PC + offset }
+        { computer with
+            PC = computer.PC + offset }
 
     let load input computer =
-        { computer with Code = input |> Array.map Instruction.parse }
+        { computer with
+            Code = input |> Array.map Instruction.parse }
 
     let hasNext computer =
         let pc = int computer.PC

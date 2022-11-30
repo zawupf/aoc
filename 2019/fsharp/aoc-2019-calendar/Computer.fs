@@ -219,7 +219,10 @@ let rec runSilent context =
     | Output _ -> runSilent context
 
 let patch context noun verb =
-    let ctx = { context with memory = context.memory |> Array.map id }
+    let ctx =
+        { context with
+            memory = context.memory |> Array.map id }
+
     ctx.memory.[1] <- noun
     ctx.memory.[2] <- verb
     ctx

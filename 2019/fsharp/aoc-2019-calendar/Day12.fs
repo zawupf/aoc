@@ -40,14 +40,16 @@ module Moon =
                     Vel(vx + compare mx x, vy + compare my y, vz + compare mz z))
                 (Vel(0, 0, 0))
 
-        { moon with vel = Vel(vx + dx, vy + dy, vz + dz) }
+        { moon with
+            vel = Vel(vx + dx, vy + dy, vz + dz) }
 
     let private updatePosition moon =
         let { pos = Pos(x, y, z)
               vel = Vel(vx, vy, vz) } =
             moon
 
-        { moon with pos = Pos(x + vx, y + vy, z + vz) }
+        { moon with
+            pos = Pos(x + vx, y + vy, z + vz) }
 
     let rec applyGravity moons =
         seq {

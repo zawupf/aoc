@@ -27,7 +27,8 @@ let ``Day02 move part 2 works`` () =
         { HorizontalPosition = 15
           Depth = 60
           Aim = 0 },
-        { (commands |> moveSecondTry submarine) with Aim = 0 }
+        { (commands |> moveSecondTry submarine) with
+            Aim = 0 }
     )
 
 [<Fact>]

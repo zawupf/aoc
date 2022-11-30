@@ -67,7 +67,9 @@ module Types =
             | Hard ->
                 match player.Name with
                 | "Boss" -> player
-                | _ -> { player with HitPoints = player.HitPoints - 1 }
+                | _ ->
+                    { player with
+                        HitPoints = player.HitPoints - 1 }
 
         let handleEffects player =
             let remove effect player =
@@ -81,12 +83,14 @@ module Types =
                     match effect with
                     | Shield _ -> player
                     | Poison _ ->
-                        { player with HitPoints = max 0 (player.HitPoints - 3) }
+                        { player with
+                            HitPoints = max 0 (player.HitPoints - 3) }
                     | Recharge _ -> { player with Mana = player.Mana + 101 }
 
                 match (effect |> Effect.tick) with
                 | effect when effect |> Effect.duration > 0 ->
-                    { player' with Effects = effect :: player'.Effects }
+                    { player' with
+                        Effects = effect :: player'.Effects }
                 | _ -> remove effect player'
 
             player.Effects
@@ -138,13 +142,15 @@ module Types =
                         { player with
                             Mana = player.Mana - 53
                             TotalManaSpent = player.TotalManaSpent + 53 },
-                        { enemy with HitPoints = max 0 (enemy.HitPoints - 4) }
+                        { enemy with
+                            HitPoints = max 0 (enemy.HitPoints - 4) }
                     | Drain ->
                         { player with
                             Mana = player.Mana - 73
                             TotalManaSpent = player.TotalManaSpent + 73
                             HitPoints = player.HitPoints + 2 },
-                        { enemy with HitPoints = max 0 (enemy.HitPoints - 2) }
+                        { enemy with
+                            HitPoints = max 0 (enemy.HitPoints - 2) }
                     | Spell.Shield ->
                         { player with
                             Mana = player.Mana - 113
@@ -156,7 +162,8 @@ module Types =
                         { player with
                             Mana = player.Mana - 173
                             TotalManaSpent = player.TotalManaSpent + 173 },
-                        { enemy with Effects = Poison(6) :: enemy.Effects }
+                        { enemy with
+                            Effects = Poison(6) :: enemy.Effects }
                     | Spell.Recharge ->
                         { player with
                             Mana = player.Mana - 229
@@ -177,7 +184,8 @@ module Types =
                 let damage = max 1 (player.Damage - enemy.Armor)
 
                 player,
-                { enemy with HitPoints = max 0 (enemy.HitPoints - damage) }
+                { enemy with
+                    HitPoints = max 0 (enemy.HitPoints - damage) }
 
     type Game = { Players: Player * Player }
 
@@ -212,7 +220,8 @@ module Types =
                      game.Players |> snd |> Player.handleEffects) }
 
         let handleAction action game =
-            { game with Players = Player.handleAction action game.Players }
+            { game with
+                Players = Player.handleAction action game.Players }
 
         let handleDifficulty difficulty game =
             { game with

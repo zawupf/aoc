@@ -33,13 +33,17 @@ module Bot =
         | None ->
             let bot = { empty with Id = id }
 
-            bot, { factory with Bots = factory.Bots |> Map.add id bot }
+            bot,
+            { factory with
+                Bots = factory.Bots |> Map.add id bot }
 
     let set bot factory =
-        { factory with Bots = factory.Bots |> Map.add bot.Id bot }
+        { factory with
+            Bots = factory.Bots |> Map.add bot.Id bot }
 
     let remove id factory =
-        { factory with Bots = factory.Bots |> Map.remove id }
+        { factory with
+            Bots = factory.Bots |> Map.remove id }
 
     let isActive bot =
         match bot.Chips, bot.Targets with
@@ -50,12 +54,15 @@ module Bot =
         let deliverChip chip target factory =
             match target with
             | Output id ->
-                { factory with Outputs = factory.Outputs |> Map.add id chip }
+                { factory with
+                    Outputs = factory.Outputs |> Map.add id chip }
             | Robot id ->
                 let bot = factory.Bots |> Map.find id
 
                 factory
-                |> set { bot with Chips = chip :: bot.Chips |> List.sort }
+                |> set
+                    { bot with
+                        Chips = chip :: bot.Chips |> List.sort }
 
         match bot with
         | { Chips = [ lowChip; highChip ]
@@ -79,12 +86,17 @@ module Bot =
 
                 bot,
                 factory
-                |> set { bot with Chips = value :: bot.Chips |> List.sort }
+                |> set
+                    { bot with
+                        Chips = value :: bot.Chips |> List.sort }
             | Regex pattern [ Int id; Target lowTarget; Target highTarget ] ->
                 let bot, factory = get id factory
 
                 bot,
-                factory |> set { bot with Targets = [ lowTarget; highTarget ] }
+                factory
+                |> set
+                    { bot with
+                        Targets = [ lowTarget; highTarget ] }
             | _ -> failwith $"Invalid instruction: %s{instruction}"
 
         bot, factory

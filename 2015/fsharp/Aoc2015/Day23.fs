@@ -81,7 +81,8 @@ module Computer =
         computer |> map register (fun v -> v + 1u) |> incPC
 
     let jump offset computer =
-        { computer with PC = computer.PC + offset }
+        { computer with
+            PC = computer.PC + offset }
 
     let (|Even|Odd|) value = if value % 2u = 0u then Even else Odd
 
@@ -89,14 +90,18 @@ module Computer =
         computer
         |> get register
         |> function
-            | Even -> { computer with PC = computer.PC + offset }
+            | Even ->
+                { computer with
+                    PC = computer.PC + offset }
             | Odd -> computer |> incPC
 
     let jumpIfOne register offset computer =
         computer
         |> get register
         |> function
-            | 1u -> { computer with PC = computer.PC + offset }
+            | 1u ->
+                { computer with
+                    PC = computer.PC + offset }
             | _ -> computer |> incPC
 
     let run computer =

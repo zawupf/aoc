@@ -18,7 +18,8 @@ module Screen =
     let normalize row col screen = row % screen.Height, col % screen.Width
 
     let copy screen =
-        { screen with Grid = screen.Grid |> Array.map Array.copy }
+        { screen with
+            Grid = screen.Grid |> Array.map Array.copy }
 
     let get row col screen =
         let row, col = normalize row col screen

@@ -63,7 +63,9 @@ module Grid =
             | 0, 3 -> 1
             | _, _ -> 0
 
-        { grid with Data = grid.Data |> Array.mapi nextState } |> overrides
+        { grid with
+            Data = grid.Data |> Array.mapi nextState }
+        |> overrides
 
 let grids overrides init =
     Seq.unfold (fun grid -> Some(grid, Grid.next overrides grid)) init

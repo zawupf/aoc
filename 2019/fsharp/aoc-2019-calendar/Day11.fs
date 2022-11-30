@@ -52,7 +52,9 @@ module Robot =
 
     let paint state =
         let color = state.brain.output.Dequeue() |> Color.ofLong
-        { state with grid = state.grid.Add(state.position, color) }
+
+        { state with
+            grid = state.grid.Add(state.position, color) }
 
     let move state =
         let turn = state.brain.output.Dequeue() |> Turn.ofLong
