@@ -12,6 +12,11 @@ module FancyPatterns =
         else
             None
 
+    let (|Char|_|) (str: string) =
+        match str.Length with
+        | 1 -> Some str.[0]
+        | _ -> None
+
     let (|Int|_|) (str: string) =
         match System.Int32.TryParse(str) with
         | true, intvalue -> Some intvalue
