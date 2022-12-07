@@ -17,6 +17,11 @@ module FancyPatterns =
         | 1 -> Some str.[0]
         | _ -> None
 
+    let (|Byte|_|) (str: string) =
+        match System.Byte.TryParse(str) with
+        | true, intvalue -> Some intvalue
+        | _ -> None
+
     let (|Int|_|) (str: string) =
         match System.Int32.TryParse(str) with
         | true, intvalue -> Some intvalue
@@ -24,6 +29,16 @@ module FancyPatterns =
 
     let (|UInt|_|) (str: string) =
         match System.UInt32.TryParse(str) with
+        | true, intvalue -> Some intvalue
+        | _ -> None
+
+    let (|Int64|_|) (str: string) =
+        match System.Int64.TryParse(str) with
+        | true, intvalue -> Some intvalue
+        | _ -> None
+
+    let (|UInt64|_|) (str: string) =
+        match System.UInt64.TryParse(str) with
         | true, intvalue -> Some intvalue
         | _ -> None
 
