@@ -96,7 +96,10 @@ module Types =
             player.Effects
             |> List.fold
                 (fun player effect ->
-                    if player |> isAlive then player |> apply effect else player)
+                    if player |> isAlive then
+                        player |> apply effect
+                    else
+                        player)
                 { player with Effects = [] }
 
         let hasEnoughMana spell player =

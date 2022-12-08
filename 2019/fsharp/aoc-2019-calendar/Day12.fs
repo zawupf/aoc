@@ -37,7 +37,11 @@ module Moon =
             moons
             |> Seq.fold
                 (fun (Vel(vx, vy, vz)) { pos = Pos(mx, my, mz) } ->
-                    Vel(vx + compare mx x, vy + compare my y, vz + compare mz z))
+                    Vel(
+                        vx + compare mx x,
+                        vy + compare my y,
+                        vz + compare mz z
+                    ))
                 (Vel(0, 0, 0))
 
         { moon with
