@@ -63,6 +63,8 @@ module String =
     let toByteArray (string: string) =
         string |> System.Text.Encoding.ASCII.GetBytes
 
+    let toLines = trim >> split '\n' >> Array.map trim
+
     let ofChars chars =
         System.String(chars |> Seq.toArray) |> string
 
