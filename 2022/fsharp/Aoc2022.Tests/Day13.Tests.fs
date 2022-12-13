@@ -49,7 +49,8 @@ let ``Day13 part1 works`` () =
 
 [<Fact>]
 let ``Day13 part2 works`` () =
-    Assert.Equal(140, input |> Data.parsePairs |> part2)
+    Assert.Equal(140, input |> Data.parsePairs |> part2 Data.sort)
+    Assert.Equal(140, input |> Data.parsePairs |> part2 Data.sort2)
 
 [<Fact>]
 let ``Day13 Stars`` () =

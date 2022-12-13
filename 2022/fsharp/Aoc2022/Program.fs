@@ -190,6 +190,22 @@ module Bench =
         member _.day_13_2() = Day13.job2 ()
 
     [<SimpleJob(RuntimeMoniker.HostProcess)>]
+    type Benchmark_13_3() =
+        [<Benchmark>]
+        member _.day_13_2_sort() =
+            Day13.input
+            |> Day13.Data.parsePairs
+            |> Day13.part2 Day13.Data.sort
+            |> string
+
+        [<Benchmark>]
+        member _.day_13_2_sort2() =
+            Day13.input
+            |> Day13.Data.parsePairs
+            |> Day13.part2 Day13.Data.sort2
+            |> string
+
+    [<SimpleJob(RuntimeMoniker.HostProcess)>]
     type Benchmark_14_1() =
         [<Benchmark>]
         member _.day_14_1() = Day14.job1 ()
@@ -337,6 +353,7 @@ module Bench =
         | "12", "2" -> BenchmarkRunner.Run<Benchmark_12_2>() |> ignore
         | "13", "1" -> BenchmarkRunner.Run<Benchmark_13_1>() |> ignore
         | "13", "2" -> BenchmarkRunner.Run<Benchmark_13_2>() |> ignore
+        | "13", "3" -> BenchmarkRunner.Run<Benchmark_13_3>() |> ignore
         | "14", "1" -> BenchmarkRunner.Run<Benchmark_14_1>() |> ignore
         | "14", "2" -> BenchmarkRunner.Run<Benchmark_14_2>() |> ignore
         | "15", "1" -> BenchmarkRunner.Run<Benchmark_15_1>() |> ignore

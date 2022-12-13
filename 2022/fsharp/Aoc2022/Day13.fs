@@ -98,6 +98,14 @@ module Data =
 
         loop [ data |> Array.head ] (data |> Array.tail |> Array.toList)
 
+    let sort2 =
+        Array.sortWith (fun a b ->
+            compare a b
+            |> function
+                | Valid -> -1
+                | Invalid -> 1
+                | Undetermined -> 0)
+
 let part1 pairs =
     pairs
     |> Array.mapi (fun i (d1, d2) ->
@@ -106,7 +114,7 @@ let part1 pairs =
         | _ -> 0)
     |> Array.sum
 
-let part2 pairs =
+let part2 sort pairs =
     let p1 = Packet [ Packet [ Number 2 ] ]
     let p2 = Packet [ Packet [ Number 6 ] ]
 
@@ -114,7 +122,7 @@ let part2 pairs =
     |> Array.append [| p1, p2 |]
     |> Array.map (fun (d1, d2) -> [| d1; d2 |])
     |> Array.concat
-    |> Data.sort
+    |> sort
     |> Array.mapi (fun i p ->
         match p = p1 || p = p2 with
         | true -> i + 1
@@ -127,4 +135,4 @@ let job1 () =
     input |> Data.parsePairs |> part1 |> string
 
 let job2 () =
-    input |> Data.parsePairs |> part2 |> string
+    input |> Data.parsePairs |> part2 Data.sort2 |> string
