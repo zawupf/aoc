@@ -328,3 +328,37 @@ module Md5 =
         |> String.toByteArray
         |> md5.ComputeHash
         |> System.Convert.ToHexString
+
+module Range =
+    let init (a: int) (b: int) =
+        assert (a <= b)
+        if a < b then a, b else b, a
+
+    let longLength (a, b) = int64 b - int64 a + 1L
+
+    let contains value (a: int, b: int) = value >= a && value <= b
+
+    let tryMerge (a, b) (c, d) =
+        let range = init (min a c) (max b d)
+        let newLength = longLength range
+        let oldLength = longLength (a, b) + longLength (c, d)
+        if newLength <= oldLength then Some range else None
+
+    let combine ranges =
+        let rec loop result ranges =
+            match ranges with
+            | [] -> result
+            | range :: ranges ->
+                let range, ranges =
+                    ranges
+                    |> loop []
+                    |> List.fold
+                        (fun (range, ranges) r ->
+                            match tryMerge range r with
+                            | Some range -> range, ranges
+                            | None -> range, (r :: ranges))
+                        (range, [])
+
+                loop (range :: result) ranges
+
+        loop [] ranges
