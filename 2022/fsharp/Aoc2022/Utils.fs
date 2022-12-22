@@ -113,6 +113,9 @@ let private _readAllText filename = File.ReadAllText(filename).Trim()
 
 let readInputText = useCache (_findInputFile >> _readAllText)
 
+let readInputExact =
+    useCache (_findInputFile >> (fun filename -> File.ReadAllText(filename)))
+
 module Math =
     let permutations list =
         let rec _permutations list taken =
