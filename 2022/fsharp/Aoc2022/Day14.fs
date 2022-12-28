@@ -94,7 +94,8 @@ let simulate grid =
                         loop
                             n
                             (((x + d, y + 1), [ 0; -1; 1 ])
-                             :: ((x, y), dirs) :: prevs)
+                             :: ((x, y), dirs)
+                             :: prevs)
 
     loop 0 [ dropStart, [ 0; -1; 1 ] ]
 
