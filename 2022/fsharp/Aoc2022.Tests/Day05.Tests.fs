@@ -4,16 +4,18 @@ open Xunit
 open Utils
 open Day05
 
-let moves =
-    [ "move 1 from 2 to 1"
-      "move 3 from 1 to 3"
-      "move 2 from 2 to 1"
-      "move 1 from 1 to 2" ]
+let moves = [
+    "move 1 from 2 to 1"
+    "move 3 from 1 to 3"
+    "move 2 from 2 to 1"
+    "move 1 from 1 to 2"
+]
 
-let stacks =
-    [| "NZ" |> String.toCharArray |> Array.toList
-       "DCM" |> String.toCharArray |> Array.toList
-       "P" |> String.toCharArray |> Array.toList |]
+let stacks = [|
+    "NZ" |> String.toCharArray |> Array.toList
+    "DCM" |> String.toCharArray |> Array.toList
+    "P" |> String.toCharArray |> Array.toList
+|]
 
 [<Fact>]
 let ``Day05 topCrates 1 works`` () =

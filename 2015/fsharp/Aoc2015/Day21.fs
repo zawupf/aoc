@@ -2,20 +2,22 @@ module Day21
 
 open Utils
 
-type Item =
-    { Name: string
-      Cost: int
-      Damage: int
-      Armor: int }
+type Item = {
+    Name: string
+    Cost: int
+    Damage: int
+    Armor: int
+}
 
 type Weapon = Item
 type Armor = Item
 type Ring = Item
 
-type Shop =
-    { Weapons: Weapon list
-      Armor: Armor list
-      Rings: Ring list }
+type Shop = {
+    Weapons: Weapon list
+    Armor: Armor list
+    Rings: Ring list
+}
 
 module Shop =
     let equipments shop =
@@ -60,40 +62,53 @@ module Shop =
                     match category with
                     | "Weapons" ->
                         category,
-                        { shop with
-                            Weapons =
-                                { Name = name
-                                  Cost = cost
-                                  Damage = damage
-                                  Armor = armor }
-                                :: shop.Weapons }
+                        {
+                            shop with
+                                Weapons =
+                                    {
+                                        Name = name
+                                        Cost = cost
+                                        Damage = damage
+                                        Armor = armor
+                                    }
+                                    :: shop.Weapons
+                        }
                     | "Armor" ->
                         category,
-                        { shop with
-                            Armor =
-                                { Name = name
-                                  Cost = cost |> int
-                                  Damage = damage |> int
-                                  Armor = armor |> int }
-                                :: shop.Armor }
+                        {
+                            shop with
+                                Armor =
+                                    {
+                                        Name = name
+                                        Cost = cost |> int
+                                        Damage = damage |> int
+                                        Armor = armor |> int
+                                    }
+                                    :: shop.Armor
+                        }
                     | "Rings" ->
                         category,
-                        { shop with
-                            Rings =
-                                { Name = name
-                                  Cost = cost |> int
-                                  Damage = damage |> int
-                                  Armor = armor |> int }
-                                :: shop.Rings }
+                        {
+                            shop with
+                                Rings =
+                                    {
+                                        Name = name
+                                        Cost = cost |> int
+                                        Damage = damage |> int
+                                        Armor = armor |> int
+                                    }
+                                    :: shop.Rings
+                        }
                     | _ -> category, shop
                 | _ -> category, shop)
             ("", { Weapons = []; Armor = []; Rings = [] })
         |> snd
 
-type Player =
-    { Name: string
-      Items: Item list
-      HitPoints: int }
+type Player = {
+    Name: string
+    Items: Item list
+    HitPoints: int
+} with
 
     member this.Damage =
         this.Items |> List.fold (fun damage item -> damage + item.Damage) 0
@@ -108,8 +123,10 @@ module Player =
     let takeDamageFrom (enemy: Player) (player: Player) =
         let damage = max 1 (enemy.Damage - player.Armor)
 
-        { player with
-            HitPoints = player.HitPoints - damage }
+        {
+            player with
+                HitPoints = player.HitPoints - damage
+        }
 
     let isWinningAgainst (enemy: Player) (player: Player) =
         let hitCount (attacker: Player) (defender: Player) =
@@ -125,10 +142,11 @@ module Player =
 let cheapestWinningEquipmentCost boss shop =
     shop
     |> Shop.equipments
-    |> Seq.map (fun items ->
-        { Name = "Player"
-          HitPoints = 100
-          Items = items })
+    |> Seq.map (fun items -> {
+        Name = "Player"
+        HitPoints = 100
+        Items = items
+    })
     |> Seq.filter (fun player -> player |> Player.isWinningAgainst boss)
     |> Seq.map (fun player -> player.Cost)
     |> Seq.min
@@ -136,10 +154,11 @@ let cheapestWinningEquipmentCost boss shop =
 let mostExpensiveLoosingEquipmentCost boss shop =
     shop
     |> Shop.equipments
-    |> Seq.map (fun items ->
-        { Name = "Player"
-          HitPoints = 100
-          Items = items })
+    |> Seq.map (fun items -> {
+        Name = "Player"
+        HitPoints = 100
+        Items = items
+    })
     |> Seq.filter (fun player -> player |> Player.isWinningAgainst boss |> not)
     |> Seq.map (fun player -> player.Cost)
     |> Seq.max
@@ -176,13 +195,18 @@ let parseBoss (lines: string[]) =
         | Regex @" (\d+)$" [ Int n ] -> n
         | _ -> failwith "Invalid input"
 
-    { Name = "Boss"
-      HitPoints = parseInt lines.[0]
-      Items =
-        [ { Name = "Gear"
-            Damage = parseInt lines.[1]
-            Armor = parseInt lines.[2]
-            Cost = 0 } ] }
+    {
+        Name = "Boss"
+        HitPoints = parseInt lines.[0]
+        Items = [
+            {
+                Name = "Gear"
+                Damage = parseInt lines.[1]
+                Armor = parseInt lines.[2]
+                Cost = 0
+            }
+        ]
+    }
 
 let boss = readInputLines "21" |> Seq.toArray |> parseBoss
 

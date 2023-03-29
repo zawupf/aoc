@@ -94,13 +94,15 @@ module List =
 type BBox = { X: int * int; Y: int * int }
 
 module BBox =
-    let empty =
-        { X = (System.Int32.MaxValue, System.Int32.MinValue)
-          Y = (System.Int32.MaxValue, System.Int32.MinValue) }
+    let empty = {
+        X = (System.Int32.MaxValue, System.Int32.MinValue)
+        Y = (System.Int32.MaxValue, System.Int32.MinValue)
+    }
 
-    let merge { X = (minX, maxX); Y = (minY, maxY) } (x, y) =
-        { X = (min x minX, max x maxX)
-          Y = (min y minY, max y maxY) }
+    let merge { X = (minX, maxX); Y = (minY, maxY) } (x, y) = {
+        X = (min x minX, max x maxX)
+        Y = (min y minY, max y maxY)
+    }
 
     let ofList list = list |> List.fold merge empty
 

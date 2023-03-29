@@ -53,9 +53,10 @@ module PowerConsumtionRate =
 
         { Gamma = gamma; Epsilon = epsilon }
 
-type LifeSupportRate =
-    { OxygenGenerator: int
-      CO2Scrubber: int }
+type LifeSupportRate = {
+    OxygenGenerator: int
+    CO2Scrubber: int
+}
 
 module LifeSupportRate =
     let result (rate: LifeSupportRate) = rate.OxygenGenerator * rate.CO2Scrubber
@@ -73,9 +74,10 @@ module LifeSupportRate =
 
         _filter_rec func 0 lines
 
-    let ofReport (report: string list) =
-        { OxygenGenerator = report |> _filter mostCharAt |> bitstringToInt
-          CO2Scrubber = report |> _filter leastCharAt |> bitstringToInt }
+    let ofReport (report: string list) = {
+        OxygenGenerator = report |> _filter mostCharAt |> bitstringToInt
+        CO2Scrubber = report |> _filter leastCharAt |> bitstringToInt
+    }
 
 
 let report = "03" |> readInputLines |> Seq.toList

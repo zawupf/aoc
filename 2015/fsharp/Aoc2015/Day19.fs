@@ -37,9 +37,7 @@ let generateMoleculesCount input replacements =
 let reduceMoleculeMinCount input replacements =
     let next input replacements =
         replacements
-        |> List.fold
-            (fun results (src, dst) -> mutate dst src input 0 results)
-            []
+        |> List.fold (fun results (src, dst) -> mutate dst src input 0 results) []
         |> List.distinct
 
     let rec loop replacements stack count =

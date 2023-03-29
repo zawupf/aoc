@@ -23,14 +23,18 @@ module Moon =
             |> Seq.map (fun group -> Int32.Parse(group.Value))
             |> Seq.toArray
 
-        { pos = Pos(coords.[0], coords.[1], coords.[2])
-          vel = Vel(0, 0, 0) }
+        {
+            pos = Pos(coords.[0], coords.[1], coords.[2])
+            vel = Vel(0, 0, 0)
+        }
 
     let toString moon = sprintf "Moon %A" moon
 
     let private updateVelocity moons moon =
-        let { pos = Pos(x, y, z)
-              vel = Vel(vx, vy, vz) } =
+        let {
+                pos = Pos(x, y, z)
+                vel = Vel(vx, vy, vz)
+            } =
             moon
 
         let (Vel(dx, dy, dz)) =
@@ -44,16 +48,22 @@ module Moon =
                     ))
                 (Vel(0, 0, 0))
 
-        { moon with
-            vel = Vel(vx + dx, vy + dy, vz + dz) }
+        {
+            moon with
+                vel = Vel(vx + dx, vy + dy, vz + dz)
+        }
 
     let private updatePosition moon =
-        let { pos = Pos(x, y, z)
-              vel = Vel(vx, vy, vz) } =
+        let {
+                pos = Pos(x, y, z)
+                vel = Vel(vx, vy, vz)
+            } =
             moon
 
-        { moon with
-            pos = Pos(x + vx, y + vy, z + vz) }
+        {
+            moon with
+                pos = Pos(x + vx, y + vy, z + vz)
+        }
 
     let rec applyGravity moons =
         seq {
@@ -75,13 +85,15 @@ module Moon =
     let only axis moon =
         let { pos = Pos(x, y, z) } = moon
 
-        { moon with
-            pos =
-                match axis with
-                | 'x' -> Pos(x, 0, 0)
-                | 'y' -> Pos(0, y, 0)
-                | 'z' -> Pos(0, 0, z)
-                | _ -> failwith "Invalid axis" }
+        {
+            moon with
+                pos =
+                    match axis with
+                    | 'x' -> Pos(x, 0, 0)
+                    | 'y' -> Pos(0, y, 0)
+                    | 'z' -> Pos(0, 0, z)
+                    | _ -> failwith "Invalid axis"
+        }
 
     let cycleCount moons =
         (moons |> applyGravity |> Seq.skip 1 |> Seq.findIndex ((=) moons)) + 1

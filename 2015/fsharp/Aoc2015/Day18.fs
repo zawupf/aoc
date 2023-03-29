@@ -43,14 +43,16 @@ module Grid =
 
         let x, y = i |> toPos
 
-        [| x - 1, y - 1
-           x, y - 1
-           x + 1, y - 1
-           x - 1, y
-           x + 1, y
-           x - 1, y + 1
-           x, y + 1
-           x + 1, y + 1 |]
+        [|
+            x - 1, y - 1
+            x, y - 1
+            x + 1, y - 1
+            x - 1, y
+            x + 1, y
+            x - 1, y + 1
+            x, y + 1
+            x + 1, y + 1
+        |]
         |> Array.sumBy (fun pos -> grid |> item (pos |> toIndex))
 
     let countLights { Data = data } = data |> Array.sum
@@ -63,8 +65,10 @@ module Grid =
             | 0, 3 -> 1
             | _, _ -> 0
 
-        { grid with
-            Data = grid.Data |> Array.mapi nextState }
+        {
+            grid with
+                Data = grid.Data |> Array.mapi nextState
+        }
         |> overrides
 
 let grids overrides init =

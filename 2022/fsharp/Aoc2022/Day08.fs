@@ -68,10 +68,12 @@ let maxScenicScore (grid: Grid) =
     let scenicScore (irow, icol) =
         let height = grid[irow, icol]
 
-        [ grid[irow, icol + 1 ..]
-          grid[irow, .. icol - 1] |> Array.rev
-          grid[irow + 1 .., icol]
-          grid[.. irow - 1, icol] |> Array.rev ]
+        [
+            grid[irow, icol + 1 ..]
+            grid[irow, .. icol - 1] |> Array.rev
+            grid[irow + 1 .., icol]
+            grid[.. irow - 1, icol] |> Array.rev
+        ]
         |> List.map (fun line ->
             match line |> Array.tryFindIndex (fun h -> h >= height) with
             | Some i -> i + 1

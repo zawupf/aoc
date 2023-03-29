@@ -21,9 +21,10 @@ module Game =
             | 4 -> Ball
             | id -> failwithf "Invalid tile id: %d" id
 
-    type Screen =
-        { tiles: Map<int64 * int64, Tile>
-          score: int64 }
+    type Screen = {
+        tiles: Map<int64 * int64, Tile>
+        score: int64
+    }
 
     module Screen =
         let empty = { tiles = Map.empty; score = 0L }
@@ -36,20 +37,23 @@ module Game =
         let find tile screen =
             screen.tiles |> Map.tryFindKey (fun _key value -> value = tile)
 
-    type Game =
-        { computer: Computer.Context
-          screen: Screen }
+    type Game = {
+        computer: Computer.Context
+        screen: Screen
+    }
 
-    let boot source =
-        { computer = Computer.compile source
-          screen = Screen.empty }
+    let boot source = {
+        computer = Computer.compile source
+        screen = Screen.empty
+    }
 
     let private handleOutput screen =
         function
         | [| -1L; 0L; score |] -> { screen with score = score }
-        | [| x; y; id |] ->
-            { screen with
-                tiles = screen.tiles |> Map.add (x, y) (id |> int |> Tile.ofInt) }
+        | [| x; y; id |] -> {
+            screen with
+                tiles = screen.tiles |> Map.add (x, y) (id |> int |> Tile.ofInt)
+          }
         | _ -> failwith "Invalid output data"
 
     let private render game =

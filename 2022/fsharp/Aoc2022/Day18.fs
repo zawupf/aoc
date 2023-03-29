@@ -25,12 +25,14 @@ module Cube =
     let faces (cube: Cube) : Face list =
         let (x, y, z) = cube
 
-        [ ((x, y, z), (x + 1, y + 1, z))
-          ((x, y, z + 1), (x + 1, y + 1, z + 1))
-          ((x, y, z), (x, y + 1, z + 1))
-          ((x + 1, y, z), (x + 1, y + 1, z + 1))
-          ((x, y, z), (x + 1, y, z + 1))
-          ((x, y + 1, z), (x + 1, y + 1, z + 1)) ]
+        [
+            ((x, y, z), (x + 1, y + 1, z))
+            ((x, y, z + 1), (x + 1, y + 1, z + 1))
+            ((x, y, z), (x, y + 1, z + 1))
+            ((x + 1, y, z), (x + 1, y + 1, z + 1))
+            ((x, y, z), (x + 1, y, z + 1))
+            ((x, y + 1, z), (x + 1, y + 1, z + 1))
+        ]
 
     let grid (cubes: Cube list) =
         let imin = System.Int32.MinValue
@@ -64,22 +66,25 @@ module Cube =
 
         let rec loop coords visited =
             match coords with
-            | [] ->
-                [ for x in min1..max1 do
-                      for y in min2..max2 do
-                          for z in min3..max3 do
-                              if visited |> Set.contains (x, y, z) |> not then
-                                  yield (x, y, z) ]
+            | [] -> [
+                for x in min1..max1 do
+                    for y in min2..max2 do
+                        for z in min3..max3 do
+                            if visited |> Set.contains (x, y, z) |> not then
+                                yield (x, y, z)
+              ]
             | _ ->
                 let coords' =
                     coords
                     |> List.collect (fun (x, y, z) ->
-                        [ x + 1, y, z
-                          x - 1, y, z
-                          x, y + 1, z
-                          x, y - 1, z
-                          x, y, z + 1
-                          x, y, z - 1 ]
+                        [
+                            x + 1, y, z
+                            x - 1, y, z
+                            x, y + 1, z
+                            x, y - 1, z
+                            x, y, z + 1
+                            x, y, z - 1
+                        ]
                         |> List.filter (fun pt ->
                             isValidAndEmpty pt
                             && (Set.contains pt visited |> not)))

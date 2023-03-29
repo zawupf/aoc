@@ -19,12 +19,14 @@ let (|PasswordData|_|) input =
         let letter = g.[3].Value.[0]
         let password = g.[4].Value
 
-        Some
-            { Password = password
-              Policy =
-                { Letter = letter
-                  Min = min
-                  Max = max } }
+        Some {
+            Password = password
+            Policy = {
+                Letter = letter
+                Min = min
+                Max = max
+            }
+        }
     else
         None
 
@@ -34,19 +36,27 @@ let parse line =
     | _ -> failwith "Invalid input data"
 
 let isValid
-    { Password = password
-      Policy = { Letter = letter
-                 Min = min
-                 Max = max } }
+    {
+        Password = password
+        Policy = {
+                     Letter = letter
+                     Min = min
+                     Max = max
+                 }
+    }
     =
     let inRange count = count >= min && count <= max
     password |> Seq.filter (fun c -> c = letter) |> Seq.length |> inRange
 
 let isValid2
-    { Password = password
-      Policy = { Letter = letter
-                 Min = min
-                 Max = max } }
+    {
+        Password = password
+        Policy = {
+                     Letter = letter
+                     Min = min
+                     Max = max
+                 }
+    }
     =
     let c1, c2 = password.[min - 1], password.[max - 1]
     c1 <> c2 && (c1 = letter || c2 = letter)

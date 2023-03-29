@@ -2,25 +2,28 @@ module Day07
 
 open Utils
 
-type Dir =
-    { ParentDir: Dir option
-      Name: string
-      mutable Entries: Entry list }
+type Dir = {
+    ParentDir: Dir option
+    Name: string
+    mutable Entries: Entry list
+}
 
-and File =
-    { ParentDir: Dir
-      Name: string
-      Size: uint64 }
+and File = {
+    ParentDir: Dir
+    Name: string
+    Size: uint64
+}
 
 and Entry =
     | File of File
     | Dir of Dir
 
 module FS =
-    let empty () =
-        { ParentDir = None
-          Name = ""
-          Entries = [] }
+    let empty () = {
+        ParentDir = None
+        Name = ""
+        Entries = []
+    }
 
     let up (dir: Dir) = dir.ParentDir
 
@@ -107,9 +110,11 @@ module FS =
                     | Some _ -> ()
                     | None ->
                         pwd.Entries <-
-                            ({ ParentDir = Some pwd
-                               Name = name
-                               Entries = [] }
+                            ({
+                                ParentDir = Some pwd
+                                Name = name
+                                Entries = []
+                             }
                              |> Dir)
                             :: pwd.Entries
 
@@ -119,9 +124,11 @@ module FS =
                     | Some _ -> ()
                     | None ->
                         pwd.Entries <-
-                            ({ ParentDir = pwd
-                               Name = name
-                               Size = size }
+                            ({
+                                ParentDir = pwd
+                                Name = name
+                                Size = size
+                             }
                              |> File)
                             :: pwd.Entries
 

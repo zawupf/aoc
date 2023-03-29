@@ -11,11 +11,12 @@ open Day11
 
 let mapping = [| "Hydrogen"; "Lithium" |]
 
-let floors =
-    [| [], [ "Hydrogen"; "Lithium" ]
-       [ "Hydrogen" ], []
-       [ "Lithium" ], []
-       [], [] |]
+let floors = [|
+    [], [ "Hydrogen"; "Lithium" ]
+    [ "Hydrogen" ], []
+    [ "Lithium" ], []
+    [], []
+|]
 
 [<Fact>]
 let ``Day11 parsing works`` () =

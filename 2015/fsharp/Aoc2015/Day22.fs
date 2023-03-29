@@ -37,21 +37,24 @@ module Types =
         | CastSpell of Spell
         | Attack
 
-    type Player =
-        { Name: string
-          HitPoints: int
-          Damage: int
-          Armor: int
-          Mana: int
-          TotalManaSpent: int
-          Effects: Effect list }
+    type Player = {
+        Name: string
+        HitPoints: int
+        Damage: int
+        Armor: int
+        Mana: int
+        TotalManaSpent: int
+        Effects: Effect list
+    }
 
     module Player =
         let dump player =
-            let { Name = name
-                  HitPoints = hp
-                  Armor = armor
-                  Mana = mana } =
+            let {
+                    Name = name
+                    HitPoints = hp
+                    Armor = armor
+                    Mana = mana
+                } =
                 player
 
             match name with
@@ -67,9 +70,10 @@ module Types =
             | Hard ->
                 match player.Name with
                 | "Boss" -> player
-                | _ ->
-                    { player with
-                        HitPoints = player.HitPoints - 1 }
+                | _ -> {
+                    player with
+                        HitPoints = player.HitPoints - 1
+                  }
 
         let handleEffects player =
             let remove effect player =
@@ -82,15 +86,17 @@ module Types =
                 let player' =
                     match effect with
                     | Shield _ -> player
-                    | Poison _ ->
-                        { player with
-                            HitPoints = max 0 (player.HitPoints - 3) }
+                    | Poison _ -> {
+                        player with
+                            HitPoints = max 0 (player.HitPoints - 3)
+                      }
                     | Recharge _ -> { player with Mana = player.Mana + 101 }
 
                 match (effect |> Effect.tick) with
-                | effect when effect |> Effect.duration > 0 ->
-                    { player' with
-                        Effects = effect :: player'.Effects }
+                | effect when effect |> Effect.duration > 0 -> {
+                    player' with
+                        Effects = effect :: player'.Effects
+                  }
                 | _ -> remove effect player'
 
             player.Effects
@@ -142,36 +148,52 @@ module Types =
                 if canCastSpell spell player enemy then
                     match spell with
                     | MagicMissile ->
-                        { player with
-                            Mana = player.Mana - 53
-                            TotalManaSpent = player.TotalManaSpent + 53 },
-                        { enemy with
-                            HitPoints = max 0 (enemy.HitPoints - 4) }
+                        {
+                            player with
+                                Mana = player.Mana - 53
+                                TotalManaSpent = player.TotalManaSpent + 53
+                        },
+                        {
+                            enemy with
+                                HitPoints = max 0 (enemy.HitPoints - 4)
+                        }
                     | Drain ->
-                        { player with
-                            Mana = player.Mana - 73
-                            TotalManaSpent = player.TotalManaSpent + 73
-                            HitPoints = player.HitPoints + 2 },
-                        { enemy with
-                            HitPoints = max 0 (enemy.HitPoints - 2) }
+                        {
+                            player with
+                                Mana = player.Mana - 73
+                                TotalManaSpent = player.TotalManaSpent + 73
+                                HitPoints = player.HitPoints + 2
+                        },
+                        {
+                            enemy with
+                                HitPoints = max 0 (enemy.HitPoints - 2)
+                        }
                     | Spell.Shield ->
-                        { player with
-                            Mana = player.Mana - 113
-                            TotalManaSpent = player.TotalManaSpent + 113
-                            Armor = player.Armor + 7
-                            Effects = Shield(6) :: player.Effects },
+                        {
+                            player with
+                                Mana = player.Mana - 113
+                                TotalManaSpent = player.TotalManaSpent + 113
+                                Armor = player.Armor + 7
+                                Effects = Shield(6) :: player.Effects
+                        },
                         enemy
                     | Spell.Poison ->
-                        { player with
-                            Mana = player.Mana - 173
-                            TotalManaSpent = player.TotalManaSpent + 173 },
-                        { enemy with
-                            Effects = Poison(6) :: enemy.Effects }
+                        {
+                            player with
+                                Mana = player.Mana - 173
+                                TotalManaSpent = player.TotalManaSpent + 173
+                        },
+                        {
+                            enemy with
+                                Effects = Poison(6) :: enemy.Effects
+                        }
                     | Spell.Recharge ->
-                        { player with
-                            Mana = player.Mana - 229
-                            TotalManaSpent = player.TotalManaSpent + 229
-                            Effects = Recharge(5) :: player.Effects },
+                        {
+                            player with
+                                Mana = player.Mana - 229
+                                TotalManaSpent = player.TotalManaSpent + 229
+                                Effects = Recharge(5) :: player.Effects
+                        },
                         enemy
                 else
                     { player with HitPoints = 0 }, enemy
@@ -187,8 +209,10 @@ module Types =
                 let damage = max 1 (player.Damage - enemy.Armor)
 
                 player,
-                { enemy with
-                    HitPoints = max 0 (enemy.HitPoints - damage) }
+                {
+                    enemy with
+                        HitPoints = max 0 (enemy.HitPoints - damage)
+                }
 
     type Game = { Players: Player * Player }
 
@@ -216,21 +240,24 @@ module Types =
         let (>=>) game reducer =
             if game |> isRunning then game |> reducer else game
 
-        let handleEffects game =
-            { game with
+        let handleEffects game = {
+            game with
                 Players =
                     (game.Players |> fst |> Player.handleEffects,
-                     game.Players |> snd |> Player.handleEffects) }
+                     game.Players |> snd |> Player.handleEffects)
+        }
 
-        let handleAction action game =
-            { game with
-                Players = Player.handleAction action game.Players }
+        let handleAction action game = {
+            game with
+                Players = Player.handleAction action game.Players
+        }
 
-        let handleDifficulty difficulty game =
-            { game with
+        let handleDifficulty difficulty game = {
+            game with
                 Players =
                     (game.Players |> fst |> Player.handleDifficulty difficulty,
-                     game.Players |> snd |> Player.handleDifficulty difficulty) }
+                     game.Players |> snd |> Player.handleDifficulty difficulty)
+        }
 
 
         let swapPlayers game =
@@ -264,11 +291,13 @@ let play difficulty game =
             | None ->
                 if m < result - 53 then
                     loop
-                        ([ MagicMissile
-                           Drain
-                           Spell.Shield
-                           Spell.Poison
-                           Spell.Recharge ]
+                        ([
+                            MagicMissile
+                            Drain
+                            Spell.Shield
+                            Spell.Poison
+                            Spell.Recharge
+                         ]
                          |> List.fold
                              (fun games'' spell ->
                                  (game
@@ -291,24 +320,27 @@ let parseBoss (lines: string[]) =
         | Regex @" (\d+)$" [ Int n ] -> n
         | _ -> failwith "Invalid input"
 
-    { Name = "Boss"
-      HitPoints = parseInt lines.[0]
-      Damage = parseInt lines.[1]
-      Armor = 0
-      Mana = 0
-      TotalManaSpent = 0
-      Effects = [] }
+    {
+        Name = "Boss"
+        HitPoints = parseInt lines.[0]
+        Damage = parseInt lines.[1]
+        Armor = 0
+        Mana = 0
+        TotalManaSpent = 0
+        Effects = []
+    }
 
 let boss = readInputLines "22" |> Seq.toArray |> parseBoss
 
-let player =
-    { Name = "Player"
-      HitPoints = 50
-      Damage = 0
-      Armor = 0
-      Mana = 500
-      TotalManaSpent = 0
-      Effects = [] }
+let player = {
+    Name = "Player"
+    HitPoints = 50
+    Damage = 0
+    Armor = 0
+    Mana = 500
+    TotalManaSpent = 0
+    Effects = []
+}
 
 let job1 () =
     { Players = player, boss } |> play Easy |> string

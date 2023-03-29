@@ -20,8 +20,10 @@ let collectRocks rocks ((x1, y1), (x2, y2)) =
     let xmin, xmax = min x1 x2, max x1 x2
     let ymin, ymax = min y1 y2, max y1 y2
 
-    [ for x in xmin..xmax do
-          for y in ymin..ymax -> x, y ]
+    [
+        for x in xmin..xmax do
+            for y in ymin..ymax -> x, y
+    ]
     |> List.fold (fun rocks pos -> pos :: rocks) rocks
 
 let dropStart = (500, 0)

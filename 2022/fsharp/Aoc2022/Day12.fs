@@ -4,10 +4,11 @@ open Utils
 
 type Pos = int * int
 
-type Area =
-    { current: Pos
-      destination: Pos
-      grid: int[,] }
+type Area = {
+    current: Pos
+    destination: Pos
+    grid: int[,]
+}
 
 module Area =
     let parse input =
@@ -31,9 +32,11 @@ module Area =
                     | c -> failwith $"Invalid input: %c{c}"))
             |> array2D
 
-        { current = current
-          destination = destination
-          grid = grid }
+        {
+            current = current
+            destination = destination
+            grid = grid
+        }
 
     let isValidPos (x, y) area =
         x >= 0
@@ -94,10 +97,12 @@ module Area =
 
     let findShortestGlobalPath area =
         let queue =
-            [ for x in 0 .. Array2D.length1 area.grid - 1 do
-                  for y in 0 .. Array2D.length2 area.grid - 1 do
-                      if area.grid[x, y] = 0 then
-                          yield x, y ]
+            [
+                for x in 0 .. Array2D.length1 area.grid - 1 do
+                    for y in 0 .. Array2D.length2 area.grid - 1 do
+                        if area.grid[x, y] = 0 then
+                            yield x, y
+            ]
             |> List.fold
                 (fun queue start ->
                     queue

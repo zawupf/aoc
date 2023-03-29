@@ -33,27 +33,30 @@ module Instruction =
             JumpIfOne(reg r, offset)
         | _ -> failwith "Invalid instruction"
 
-type Computer =
-    { A: uint32
-      B: uint32
-      PC: int32
-      Program: Instruction array }
+type Computer = {
+    A: uint32
+    B: uint32
+    PC: int32
+    Program: Instruction array
+}
 
 module Computer =
-    let empty =
-        { A = 0u
-          B = 0u
-          PC = 0
-          Program = [||] }
+    let empty = {
+        A = 0u
+        B = 0u
+        PC = 0
+        Program = [||]
+    }
 
     let dump computer =
         let { A = a; B = b; PC = pc } = computer
         printfn "A:%d B:%d PC:%d" a b pc
         computer
 
-    let load input computer =
-        { computer with
-            Program = input |> Seq.map Instruction.parse |> Seq.toArray }
+    let load input computer = {
+        computer with
+            Program = input |> Seq.map Instruction.parse |> Seq.toArray
+    }
 
     let get register computer =
         match register with
@@ -80,9 +83,10 @@ module Computer =
     let increment register computer =
         computer |> map register (fun v -> v + 1u) |> incPC
 
-    let jump offset computer =
-        { computer with
-            PC = computer.PC + offset }
+    let jump offset computer = {
+        computer with
+            PC = computer.PC + offset
+    }
 
     let (|Even|Odd|) value = if value % 2u = 0u then Even else Odd
 
@@ -90,18 +94,20 @@ module Computer =
         computer
         |> get register
         |> function
-            | Even ->
-                { computer with
-                    PC = computer.PC + offset }
+            | Even -> {
+                computer with
+                    PC = computer.PC + offset
+              }
             | Odd -> computer |> incPC
 
     let jumpIfOne register offset computer =
         computer
         |> get register
         |> function
-            | 1u ->
-                { computer with
-                    PC = computer.PC + offset }
+            | 1u -> {
+                computer with
+                    PC = computer.PC + offset
+              }
             | _ -> computer |> incPC
 
     let run computer =

@@ -41,34 +41,38 @@ module Bits =
         let with_gens g = join g 0uy
         let with_mics m = join 0uy m
 
-        let bitValues toCargo bits =
-            [| for i in 0..7 do
-                   if isOne i bits then
-                       yield i |> value |> toCargo |]
+        let bitValues toCargo bits = [|
+            for i in 0..7 do
+                if isOne i bits then
+                    yield i |> value |> toCargo
+        |]
 
-        let bitValuePairs toCargo bits =
-            [| for i in 0..6 do
-                   if isOne i bits then
-                       for j in i + 1 .. 7 do
-                           if isOne j bits then
-                               yield (value i + value j) |> toCargo |]
+        let bitValuePairs toCargo bits = [|
+            for i in 0..6 do
+                if isOne i bits then
+                    for j in i + 1 .. 7 do
+                        if isOne j bits then
+                            yield (value i + value j) |> toCargo
+        |]
 
-        let bitValueMixedPairs gens mics =
-            [| for i in 0..7 do
-                   if isOne i gens then
-                       for j in 0..7 do
-                           if isOne j mics then
-                               yield join (value i) (value j) |]
+        let bitValueMixedPairs gens mics = [|
+            for i in 0..7 do
+                if isOne i gens then
+                    for j in 0..7 do
+                        if isOne j mics then
+                            yield join (value i) (value j)
+        |]
 
         let gens, mics = floor i floors |> split
 
         if target > i then
-            Array.concat
-                [ bitValueMixedPairs gens mics
-                  bitValuePairs with_gens gens
-                  bitValuePairs with_mics mics
-                  bitValues with_gens gens
-                  bitValues with_mics mics ]
+            Array.concat [
+                bitValueMixedPairs gens mics
+                bitValuePairs with_gens gens
+                bitValuePairs with_mics mics
+                bitValues with_gens gens
+                bitValues with_mics mics
+            ]
         else
             // This assumption might be wrong 🤔
             Array.concat [ bitValues with_gens gens; bitValues with_mics mics ]
@@ -170,30 +174,38 @@ let minMove (initialState: State) =
 
 let minStepCount floors = minMove (0, floors) |> Option.get
 
-let mapping =
-    [| "Thulium"; "Plutonium"; "Strontium"; "Promethium"; "Ruthenium" |]
+let mapping = [|
+    "Thulium"
+    "Plutonium"
+    "Strontium"
+    "Promethium"
+    "Ruthenium"
+|]
 
-let floors =
-    [| [ "Thulium"; "Plutonium"; "Strontium" ], [ "Thulium" ]
-       [], [ "Plutonium"; "Strontium" ]
-       [ "Promethium"; "Ruthenium" ], [ "Promethium"; "Ruthenium" ]
-       [], [] |]
+let floors = [|
+    [ "Thulium"; "Plutonium"; "Strontium" ], [ "Thulium" ]
+    [], [ "Plutonium"; "Strontium" ]
+    [ "Promethium"; "Ruthenium" ], [ "Promethium"; "Ruthenium" ]
+    [], []
+|]
 
-let mapping2 =
-    [| "Thulium"
-       "Plutonium"
-       "Strontium"
-       "Promethium"
-       "Ruthenium"
-       "Elerium"
-       "Dilithium" |]
+let mapping2 = [|
+    "Thulium"
+    "Plutonium"
+    "Strontium"
+    "Promethium"
+    "Ruthenium"
+    "Elerium"
+    "Dilithium"
+|]
 
-let floors2 =
-    [| [ "Thulium"; "Plutonium"; "Strontium"; "Elerium"; "Dilithium" ],
-       [ "Thulium"; "Elerium"; "Dilithium" ]
-       [], [ "Plutonium"; "Strontium" ]
-       [ "Promethium"; "Ruthenium" ], [ "Promethium"; "Ruthenium" ]
-       [], [] |]
+let floors2 = [|
+    [ "Thulium"; "Plutonium"; "Strontium"; "Elerium"; "Dilithium" ],
+    [ "Thulium"; "Elerium"; "Dilithium" ]
+    [], [ "Plutonium"; "Strontium" ]
+    [ "Promethium"; "Ruthenium" ], [ "Promethium"; "Ruthenium" ]
+    [], []
+|]
 
 let job1 () =
     floors |> Bits.makeFloors mapping |> minStepCount |> string

@@ -43,18 +43,21 @@ module Robot =
             | 1L -> Clockwise
             | turn -> failwithf "Not a turn: %d" turn
 
-    type State =
-        { position: int * int
-          face: Face
-          grid: Map<int * int, Color>
-          startColor: Color
-          brain: Context }
+    type State = {
+        position: int * int
+        face: Face
+        grid: Map<int * int, Color>
+        startColor: Color
+        brain: Context
+    }
 
     let paint state =
         let color = state.brain.output.Dequeue() |> Color.ofLong
 
-        { state with
-            grid = state.grid.Add(state.position, color) }
+        {
+            state with
+                grid = state.grid.Add(state.position, color)
+        }
 
     let move state =
         let turn = state.brain.output.Dequeue() |> Turn.ofLong
@@ -83,9 +86,11 @@ module Robot =
             | Left -> x - 1, y
             | Right -> x + 1, y
 
-        { state with
-            position = position
-            face = face }
+        {
+            state with
+                position = position
+                face = face
+        }
 
     let work = paint >> move
 
@@ -98,12 +103,13 @@ module Robot =
             else
                 Black)
 
-    let boot startColor source =
-        { position = (0, 0)
-          face = Up
-          grid = Map.empty
-          startColor = startColor
-          brain = compile source }
+    let boot startColor source = {
+        position = (0, 0)
+        face = Up
+        grid = Map.empty
+        startColor = startColor
+        brain = compile source
+    }
 
     let rec walk state =
         state.brain.input.Enqueue(state |> color |> Color.toLong)

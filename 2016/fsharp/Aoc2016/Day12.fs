@@ -61,22 +61,24 @@ module Instruction =
             JumpIfNonZero(data, offset)
         | _ -> failwith $"Invalid code: %s{line}"
 
-type Computer =
-    { RA: Value
-      RB: Value
-      RC: Value
-      RD: Value
-      PC: Offset
-      Code: Instruction array }
+type Computer = {
+    RA: Value
+    RB: Value
+    RC: Value
+    RD: Value
+    PC: Offset
+    Code: Instruction array
+}
 
 module Computer =
-    let empty =
-        { RA = 0<value>
-          RB = 0<value>
-          RC = 0<value>
-          RD = 0<value>
-          PC = 0<offset>
-          Code = [||] }
+    let empty = {
+        RA = 0<value>
+        RB = 0<value>
+        RC = 0<value>
+        RD = 0<value>
+        PC = 0<offset>
+        Code = [||]
+    }
 
     let get reg computer =
         match reg with
@@ -94,31 +96,37 @@ module Computer =
 
     let add value reg computer =
         match reg with
-        | RA ->
-            { computer with
-                RA = computer.RA + value }
-        | RB ->
-            { computer with
-                RB = computer.RB + value }
-        | RC ->
-            { computer with
-                RC = computer.RC + value }
-        | RD ->
-            { computer with
-                RD = computer.RD + value }
+        | RA -> {
+            computer with
+                RA = computer.RA + value
+          }
+        | RB -> {
+            computer with
+                RB = computer.RB + value
+          }
+        | RC -> {
+            computer with
+                RC = computer.RC + value
+          }
+        | RD -> {
+            computer with
+                RD = computer.RD + value
+          }
 
     let value data computer =
         match data with
         | Value v -> v
         | Reg r -> computer |> get r
 
-    let incPC offset computer =
-        { computer with
-            PC = computer.PC + offset }
+    let incPC offset computer = {
+        computer with
+            PC = computer.PC + offset
+    }
 
-    let load input computer =
-        { computer with
-            Code = input |> Array.map Instruction.parse }
+    let load input computer = {
+        computer with
+            Code = input |> Array.map Instruction.parse
+    }
 
     let hasNext computer =
         let pc = int computer.PC

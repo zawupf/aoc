@@ -4,13 +4,14 @@ open Xunit
 open Utils
 open Day03
 
-let input =
-    [| "vJrwpWtwJgWrhcsFMMfFFhFp"
-       "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"
-       "PmmdzqPrVvPwwTWBwg"
-       "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"
-       "ttgJtRGJQctTZtZT"
-       "CrZsJsPPZsGzwwsLwLmpwMDw" |]
+let input = [|
+    "vJrwpWtwJgWrhcsFMMfFFhFp"
+    "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL"
+    "PmmdzqPrVvPwwTWBwg"
+    "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn"
+    "ttgJtRGJQctTZtZT"
+    "CrZsJsPPZsGzwwsLwLmpwMDw"
+|]
 
 [<Fact>]
 let ``Day03 sumOfDoubleItemPrios works`` () =

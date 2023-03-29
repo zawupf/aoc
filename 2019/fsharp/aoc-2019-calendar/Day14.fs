@@ -47,9 +47,10 @@ module Reaction =
     let outputName (Reaction(_, output)) = output |> Chemical.name
     let inputs (Reaction(inputs, _)) = inputs
 
-type Factory =
-    { store: Map<Name, int64>
-      reactions: Map<Name, Reaction> }
+type Factory = {
+    store: Map<Name, int64>
+    reactions: Map<Name, Reaction>
+}
 
 module Factory =
     let private parseReactions lines =
@@ -59,18 +60,20 @@ module Factory =
             reaction |> Reaction.outputName, reaction)
         |> Map.ofSeq
 
-    let parse lines =
-        { store = Map.empty
-          reactions = lines |> parseReactions }
+    let parse lines = {
+        store = Map.empty
+        reactions = lines |> parseReactions
+    }
 
     let private available name factory =
         factory.store |> Map.tryFind name |> Option.defaultValue 0L
 
-    let private add (Chemical(count, name)) factory =
-        { factory with
+    let private add (Chemical(count, name)) factory = {
+        factory with
             store =
                 factory.store
-                |> Map.add name ((factory |> available name) + count) }
+                |> Map.add name ((factory |> available name) + count)
+    }
 
     let private sub (Chemical(count, name)) = add (Chemical(-count, name))
 

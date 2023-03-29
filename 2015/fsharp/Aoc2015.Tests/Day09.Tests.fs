@@ -7,9 +7,11 @@ open Day09
 [<Fact>]
 let ``Day09 routes work`` () =
     let roads =
-        [ "London to Dublin = 464"
-          "London to Belfast = 518"
-          "Dublin to Belfast = 141" ]
+        [
+            "London to Dublin = 464"
+            "London to Belfast = 518"
+            "Dublin to Belfast = 141"
+        ]
         |> parseRoads
 
     Assert.Equal(6, roads |> List.length)

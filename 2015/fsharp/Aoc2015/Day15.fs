@@ -2,13 +2,14 @@ module Day15
 
 open Utils
 
-type Ingredient =
-    { Name: string
-      Capacity: int
-      Durability: int
-      Flavor: int
-      Texture: int
-      Calories: int }
+type Ingredient = {
+    Name: string
+    Capacity: int
+    Durability: int
+    Flavor: int
+    Texture: int
+    Calories: int
+}
 
 module Ingredient =
     let parse input =
@@ -21,20 +22,23 @@ module Ingredient =
                           Int durability
                           Int flavor
                           Int texture
-                          Int calories ] ->
-            { Name = name
-              Capacity = capacity
-              Durability = durability
-              Flavor = flavor
-              Texture = texture
-              Calories = calories }
+                          Int calories ] -> {
+            Name = name
+            Capacity = capacity
+            Durability = durability
+            Flavor = flavor
+            Texture = texture
+            Calories = calories
+          }
         | _ -> failwith $"Invalid input: %s{input}"
 
     let properties (amount, ingredient) =
-        let { Capacity = capacity
-              Durability = durability
-              Flavor = flavor
-              Texture = texture } =
+        let {
+                Capacity = capacity
+                Durability = durability
+                Flavor = flavor
+                Texture = texture
+            } =
             ingredient
 
         [| capacity; durability; flavor; texture |]

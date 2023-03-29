@@ -9,10 +9,12 @@ let ``Day08 screen works`` () =
     let n = 4
 
     let screens =
-        [ "rect 3x2"
-          "rotate column x=1 by 1"
-          "rotate row y=0 by 4"
-          "rotate column x=1 by 1" ]
+        [
+            "rect 3x2"
+            "rotate column x=1 by 1"
+            "rotate row y=0 by 4"
+            "rotate column x=1 by 1"
+        ]
         |> List.take n
         |> List.scan
             (fun screen instruction -> screen |> Screen.next instruction)
@@ -23,10 +25,12 @@ let ``Day08 screen works`` () =
     let litCountsResult = screens |> List.map Screen.litCount
 
     let expected =
-        [ "###....\n###....\n......."
-          "#.#....\n###....\n.#....."
-          "....#.#\n###....\n.#....."
-          ".#..#.#\n#.#....\n.#....." ]
+        [
+            "###....\n###....\n......."
+            "#.#....\n###....\n.#....."
+            "....#.#\n###....\n.#....."
+            ".#..#.#\n#.#....\n.#....."
+        ]
         |> List.take n
 
     let litCountsExpected = [ 6; 6; 6; 6 ] |> List.take n

@@ -113,8 +113,10 @@ let parse lines =
 let dump elves =
     let (xmin, xmax), (ymin, ymax) = minMax elves
 
-    [ for y in ymin..ymax do
-          for x in xmin..xmax -> x, y ]
+    [
+        for y in ymin..ymax do
+            for x in xmin..xmax -> x, y
+    ]
     |> List.iter (fun (x, y) ->
         if x = xmin then
             printfn ""

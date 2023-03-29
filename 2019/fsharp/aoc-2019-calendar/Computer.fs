@@ -19,24 +19,26 @@ type private Mode =
     | Immediate
     | Relative
 
-type Context =
-    { mutable memory: int64[]
-      mutable position: int
-      mutable relativeBase: int
-      input: Queue<int64>
-      output: Queue<int64> }
+type Context = {
+    mutable memory: int64[]
+    mutable position: int
+    mutable relativeBase: int
+    input: Queue<int64>
+    output: Queue<int64>
+}
 
 type Event =
     | Halted
     | Paused
     | Output of int64
 
-let compile (source: string) =
-    { position = 0
-      relativeBase = 0
-      memory = source.Split ',' |> Array.map int64
-      input = new Queue<int64>()
-      output = new Queue<int64>() }
+let compile (source: string) = {
+    position = 0
+    relativeBase = 0
+    memory = source.Split ',' |> Array.map int64
+    input = new Queue<int64>()
+    output = new Queue<int64>()
+}
 
 let ensureMemory position context =
     let resize () =
@@ -219,9 +221,10 @@ let rec runSilent context =
     | Output _ -> runSilent context
 
 let patch context noun verb =
-    let ctx =
-        { context with
-            memory = context.memory |> Array.map id }
+    let ctx = {
+        context with
+            memory = context.memory |> Array.map id
+    }
 
     ctx.memory.[1] <- noun
     ctx.memory.[2] <- verb

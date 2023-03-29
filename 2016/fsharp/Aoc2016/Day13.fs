@@ -21,14 +21,16 @@ module Space =
         | Wall -> '#'
         | Open -> '.'
 
-type Area =
-    { MagicNumber: uint
-      Area: Dictionary<Pos, Space> }
+type Area = {
+    MagicNumber: uint
+    Area: Dictionary<Pos, Space>
+}
 
 module Area =
-    let empty number =
-        { MagicNumber = number
-          Area = Dictionary<Pos, Space>() }
+    let empty number = {
+        MagicNumber = number
+        Area = Dictionary<Pos, Space>()
+    }
 
     let private countBits (number: uint) =
         let rec loop bits number =

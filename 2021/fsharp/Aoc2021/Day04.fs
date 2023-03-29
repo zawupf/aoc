@@ -51,8 +51,7 @@ module Board =
 
         { Cells = cells; Score = score }
 
-type Game =
-    { Numbers: int list; Boards: Board seq }
+type Game = { Numbers: int list; Boards: Board seq }
 
 module Game =
     let ofLines lines =

@@ -4,33 +4,35 @@ open Xunit
 open Day06
 
 module Data =
-    let orbits =
-        [ "COM)B"
-          "B)C"
-          "C)D"
-          "D)E"
-          "E)F"
-          "B)G"
-          "G)H"
-          "D)I"
-          "E)J"
-          "J)K"
-          "K)L" ]
+    let orbits = [
+        "COM)B"
+        "B)C"
+        "C)D"
+        "D)E"
+        "E)F"
+        "B)G"
+        "G)H"
+        "D)I"
+        "E)J"
+        "J)K"
+        "K)L"
+    ]
 
-    let orbits2 =
-        [ "COM)B"
-          "B)C"
-          "C)D"
-          "D)E"
-          "E)F"
-          "B)G"
-          "G)H"
-          "D)I"
-          "E)J"
-          "J)K"
-          "K)L"
-          "K)YOU"
-          "I)SAN" ]
+    let orbits2 = [
+        "COM)B"
+        "B)C"
+        "C)D"
+        "D)E"
+        "E)F"
+        "B)G"
+        "G)H"
+        "D)I"
+        "E)J"
+        "J)K"
+        "K)L"
+        "K)YOU"
+        "I)SAN"
+    ]
 
 [<Fact>]
 let ``Day06 parse works`` () =

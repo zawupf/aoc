@@ -2,11 +2,12 @@ module Day14
 
 open Utils
 
-type Reindeer =
-    { Name: string
-      Speed: int
-      FlyTime: int
-      RestTime: int }
+type Reindeer = {
+    Name: string
+    Speed: int
+    FlyTime: int
+    RestTime: int
+} with
 
     member this.FullTime = this.FlyTime + this.RestTime
 
@@ -47,11 +48,12 @@ module Reindeer =
             @"^(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds\.$"
 
         match input with
-        | Regex pattern [ name; Int speed; Int flyTime; Int restTime ] ->
-            { Name = name
-              Speed = speed
-              FlyTime = flyTime
-              RestTime = restTime }
+        | Regex pattern [ name; Int speed; Int flyTime; Int restTime ] -> {
+            Name = name
+            Speed = speed
+            FlyTime = flyTime
+            RestTime = restTime
+          }
         | _ -> failwithf "Invalid input: %s" input
 
 let input = readInputLines "14" |> Seq.toList |> List.map Reindeer.parse

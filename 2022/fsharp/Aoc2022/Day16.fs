@@ -4,18 +4,20 @@ open Utils
 
 let input = readInputLines "16"
 
-type Valve =
-    { Name: string
-      Rate: int
-      Open: bool
-      Valves: int array }
+type Valve = {
+    Name: string
+    Rate: int
+    Open: bool
+    Valves: int array
+}
 
 type Runner = { Current: int; RemainingTime: int }
 
-type Waypoint =
-    { Runners: Runner list
-      Pressure: int
-      Targets: int list }
+type Waypoint = {
+    Runners: Runner list
+    Pressure: int
+    Targets: int list
+}
 
 let parseLine line =
     let rx =
@@ -23,10 +25,12 @@ let parseLine line =
 
     match line with
     | Regex rx [ name; Int rate; valves ] ->
-        { Name = name
-          Rate = rate
-          Open = false
-          Valves = Array.empty },
+        {
+            Name = name
+            Rate = rate
+            Open = false
+            Valves = Array.empty
+        },
         valves.Split(", ")
     | _ -> failwith $"Invalid line: %s{line}"
 
@@ -126,9 +130,11 @@ let maxPressure numRunners totalTime lines =
         match ways with
         | [] -> result
         | waypoint :: ways ->
-            let { Runners = allRunners
-                  Pressure = p
-                  Targets = js } =
+            let {
+                    Runners = allRunners
+                    Pressure = p
+                    Targets = js
+                } =
                 waypoint
 
             let runners =
@@ -169,26 +175,33 @@ let maxPressure numRunners totalTime lines =
                                     let js' = js |> List.except [ j ]
 
                                     r',
-                                    { Runners =
-                                        { Current = j; RemainingTime = t' }
-                                        :: others
-                                      Pressure = p'
-                                      Targets = js' }
+                                    {
+                                        Runners =
+                                            {
+                                                Current = j
+                                                RemainingTime = t'
+                                            }
+                                            :: others
+                                        Pressure = p'
+                                        Targets = js'
+                                    }
                                     :: ways)
                             (r, ways))
                     (result, ways)
 
             loop result' ways'
 
-    loop
-        0
-        [ { Runners =
-              List.replicate
-                  numRunners
-                  { Current = start
-                    RemainingTime = totalTime }
+    loop 0 [
+        {
+            Runners =
+                List.replicate numRunners {
+                    Current = start
+                    RemainingTime = totalTime
+                }
             Pressure = 0
-            Targets = targets } ]
+            Targets = targets
+        }
+    ]
 
 let job1 () = input |> maxPressure 1 30 |> string
 

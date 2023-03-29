@@ -2,11 +2,12 @@ module Day22
 
 open Utils
 
-type Node =
-    { X: int
-      Y: int
-      Size: int
-      Used: int }
+type Node = {
+    X: int
+    Y: int
+    Size: int
+    Used: int
+} with
 
     member this.Id = this.X, this.Y
     member this.Avail = this.Size - this.Used
@@ -22,11 +23,12 @@ module Node =
 
         match line with
         | Regex rx [ Int x; Int y; Int size; Int used; Int avail; Int usep ] ->
-            let node =
-                { X = x
-                  Y = y
-                  Size = size
-                  Used = used }
+            let node = {
+                X = x
+                Y = y
+                Size = size
+                Used = used
+            }
 
             assert (node.Id = (x, y))
             assert (node.Avail = avail)

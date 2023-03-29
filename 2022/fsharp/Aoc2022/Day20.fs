@@ -57,9 +57,11 @@ let groveCoordinates key n data =
     let data = [ 1..n ] |> List.fold (fun data _ -> mix data) data
     let i = data |> indexByValue 0L
 
-    [ data |> valueAt (i + 1000)
-      data |> valueAt (i + 2000)
-      data |> valueAt (i + 3000) ]
+    [
+        data |> valueAt (i + 1000)
+        data |> valueAt (i + 2000)
+        data |> valueAt (i + 3000)
+    ]
     |> List.map snd
 
 let groveCoordinatesSum key n data =

@@ -11,11 +11,12 @@ type Mode =
     | WithDiv
     | WithoutDiv
 
-type Monkey =
-    { items: uint64 list
-      operation: Operation
-      test: uint64
-      onTrueFalse: int * int }
+type Monkey = {
+    items: uint64 list
+    operation: Operation
+    test: uint64
+    onTrueFalse: int * int
+}
 
 module Monkey =
     let parse input =
@@ -55,10 +56,12 @@ module Monkey =
             | Regex @"^If false: throw to monkey (\d+)$" [ Int i ] -> i
             | line -> failwith $"Invalid input[5]: %s{line}"
 
-        { items = items
-          operation = operation
-          test = test
-          onTrueFalse = onTrue, onFalse }
+        {
+            items = items
+            operation = operation
+            test = test
+            onTrueFalse = onTrue, onFalse
+        }
 
     let parseMany input =
         (input |> String.trim).Split("\n\n") |> Array.map parse
@@ -87,10 +90,11 @@ module Monkey =
                    | 0UL -> fst
                    | _ -> snd
 
-            monkeys[target] <-
-                { monkeys[target] with
+            monkeys[target] <- {
+                monkeys[target] with
                     items =
-                        monkeys[target].items @ [ worryLevel % magicNumber ] })
+                        monkeys[target].items @ [ worryLevel % magicNumber ]
+            })
 
         monkeys[index] <- { monkey with items = [] }
 

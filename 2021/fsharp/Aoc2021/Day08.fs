@@ -18,17 +18,18 @@ let countUniqueOutputDigits lines =
     |> List.sum
 
 let decodeSum lines =
-    let digits =
-        [ "abcefg"
-          "cf"
-          "acdeg"
-          "acdfg"
-          "bcdf"
-          "abdfg"
-          "abdefg"
-          "acf"
-          "abcdefg"
-          "abcdfg" ]
+    let digits = [
+        "abcefg"
+        "cf"
+        "acdeg"
+        "acdfg"
+        "bcdf"
+        "abdfg"
+        "abdefg"
+        "acf"
+        "abcdefg"
+        "abcdfg"
+    ]
 
     let sortSegments (segments: char seq) =
         System.String.Join("", segments |> Seq.sort)
@@ -84,14 +85,15 @@ let decodeSum lines =
                         let g = eg |> Seq.skip 1 |> Seq.head
 
                         let map =
-                            Map.ofList
-                                [ a, 'a'
-                                  b, 'b'
-                                  c, 'c'
-                                  d, 'd'
-                                  e, 'e'
-                                  f, 'f'
-                                  g, 'g' ]
+                            Map.ofList [
+                                a, 'a'
+                                b, 'b'
+                                c, 'c'
+                                d, 'd'
+                                e, 'e'
+                                f, 'f'
+                                g, 'g'
+                            ]
 
                         let decodedDigits =
                             wrongDigits

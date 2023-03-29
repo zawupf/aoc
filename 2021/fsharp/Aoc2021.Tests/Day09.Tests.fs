@@ -2,8 +2,13 @@ module Day09.Tests
 
 open Xunit
 
-let input =
-    [ "2199943210"; "3987894921"; "9856789892"; "8767896789"; "9899965678" ]
+let input = [
+    "2199943210"
+    "3987894921"
+    "9856789892"
+    "8767896789"
+    "9899965678"
+]
 
 [<Fact>]
 let ``Day09 riskLevelSum works`` () = Assert.Equal(15, input |> riskLevelSum)

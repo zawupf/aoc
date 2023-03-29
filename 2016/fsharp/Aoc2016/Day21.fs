@@ -45,10 +45,11 @@ let scramble string instructions =
                     let x = 1 + i + (if i >= 4 then 1 else 0)
                     chars |> rotateRight x
                 | Regex REV_POS [ Int x; Int y ] ->
-                    Array.concat
-                        [ chars.[.. x - 1]
-                          chars.[x..y] |> Array.rev
-                          chars.[y + 1 ..] ]
+                    Array.concat [
+                        chars.[.. x - 1]
+                        chars.[x..y] |> Array.rev
+                        chars.[y + 1 ..]
+                    ]
                 | Regex MOV_POS [ Int x; Int y ] ->
                     let c = chars.[x]
                     chars |> Array.removeAt x |> Array.insertAt y c
@@ -88,10 +89,11 @@ let unscramble string instructions =
                     |> Seq.map (fun x -> chars |> rotateLeft x)
                     |> Seq.find (fun result -> (result |> scramble c) = chars)
                 | Regex REV_POS [ Int x; Int y ] ->
-                    Array.concat
-                        [ chars.[.. x - 1]
-                          chars.[x..y] |> Array.rev
-                          chars.[y + 1 ..] ]
+                    Array.concat [
+                        chars.[.. x - 1]
+                        chars.[x..y] |> Array.rev
+                        chars.[y + 1 ..]
+                    ]
                 | Regex MOV_POS [ Int y; Int x ] ->
                     let c = chars.[x]
                     chars |> Array.removeAt x |> Array.insertAt y c

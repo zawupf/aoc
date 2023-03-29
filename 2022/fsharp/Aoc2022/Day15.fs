@@ -13,8 +13,10 @@ module Signal =
             @"^Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)$"
 
         match line with
-        | Regex rx [ Int sx; Int sy; Int bx; Int by ] ->
-            { Sensor = (sx, sy); Beacon = (bx, by) }
+        | Regex rx [ Int sx; Int sy; Int bx; Int by ] -> {
+            Sensor = (sx, sy)
+            Beacon = (bx, by)
+          }
         | _ -> failwithf "Invalid line: %s" line
 
     let parseMany lines = lines |> Seq.map parse |> Seq.toArray
@@ -24,8 +26,10 @@ module Signal =
         |> Array.fold
             (fun
                 xs
-                { Sensor = (x', y')
-                  Beacon = (x'', y'') } ->
+                {
+                    Sensor = (x', y')
+                    Beacon = (x'', y'')
+                } ->
                 xs
                 |> if y = y' then Set.add x' else id
                 |> if y = y'' then Set.add x'' else id)

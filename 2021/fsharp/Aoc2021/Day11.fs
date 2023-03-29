@@ -17,14 +17,16 @@ module Grid =
         x >= 0 && x < nx && y >= 0 && y < ny
 
     let adjacentPoints (grid: Grid) (x, y) =
-        [ x - 1, y
-          x + 1, y
-          x, y - 1
-          x, y + 1
-          x - 1, y - 1
-          x + 1, y + 1
-          x + 1, y - 1
-          x - 1, y + 1 ]
+        [
+            x - 1, y
+            x + 1, y
+            x, y - 1
+            x, y + 1
+            x - 1, y - 1
+            x + 1, y + 1
+            x + 1, y - 1
+            x - 1, y + 1
+        ]
         |> List.filter (grid |> contains)
 
     let flashCount (grid: Grid) =

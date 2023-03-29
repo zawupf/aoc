@@ -2,18 +2,20 @@ module Day04
 
 open Utils
 
-type Room =
-    { Name: string
-      SectorID: int
-      Checksum: string }
+type Room = {
+    Name: string
+    SectorID: int
+    Checksum: string
+}
 
 module Room =
     let parse input =
         match input with
-        | Regex @"^([a-z\-]+)-(\d+)\[([a-z]+)\]$" [ name; Int sectorId; checksum ] ->
-            { Name = name
-              SectorID = sectorId
-              Checksum = checksum }
+        | Regex @"^([a-z\-]+)-(\d+)\[([a-z]+)\]$" [ name; Int sectorId; checksum ] -> {
+            Name = name
+            SectorID = sectorId
+            Checksum = checksum
+          }
         | _ -> failwith $"Invalid room: %s{input}"
 
     let isReal room =

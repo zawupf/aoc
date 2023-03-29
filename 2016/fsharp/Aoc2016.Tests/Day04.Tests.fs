@@ -16,10 +16,12 @@ let ``Day04 is real room works`` expected room =
 let ``Day04 sum of real sector ids works`` () =
     Assert.Equal(
         1514,
-        [ "aaaaa-bbb-z-y-x-123[abxyz]"
-          "a-b-c-d-e-f-g-h-987[abcde]"
-          "not-a-real-room-404[oarel]"
-          "totally-real-room-200[decoy]" ]
+        [
+            "aaaaa-bbb-z-y-x-123[abxyz]"
+            "a-b-c-d-e-f-g-h-987[abcde]"
+            "not-a-real-room-404[oarel]"
+            "totally-real-room-200[decoy]"
+        ]
         |> List.map Room.parse
         |> List.filter Room.isReal
         |> List.sumBy (fun room -> room.SectorID)
