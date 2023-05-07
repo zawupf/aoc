@@ -205,4 +205,6 @@ let maxPressure numRunners totalTime lines =
 
 let job1 () = input |> maxPressure 1 30 |> string
 
-let job2 () = input |> maxPressure 2 26 |> string
+let job2 () =
+    // notImplemented ()
+    input |> maxPressure 2 26 |> string

@@ -1,5 +1,8 @@
 module Utils
 
+let notImplemented () =
+    raise (System.NotImplementedException())
+
 [<AutoOpen>]
 module FancyPatterns =
     open System.Text.RegularExpressions
