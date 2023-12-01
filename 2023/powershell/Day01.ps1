@@ -1,19 +1,18 @@
 $inputFile = "$PSScriptRoot\..\_inputs\Day01.txt"
-$lines = Get-Content $inputFile
+$inputLines = Get-Content $inputFile
 
-function Get-Day01_1 {
-    getCalibrationSum '\d'
+function Get-Day01_1 ([string[]] $Lines = $inputLines) {
+    getCalibrationSum '\d' $Lines
 }
 
-function Get-Day01_2 {
-    getCalibrationSum '\d|one|two|three|four|five|six|seven|eight|nine'
+function Get-Day01_2  ($Lines = $inputLines) {
+    getCalibrationSum '\d|one|two|three|four|five|six|seven|eight|nine' $Lines
 }
 
 function getCalibrationSum {
     param (
-        [Parameter(Mandatory)]
-        [string]
-        $DigitPattern
+        [string] $DigitPattern,
+        [string[]] $Lines
     )
 
     function toNumber ([string]$value) {
@@ -31,7 +30,7 @@ function getCalibrationSum {
         }
     }
 
-    $values = foreach ($line in $lines) {
+    $values = foreach ($line in $Lines) {
         $a = toNumber ([regex]::Match($line, ".*?($DigitPattern)").Groups[1].Value)
         $b = toNumber ([regex]::Match($line, ".*($DigitPattern)").Groups[1].Value)
         [int]"$a$b"
