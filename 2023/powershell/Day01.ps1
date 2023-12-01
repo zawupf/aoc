@@ -2,18 +2,20 @@ $inputFile = "$PSScriptRoot\..\_inputs\Day01.txt"
 $lines = Get-Content $inputFile
 
 function Get-Day01_1 {
-    $digitPattern = '\d'
-
-    $values = foreach ($line in $lines) {
-        $a = [regex]::Match($line, ".*?($digitPattern)").Groups[1].Value
-        $b = [regex]::Match($line, ".*($digitPattern)").Groups[1].Value
-        [int]"$a$b"
-    }
-
-    ($values | Measure-Object -Sum).Sum
+    getCalibrationSum '\d'
 }
 
 function Get-Day01_2 {
+    getCalibrationSum '\d|one|two|three|four|five|six|seven|eight|nine'
+}
+
+function getCalibrationSum {
+    param (
+        [Parameter(Mandatory)]
+        [string]
+        $DigitPattern
+    )
+
     function toNumber ([string]$value) {
         switch ($value) {
             'one' { '1' }
@@ -29,11 +31,9 @@ function Get-Day01_2 {
         }
     }
 
-    $digitPattern = '\d|one|two|three|four|five|six|seven|eight|nine'
-
     $values = foreach ($line in $lines) {
-        $a = toNumber ([regex]::Match($line, ".*?($digitPattern)").Groups[1].Value)
-        $b = toNumber ([regex]::Match($line, ".*($digitPattern)").Groups[1].Value)
+        $a = toNumber ([regex]::Match($line, ".*?($DigitPattern)").Groups[1].Value)
+        $b = toNumber ([regex]::Match($line, ".*($DigitPattern)").Groups[1].Value)
         [int]"$a$b"
     }
 
