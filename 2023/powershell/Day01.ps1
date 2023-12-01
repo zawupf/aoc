@@ -1,11 +1,15 @@
 $inputFile = "$PSScriptRoot\..\_inputs\Day01.txt"
+$lines = Get-Content $inputFile
 
 function Get-Day01_1 {
-    $values = switch -Regex -File ($inputFile) {
-        '(\d).*(\d)' { [int]"$($Matches.1)$($Matches.2)"; continue }
-        '\d' { [int]"$($Matches.0)$($Matches.0)"; continue }
-        Default { "> $_" }
+    $digitPattern = '\d'
+
+    $values = foreach ($line in $lines) {
+        $a = [regex]::Match($line, ".*?($digitPattern)").Groups[1].Value
+        $b = [regex]::Match($line, ".*($digitPattern)").Groups[1].Value
+        [int]"$a$b"
     }
+
     ($values | Measure-Object -Sum).Sum
 }
 
@@ -24,12 +28,15 @@ function Get-Day01_2 {
             Default { $value }
         }
     }
+
     $digitPattern = '\d|one|two|three|four|five|six|seven|eight|nine'
-    $values = switch -Regex -File ($inputFile) {
-        "($digitPattern).*($digitPattern)" { [int]"$(toNumber $Matches.1)$(toNumber $Matches.2)"; continue }
-        "$digitPattern" { [int]"$(toNumber $Matches.0)$(toNumber $Matches.0)"; continue }
-        Default { "> $_" }
+
+    $values = foreach ($line in $lines) {
+        $a = toNumber ([regex]::Match($line, ".*?($digitPattern)").Groups[1].Value)
+        $b = toNumber ([regex]::Match($line, ".*($digitPattern)").Groups[1].Value)
+        [int]"$a$b"
     }
+
     ($values | Measure-Object -Sum).Sum
 }
 
