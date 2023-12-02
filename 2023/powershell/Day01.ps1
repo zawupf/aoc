@@ -39,5 +39,5 @@ function getCalibrationSum {
     ($values | Measure-Object -Sum).Sum
 }
 
-Get-Day01_1 # 54990
-Get-Day01_2 # 54473
+# Get-Day01_1 # 54990
+# Get-Day01_2 # 54473
