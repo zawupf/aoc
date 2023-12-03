@@ -17,7 +17,10 @@ function part_1 {
     $sum = 0
     for ($y = 0; $y -lt $Lines.Count; $y++) {
         foreach ($match in [regex]::Matches($Lines[$y], '\d+')) {
-            $symbols = -join (adjacentPositions $match.Index $y $match.Length $Lines | ForEach-Object { $Lines[$_.y][$_.x] })
+            $symbols = -join (
+                adjacentPositions $match.Index $y $match.Length $Lines
+                | ForEach-Object { $Lines[$_.y][$_.x] }
+            )
             if ($symbols -match '[^.\d]') {
                 $sum += [int]$match.Value
             }
