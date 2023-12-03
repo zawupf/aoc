@@ -14,50 +14,11 @@ function part_1 {
         [string[]] $Lines
     )
 
-    $height = $Lines.Count
-    $width = $Lines[0].Length
-
-    function testSymbol ($s) {
-        $s -match '[^.0-9]'
-    }
-
-    function testAdjacentSymbols ($match, $lineIndex) {
-        $a = [math]::Max($match.Index - 1, 0)
-        $b = [math]::Min($match.Index + $match.Length, $width - 1)
-
-        $y = $lineIndex - 1
-        if ($y -ge 0) {
-            $s = $Lines[$y].Substring($a, $b - $a + 1)
-            if (testSymbol $s) {
-                return $true
-            }
-        }
-
-        $y = $lineIndex + 1
-        if ($y -lt $height) {
-            $s = $Lines[$y].Substring($a, $b - $a + 1)
-            if (testSymbol $s) {
-                return $true
-            }
-        }
-
-        $i = $match.Index - 1
-        if ($i -ge 0 -and (testSymbol $Lines[$lineIndex][$i])) {
-            return $true
-        }
-
-        $i = $match.Index + $match.Length
-        if ($i -lt $width -and (testSymbol $Lines[$lineIndex][$i])) {
-            return $true
-        }
-        return $false
-    }
-
     $sum = 0
-    for ($y = 0; $y -lt $height; $y++) {
-        $line = $Lines[$y]
-        foreach ($match in [regex]::Matches($line, '\d+')) {
-            if (testAdjacentSymbols $match $y) {
+    for ($y = 0; $y -lt $Lines.Count; $y++) {
+        foreach ($match in [regex]::Matches($Lines[$y], '\d+')) {
+            $symbols = -join (adjacentPositions $match.Index $y $match.Length $Lines | ForEach-Object { $Lines[$_.y][$_.x] })
+            if ($symbols -match '[^.\d]') {
                 $sum += [int]$match.Value
             }
         }
@@ -70,52 +31,28 @@ function part_2 {
         [string[]] $Lines
     )
 
-    $height = $Lines.Count
-    $width = $Lines[0].Length
-
     $gears = @{}
-    for ($y = 0; $y -lt $height; $y++) {
-        $line = $Lines[$y]
-        foreach ($match in [regex]::Matches($line, '\d+')) {
-            $a = [math]::Max($match.Index - 1, 0)
-            $b = [math]::Min($match.Index + $match.Length, $width - 1)
-            $cy = $y - 1
-            if ($cy -ge 0) {
-                for ($x = $a; $x -le $b; $x++) {
-                    if ($Lines[$cy][$x] -eq "*") {
-                        $gears["$x,$cy"] += , [int]$match.Value
-                    }
-                }
-            }
-            $cy = $y + 1
-            if ($cy -lt $height) {
-                for ($x = $a; $x -le $b; $x++) {
-                    if ($Lines[$cy][$x] -eq "*") {
-                        $gears["$x,$cy"] += , [int]$match.Value
-                    }
-                }
-            }
-            $x = $match.Index - 1
-            if ($x -ge 0 -and $Lines[$y][$x] -eq '*') {
-                $gears["$x,$y"] += , [int]$match.Value
-            }
-            $x = $match.Index + $match.Length
-            if ($x -lt $width -and $Lines[$y][$x] -eq '*') {
-                $gears["$x,$y"] += , [int]$match.Value
-            }
+    for ($y = 0; $y -lt $Lines.Count; $y++) {
+        foreach ($match in [regex]::Matches($Lines[$y], '\d+')) {
+            adjacentPositions $match.Index $y $match.Length $Lines
+            | Where-Object { $Lines[$_.y][$_.x] -EQ "*" }
+            | ForEach-Object { $gears["$($_.x),$($_.y)"] += , [int]$match.Value }
         }
     }
 
-    $sum = 0
-    foreach ($gear in $gears.Keys) {
-        $values = $gears[$gear]
-        switch ($values.Count) {
-            1 {  }
-            2 { $sum += $values[0] * $values[1] }
-            Default { throw "Too many values for gear: $gear" }
-        }
-    }
-    $sum
+    $gears.Values
+    | Measure-Object -Sum { $_.Count -eq 2 ? $_[0] * $_[1]:0 }
+    | Select-Object -ExpandProperty Sum
+}
+
+function adjacentPositions ($x, $y, $length, $lines) {
+    @(
+        ($x - 1)..($x + $length) | ForEach-Object { [PSCustomObject]@{ x = $_; y = $y - 1 } }
+        ($x - 1)..($x + $length) | ForEach-Object { [PSCustomObject]@{ x = $_; y = $y + 1 } }
+        [PSCustomObject]@{ x = $x - 1; y = $y }
+        [PSCustomObject]@{ x = $x + $length; y = $y }
+    )
+    | Where-Object { $_.x -ge 0 -and $_.x -lt $lines[0].Length -and $_.y -ge 0 -and $_.y -lt $lines.Count }
 }
 
 # Get-Day03_1 # 557705
