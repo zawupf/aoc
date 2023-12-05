@@ -136,65 +136,66 @@ class Map {
                 $IdEnd = $r.Stop()
                 $MapStart = $rm.SourceStart
                 $MapEnd = $rm.SourceEnd()
-                $stats = [ordered]@{
-                    IdStart  = $IdStart
-                    IdEnd    = $IdEnd
-                    MapStart = $MapStart
-                    MapEnd   = $MapEnd
-                }
 
-                if ($IdStart -gt $MapEnd -or $IdEnd -lt $MapStart) {
+                switch ($true) {
                     # Fully out of map range
-                    $nextTodo += $r
-                }
+                    ($IdStart -gt $MapEnd -or $IdEnd -lt $MapStart) {
+                        $nextTodo += $r
+                        continue
+                    }
 
-                elseif ($IdStart -ge $MapStart -and $IdEnd -le $MapEnd) {
                     # Fully in map range
-                    $sr = $rm.ConvertRange($r)
-                    $done += $sr
-                }
-
-                elseif ($IdStart -lt $MapStart) {
-                    # Partial overlap or full overflow
-                    $sr = [Range]@{
-                        Start  = $IdStart
-                        Length = $MapStart - $IdStart
+                    ($IdStart -ge $MapStart -and $IdEnd -le $MapEnd) {
+                        $done += $rm.ConvertRange($r)
+                        continue
                     }
-                    $nextTodo += $sr # outside sub-range
 
-                    if ($IdEnd -le $MapEnd) {
-                        $sr = $rm.ConvertRange([Range]@{
-                                Start  = $MapStart
-                                Length = $IdEnd - $MapStart + 1
-                            })
-                        $done += $sr
+                    # Partial/full overlap/overflow: Take left outer range
+                    ($IdStart -lt $MapStart) {
+                        $nextTodo += [Range]@{
+                            Start  = $IdStart
+                            Length = $MapStart - $IdStart
+                        }
                     }
-                    else {
-                        $sr = $rm.ConvertRange([Range]@{
-                                Start  = $rm.SourceStart
-                                Length = $rm.Length
-                            })
-                        $done += $sr
-                        $sr = [Range]@{
+
+                    # Partial/full overlap/overflow: Take right outer range
+                    ($IdEnd -gt $MapEnd) {
+                        $nextTodo += [Range]@{
                             Start  = $MapEnd + 1
                             Length = $IdEnd - $MapEnd
                         }
-                        $nextTodo += $sr
                     }
-                }
-                else {
-                    if ($IdEnd -le $MapEnd) { throw "PANIC: Logic error" }
-                    $sr = $rm.ConvertRange([Range]@{
-                            Start  = $IdStart
-                            Length = $MapEnd - $IdStart + 1
-                        })
-                    $done += $sr
-                    $sr = [Range]@{
-                        Start  = $MapEnd + 1
-                        Length = $IdEnd - $MapEnd
+
+                    # Full overflow: Take map range
+                    ($IdStart -lt $MapStart -and $IdEnd -gt $MapEnd) {
+                        $done += $rm.ConvertRange([Range]@{
+                                Start  = $rm.SourceStart
+                                Length = $rm.Length
+                            })
+                        continue
                     }
-                    $nextTodo += $sr
+
+                    # Partial overlap: Take left inner range
+                    ($rm.Contains($IdEnd)) {
+                        $done += $rm.ConvertRange([Range]@{
+                                Start  = $MapStart
+                                Length = $IdEnd - $MapStart + 1
+                            })
+                        continue
+                    }
+
+                    # Partial overlap: Take right inner range
+                    ($rm.Contains($IdStart)) {
+                        $done += $rm.ConvertRange([Range]@{
+                                Start  = $IdStart
+                                Length = $MapEnd - $IdStart + 1
+                            })
+                        continue
+                    }
+
+                    Default { throw "PANIC!" }
                 }
+
             }
             $todo = $nextTodo
         }
