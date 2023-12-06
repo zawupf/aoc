@@ -50,16 +50,17 @@ function part_2 {
     [int64]$time = -join [regex]::Matches($lines[0], '\d+').Value
     [int64]$distance = -join [regex]::Matches($lines[1], '\d+').Value
 
-    $wins = 0..$time
-    | ForEach-Object {
-        $timeHolding = $_
+    $winCount = 0
+    for ($i = 0; $i -le $time; $i++) {
+        $timeHolding = $i
         $timeRacing = $time - $timeHolding
         $speed = $timeHolding
         $dist = $timeRacing * $speed
-        $dist
+        if ($dist -gt $distance) {
+            $winCount += 1
+        }
     }
-    | Where-Object { $_ -gt $distance }
-    $wins.Count
+    $winCount
 }
 
 # Get-Day06_1 # 861300
