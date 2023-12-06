@@ -50,17 +50,39 @@ function part_2 {
     [int64]$time = -join [regex]::Matches($lines[0], '\d+').Value
     [int64]$distance = -join [regex]::Matches($lines[1], '\d+').Value
 
-    $winCount = 0
-    for ($i = 0; $i -le $time; $i++) {
-        $timeHolding = $i
-        $timeRacing = $time - $timeHolding
-        $speed = $timeHolding
-        $dist = $timeRacing * $speed
-        if ($dist -gt $distance) {
-            $winCount += 1
+    $m = $time / 2
+    $d = ($time - $m) * $m
+    if ($d -le $distance) { throw "Oink" }
+
+    [int64]$a = 0
+    $b = $m
+    do {
+        [int64]$i = [math]::Floor(($a + $b) / 2)
+        $d = ($time - $i) * $i
+        if ($d -gt $distance) {
+            $b = $i
         }
-    }
-    $winCount
+        else {
+            $a = $i
+        }
+    } while ( $b - $a -gt 1 )
+    $first = $b
+
+    [int64]$a = $m
+    $b = $time
+    do {
+        [int64]$i = [math]::Floor(($a + $b) / 2)
+        $d = ($time - $i) * $i
+        if ($d -gt $distance) {
+            $a = $i
+        }
+        else {
+            $b = $i
+        }
+    } while ( $b - $a -gt 1 )
+    $last = $b
+
+    $last - $first
 }
 
 # Get-Day06_1 # 861300
