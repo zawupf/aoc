@@ -4,7 +4,7 @@ BeforeAll {
 
 Describe 'Test Day14.ps1' {
     It "Part 1" { Get-Day14_1 | Should -BeExactly 105623 }
-    # It "Part 2" { Get-Day14_2 | Should -BeExactly 840988812853 }
+    It "Part 2" { Get-Day14_2 | Should -BeExactly 98029 }
 
     BeforeDiscovery {
         $testData1 = @(
@@ -37,7 +37,7 @@ O.#..O.#.#
         part_1 $in | Should -BeExactly $expected
     }
 
-    # It "test  part 2" -ForEach $testData2 {
-    #     part_2 $in | Should -BeExactly $expected
-    # }
+    It "test  part 2" -ForEach $testData2 {
+        part_2 $in | Should -BeExactly $expected
+    }
 }
