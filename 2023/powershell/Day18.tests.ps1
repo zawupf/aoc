@@ -4,7 +4,7 @@ BeforeAll {
 
 Describe 'Test Day18.ps1' {
     It "Part 1" { Get-Day18_1 | Should -BeExactly 70253 }
-    # It "Part 2" { Get-Day18_2 | Should -BeExactly 1268 }
+    It "Part 2" { Get-Day18_2 | Should -BeExactly 131265059885080 }
 
     BeforeDiscovery {
         $testData1 = @(

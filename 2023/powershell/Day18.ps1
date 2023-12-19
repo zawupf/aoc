@@ -15,9 +15,17 @@ function part_1 {
         [string[]] $lines
     )
 
-    $grid = digOutline $lines
-    digInner $grid
-    countHoles $grid
+    $instructions = switch -Regex ($lines) {
+        '^(?<Direction>[LRUD]) (?<Length>\d+) \(#[0-9a-f]{6}\)$' {
+            [Instruction]@{
+                Length    = $Matches.Length
+                Direction = $Matches.Direction
+            }
+        }
+        Default { throw "Invalid line: $_" }
+    }
+
+    area $instructions
 }
 
 function part_2 {
@@ -25,113 +33,145 @@ function part_2 {
         [string[]] $lines
     )
 
-    stalkAround $lines 3 10
-}
-
-function digOutline ([string[]] $lines) {
-    $x = $y = $minx = $miny = $maxx = $maxy = 0
-
-    $digs = switch -Regex ($lines) {
-        '(?<Direction>[LRUD]) (?<Length>\d+) \((?<Color>#[0-9a-f]{6})\)' {
-            $dig = $Matches | Select-Object Direction, Length, Color
-            $dig
-
-            switch ($dig.Direction) {
-                'L' { $x -= $dig.Length }
-                'R' { $x += $dig.Length }
-                'U' { $y -= $dig.Length }
-                'D' { $y += $dig.Length }
-                Default {}
+    $instructions = switch -Regex ($lines) {
+        '^[LRUD] \d+ \(#(?<Length>[0-9a-f]{5})(?<Direction>[0-3])\)$' {
+            [Instruction]@{
+                Length    = "0x$($Matches.Length)"
+                Direction = switch ($Matches.Direction) {
+                    '0' { 'R' }
+                    '1' { 'D' }
+                    '2' { 'L' }
+                    '3' { 'U' }
+                    Default { throw "Invalid direction code: $_" }
+                }
             }
-
-            $minx = [math]::Min($minx, $x)
-            $maxx = [math]::Max($maxx, $x)
-            $miny = [math]::Min($miny, $y)
-            $maxy = [math]::Max($maxy, $y)
         }
         Default { throw "Invalid line: $_" }
     }
 
-    $width = $maxx - $minx + 1
-    $height = $maxy - $miny + 1
-    [string[][]]$grid = 1..$height | ForEach-Object { , @(@(".") * $width) }
+    area $instructions
+}
 
-    $x = - $minx
-    $y = - $miny
-    $grid[$y][$x] = '#'
+function area ([Instruction[]] $instructions) {
+    [int64] $result = 0
 
-    $digs | ForEach-Object {
-        $dig = $_
-        switch ($dig.Direction) {
-            'R' { 1..$dig.Length | ForEach-Object { $grid[$y][++$x] = $dig.Color } }
-            'L' { 1..$dig.Length | ForEach-Object { $grid[$y][--$x] = $dig.Color } }
-            'D' { 1..$dig.Length | ForEach-Object { $grid[++$y][$x] = $dig.Color } }
-            'U' { 1..$dig.Length | ForEach-Object { $grid[--$y][$x] = $dig.Color } }
+    $x = $y = 0
+    $rowMap = @{}
+    $colMap = @{}
+    $instructions | ForEach-Object {
+        $instruction = $_
+        switch ($instruction.Direction) {
+            'L' { $x_ = $x; $x -= $instruction.Length; $rowMap[$y] += , [Row]::new($y, $x, $x_) }
+            'R' { $x_ = $x; $x += $instruction.Length; $rowMap[$y] += , [Row]::new($y, $x, $x_) }
+            'U' { $y_ = $y; $y -= $instruction.Length; $colMap[$x] += , [Col]::new($x, $y, $y_) }
+            'D' { $y_ = $y; $y += $instruction.Length; $colMap[$x] += , [Col]::new($x, $y, $y_) }
             Default { throw "Invalid direction: $_" }
         }
     }
 
-    $grid
-}
+    $rowKeys = $rowMap.Keys | Sort-Object
+    $cols = $colMap.Values | ForEach-Object { $_ }
 
-function digInner ([string[][]] $grid) {
-    $w = $grid[0].Count
-    $h = $grid.Count
-    [string[][]]$innerGrid = 1..$h | ForEach-Object { , @(@(".") * $w) }
+    function isCrossing ([Row] $r) {
+        $cs = $colMap[$r.a]
+        $c = $cs | Where-Object { $_.a -eq $r.y -or $_.b -eq $r.y }
+        $a = $c.a -eq $r.y ? 1 : -1
 
-    for ($y = 1; $y -le ($h - 2); $y++) {
+        $cs = $colMap[$r.b]
+        $c = $cs | Where-Object { $_.a -eq $r.y -or $_.b -eq $r.y }
+        $b = $c.a -eq $r.y ? 1 : -1
+
+        $a * $b -eq -1
+    }
+
+    for ($i = 0; $i -lt $rowKeys.Count - 1; $i++) {
+        $y = [int64]$rowKeys[$i] + 1
+        $h = [int64]$rowKeys[$i + 1] - $y
+        if ($h -eq 0) {
+            continue
+        }
+
+        $ranges = $cols
+        | Where-Object { $_.a -lt $y -and $_.b -gt $y }
+        | ForEach-Object { [Range]::new($_.x, $_.x) }
+        | Sort-Object a
+
+        [int64]$subresult = 0
         $inside = $false
-        $row = $grid[$y]
-        $innerRow = $innerGrid[$y]
-        for ($x = 0; $x -lt $w; $x++) {
-            if ($row[$x][0] -eq '.') {
-                if ($inside) {
-                    $innerRow[$x] = '#'
-                }
-            }
-            else {
-                $x_ = $x
-                while ($x_ -lt $w -and $row[++$x_] -ne '.') {}
-                --$x_
-                $corners = -join @(
-                    $grid[$y - 1][$x].Substring(0, 1)
-                    $grid[$y - 1][$x_].Substring(0, 1)
-                    $grid[$y + 1][$x].Substring(0, 1)
-                    $grid[$y + 1][$x_].Substring(0, 1)
-                )
-                switch ($corners) {
-                    '####' { $inside = -not $inside }
-                    '#..#' { $inside = -not $inside }
-                    '.##.' { $inside = -not $inside }
-                    '##..' {}
-                    '..##' {}
-                    Default { throw "Invalid corners: $_" }
-                }
-                $x = $x_
+        for ($j = 0; $j -lt $ranges.Count; $j++) {
+            $r = $ranges[$j]
+            $subresult += $r.b - $r.a + 1
+
+            $inside = -not $inside
+            if ($inside) {
+                $subresult += $ranges[$j + 1].a - $r.b - 1
             }
         }
+
+        $result += $h * $subresult
     }
 
-    for ($y = 0; $y -lt $h; $y++) {
-        for ($x = 0; $x -lt $w; $x++) {
-            if ($innerGrid[$y][$x] -ne '.') {
-                $grid[$y][$x] = $innerGrid[$y][$x]
+    for ($i = 0; $i -lt $rowKeys.Count; $i++) {
+        $y = $rowKeys[$i]
+
+        $rows = $rowMap[$rowKeys[$i]]
+        $ranges = $cols
+        | Where-Object { $_.a -lt $y -and $_.b -gt $y }
+        | ForEach-Object { [Range]::new($_.x, $_.x) }
+
+        $ranges = ($rows + $ranges) | Sort-Object a
+
+        [int64]$subresult = 0
+        $inside = $false
+        for ($j = 0; $j -lt $ranges.Count; $j++) {
+            $r = $ranges[$j]
+            $subresult += $r.b - $r.a + 1
+
+            if ($r.a -eq $r.b -or (isCrossing $r)) {
+                $inside = -not $inside
+            }
+
+            if ($inside) {
+                $subresult += $ranges[$j + 1].a - $r.b - 1
             }
         }
+
+        $result += $subresult
+    }
+
+    $result
+}
+
+class Instruction {
+    [string] $Direction
+    [int64] $Length
+}
+
+class Range {
+    [int64] $a
+    [int64] $b
+
+    Range([int64] $a_, [int64] $b_) {
+        $this.a = [math]::Min($a_, $b_)
+        $this.b = [math]::Max($a_, $b_)
     }
 }
 
-function countHoles ([string[][]] $grid) {
-    $grid
-    | ForEach-Object { $_ }
-    | Measure-Object -Sum { $_.StartsWith('#') ? 1 : 0 }
-    | Select-Object -ExpandProperty Sum
+class Row : Range {
+    [int64]$y
+
+    Row([int64] $y_, [int64] $a_, [int64] $b_) : base($a_, $b_) {
+        $this.y = $y_
+    }
 }
 
-function dump ([string[][]] $grid) {
-    Write-Host ""
-    $grid | ForEach-Object { Write-Host ( -join ($_.Substring(0, 1))) }
+class Col : Range {
+    [int64]$x
+
+    Col([int64] $x_, [int64] $a_, [int64] $b_) : base($a_, $b_) {
+        $this.x = $x_
+    }
 }
 
 # Get-Day18_1 # 70253
-# Get-Day18_2 # 1268
+# Get-Day18_2 # 131265059885080
