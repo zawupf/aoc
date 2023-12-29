@@ -178,6 +178,13 @@ class Graph {
                 throw "PANIC!"
             }
 
+            if ($newCount -eq 1) {
+                $appendCount = 1
+                $newCount = 0
+                $next.Start = $p.Start
+                $next.Length = $p.Length + 1
+            }
+
             $newStart = $false
             if ($newCount) {
                 $_added = $paths_.Add([Path]$p)
