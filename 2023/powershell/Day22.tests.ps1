@@ -28,10 +28,10 @@ Describe 'Test Day22.ps1' {
     }
 
     It "test part 1" -ForEach $testData1 {
-        part_1 $in $steps | Should -BeExactly $expected
+        part_1 $in | Should -BeExactly $expected
     }
 
     It "test  part 2" -ForEach $testData2 {
-        part_2 $in $steps | Should -BeExactly $expected
+        part_2 $in | Should -BeExactly $expected
     }
 }
