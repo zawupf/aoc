@@ -29,27 +29,27 @@ module FancyPatterns =
 
     let (|Byte|_|) (str: string) =
         match System.Byte.TryParse(str) with
-        | true, intvalue -> Some intvalue
+        | true, value -> Some value
         | _ -> None
 
     let (|Int|_|) (str: string) =
         match System.Int32.TryParse(str) with
-        | true, intvalue -> Some intvalue
+        | true, value -> Some value
         | _ -> None
 
     let (|UInt|_|) (str: string) =
         match System.UInt32.TryParse(str) with
-        | true, intvalue -> Some intvalue
+        | true, value -> Some value
         | _ -> None
 
     let (|Int64|_|) (str: string) =
         match System.Int64.TryParse(str) with
-        | true, intvalue -> Some intvalue
+        | true, value -> Some value
         | _ -> None
 
     let (|UInt64|_|) (str: string) =
         match System.UInt64.TryParse(str) with
-        | true, intvalue -> Some intvalue
+        | true, value -> Some value
         | _ -> None
 
     let (|Even|Odd|) number =
@@ -75,8 +75,7 @@ module String =
 
     let toLines = trim >> split '\n' >> Array.map trim
 
-    let ofChars chars =
-        System.String(chars |> Seq.toArray) |> string
+    let ofChars chars = chars |> Seq.toArray |> string
 
     let substring i (string: string) = string.Substring(i)
 
@@ -157,7 +156,7 @@ module Math =
     let inline leastCommonMultiple a b = abs a / GCD a b * abs b
     let inline LCM a b = leastCommonMultiple a b
 
-    let factorise n =
+    let factorize n =
         let rec loop n x factors =
             if x = n then x :: factors
             elif n % x = 0 then loop (n / x) x (x :: factors)
@@ -185,18 +184,18 @@ module Math =
         | _ -> 1 :: n :: realDivisors
 
 module List =
-    let inline private lcm a b = Math.LCM a b
+    let inline private lcm_pair a b = Math.LCM a b
 
-    let inline private lcmm list =
-        let rec _lcmm =
+    let inline private lcm_many list =
+        let rec loop =
             function
-            | [ a; b ] -> lcm a b
-            | a :: list -> lcm a (_lcmm list)
+            | [ a; b ] -> lcm_pair a b
+            | a :: list -> lcm_pair a (loop list)
             | _ -> failwith "At least 2 values are required"
 
-        _lcmm list
+        loop list
 
-    let inline leastCommonMultiple list = list |> lcmm
+    let inline leastCommonMultiple list = list |> lcm_many
     let inline LCM list = leastCommonMultiple list
 
 type PriorityList<'a> = PriorityList of 'a list * 'a list
@@ -210,8 +209,8 @@ module PriorityList =
         | High
         | Low
 
-    let push prio item (PriorityList(high, low)) =
-        match prio with
+    let push priority item (PriorityList(high, low)) =
+        match priority with
         | High -> PriorityList(item :: high, low)
         | Low -> PriorityList(high, item :: low)
 
@@ -268,8 +267,8 @@ module PriorityQueue =
         | Normal
         | Low
 
-    let enqueue prio item (PriorityQueue(high, normal, low)) =
-        match prio with
+    let enqueue priority item (PriorityQueue(high, normal, low)) =
+        match priority with
         | High -> PriorityQueue(Queue.enqueue item high, normal, low)
         | Normal -> PriorityQueue(high, Queue.enqueue item normal, low)
         | Low -> PriorityQueue(high, normal, Queue.enqueue item low)
@@ -323,15 +322,15 @@ module BBox =
 
 
 let render toString map =
-    let bbox = map |> BBox.ofMap
+    let box = map |> BBox.ofMap
 
     String.join
         ""
         (seq {
-            for y in fst bbox.Y .. snd bbox.Y do
+            for y in fst box.Y .. snd box.Y do
                 yield "\n"
 
-                for x in fst bbox.X .. snd bbox.X do
+                for x in fst box.X .. snd box.X do
                     yield map |> Map.tryFind (x, y) |> toString
         })
 
