@@ -3,9 +3,9 @@ module Utils
 let notImplemented () =
     raise (System.NotImplementedException())
 
-let test_result expected fn =
+let test_result title expected fn =
     let result = fn ()
-    printfn "Result: %A" result
+    printfn "%s: %A" title result
 
     if result <> expected then
         failwith $"Wrong result! Expected: {expected}"

@@ -202,8 +202,8 @@ let getDay23_1 () = part1 input
 
 let getDay23_2 () = part2 input
 
-getDay23_1 |> Utils.test_result 2238
-getDay23_2 |> Utils.test_result 6398
+Utils.test_result "Part 1" 2238 getDay23_1
+Utils.test_result "Part 2" 6398 getDay23_2
 
 
 
@@ -235,5 +235,5 @@ let testInput =
 """
     |> Utils.String.toLines
 
-(fun () -> part1 testInput) |> Utils.test_result 94
-(fun () -> part2 testInput) |> Utils.test_result 154
+Utils.test_result "Test part 1" 94 (fun () -> part1 testInput)
+Utils.test_result "Test part 2" 154 (fun () -> part2 testInput)

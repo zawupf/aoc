@@ -36,5 +36,5 @@ let getDay01_2 () =
     input
     |> getCalibrationSum @"\d|one|two|three|four|five|six|seven|eight|nine"
 
-getDay01_1 |> Utils.test_result 54990
-getDay01_2 |> Utils.test_result 54473
+Utils.test_result "Part 1" 54990 getDay01_1
+Utils.test_result "Part 2" 54473 getDay01_2
