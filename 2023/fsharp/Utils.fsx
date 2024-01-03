@@ -13,6 +13,10 @@ let test_result title expected fn =
     if result <> expected then
         failwith $"Wrong result! Expected: {expected}"
 
+let inline dump (obj: 'a) =
+    printfn "%A" obj
+    obj
+
 [<AutoOpen>]
 module FancyPatterns =
     open System.Text.RegularExpressions
@@ -93,6 +97,7 @@ let private _join dir name = Path.Join([| dir; name |])
 
 let private _exists = File.Exists
 
+[<TailCall>]
 let rec private _findFile dir path =
     let filepath = _join dir path
 
