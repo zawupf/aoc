@@ -196,16 +196,6 @@ let part2 lines =
     findMaxPath g
 
 
-let input = Utils.readInputLines "23"
-
-let getDay23_1 () = part1 input
-
-let getDay23_2 () = part2 input
-
-Utils.test_result "Part 1" 2238 getDay23_1
-Utils.test_result "Part 2" 6398 getDay23_2
-
-
 
 let testInput =
     """
@@ -235,5 +225,15 @@ let testInput =
 """
     |> Utils.String.toLines
 
-Utils.test_result "Test part 1" 94 (fun () -> part1 testInput)
-Utils.test_result "Test part 2" 154 (fun () -> part2 testInput)
+Utils.Test.run "Test part 1" 94 (fun () -> part1 testInput)
+Utils.Test.run "Test part 2" 154 (fun () -> part2 testInput)
+
+
+let input = Utils.readInputLines "23"
+
+let getDay23_1 () = part1 input
+
+let getDay23_2 () = part2 input
+
+Utils.Test.run "Part 1" 2238 getDay23_1
+Utils.Test.run "Part 2" 6398 getDay23_2

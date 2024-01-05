@@ -95,16 +95,6 @@ let part1 lines = stalkAround lines 0 3
 let part2 lines = stalkAround lines 3 10
 
 
-let input = Utils.readInputLines "17"
-
-let getDay17_1 () = part1 input
-
-let getDay17_2 () = part2 input
-
-Utils.test_result "Part 1" 1128 getDay17_1
-Utils.test_result "Part 2" 1268 getDay17_2
-
-
 
 let testInput1 =
     """
@@ -134,6 +124,16 @@ let testInput2 =
 """
     |> Utils.String.toLines
 
-Utils.test_result "Test part 1" 102 (fun () -> part1 testInput1)
-Utils.test_result "Test part 2 (1/2)" 94 (fun () -> part2 testInput1)
-Utils.test_result "Test part 2 (2/2)" 71 (fun () -> part2 testInput2)
+Utils.Test.run "Test part 1" 102 (fun () -> part1 testInput1)
+Utils.Test.run "Test part 2 (1/2)" 94 (fun () -> part2 testInput1)
+Utils.Test.run "Test part 2 (2/2)" 71 (fun () -> part2 testInput2)
+
+
+let input = Utils.readInputLines "17"
+
+let getDay17_1 () = part1 input
+
+let getDay17_2 () = part2 input
+
+Utils.Test.run "Part 1" 1128 getDay17_1
+Utils.Test.run "Part 2" 1268 getDay17_2

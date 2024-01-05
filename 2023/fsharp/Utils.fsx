@@ -3,19 +3,29 @@ module Utils
 let notImplemented () =
     raise (System.NotImplementedException())
 
-let test_result title expected fn =
-    let watch = System.Diagnostics.Stopwatch()
-    watch.Start()
-    let result = fn ()
-    watch.Stop()
-    printfn "%s: %A [%A]" title result watch
+module Test =
+    let run title expected fn =
+        let watch = System.Diagnostics.Stopwatch()
+        watch.Start()
+        let result = fn ()
+        watch.Stop()
+        printfn "%s: %A [%A]" title result watch
 
-    if result <> expected then
-        failwith $"Wrong result! Expected: {expected}"
+        if result <> expected then
+            failwith $"Wrong result! Expected: {expected}"
 
 let inline dump (obj: 'a) =
     printfn "%A" obj
     obj
+
+let inline f_dump fn args =
+    printf "%A -> " args
+    let watch = System.Diagnostics.Stopwatch()
+    watch.Start()
+    let result = fn args
+    watch.Stop()
+    printfn "%A [%A]" result watch
+    result
 
 [<AutoOpen>]
 module FancyPatterns =

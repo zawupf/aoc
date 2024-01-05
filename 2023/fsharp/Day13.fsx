@@ -85,17 +85,6 @@ let part2 input =
 
 
 
-let input = Utils.readInputText "13"
-
-let getDay13_1 () = part1 input
-
-let getDay13_2 () = part2 input
-
-Utils.test_result "Part 1" 31877 getDay13_1
-Utils.test_result "Part 2" 42996 getDay13_2
-
-
-
 let testInput1 =
     """
 #.##..##.
@@ -115,5 +104,16 @@ let testInput1 =
 #....#..#
 """
 
-Utils.test_result "Test part 1" 405 (fun () -> part1 testInput1)
-Utils.test_result "Test part 2" 400 (fun () -> part2 testInput1)
+Utils.Test.run "Test part 1" 405 (fun () -> part1 testInput1)
+Utils.Test.run "Test part 2" 400 (fun () -> part2 testInput1)
+
+
+
+let input = Utils.readInputText "13"
+
+let getDay13_1 () = part1 input
+
+let getDay13_2 () = part2 input
+
+Utils.Test.run "Part 1" 31877 getDay13_1
+Utils.Test.run "Part 2" 42996 getDay13_2
