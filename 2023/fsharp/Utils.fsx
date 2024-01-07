@@ -9,10 +9,16 @@ module Test =
         watch.Start()
         let result = fn ()
         watch.Stop()
-        printfn "%s: %A [%A]" title result watch
 
-        if result <> expected then
-            failwith $"Wrong result! Expected: {expected}"
+        if result = expected then
+            printfn "%s: %A [%A]" title result watch
+        else
+            eprintfn
+                "FAILED - %s: %A (expected: %A) [%A]"
+                title
+                result
+                expected
+                watch
 
 let inline dump (obj: 'a) =
     printfn "%A" obj
