@@ -33,6 +33,10 @@ let inline f_dump fn args =
     printfn "%A [%A]" result watch
     result
 
+let inline assert' fn =
+    if not (fn ()) then
+        failwith "Utils assertion failed"
+
 [<AutoOpen>]
 module FancyPatterns =
     open System.Text.RegularExpressions
@@ -86,10 +90,21 @@ module String =
 
     let trim (string: string) = string.Trim()
 
-    let split (sep: char) (string: string) = string.Split(sep)
+    let inline split<'a> (sep: 'a) (string: string) =
+        match box sep with
+        | :? char as sep -> string.Split(sep)
+        | :? string as sep -> string.Split(sep)
+        | _ -> failwith "Utils.String.split separator must be char or string"
 
-    let splitNoEmpty (sep: char) (string: string) =
-        string.Split(sep, System.StringSplitOptions.RemoveEmptyEntries)
+    let inline splitNoEmpty<'a> (sep: 'a) (string: string) =
+        match box sep with
+        | :? char as sep ->
+            string.Split(sep, System.StringSplitOptions.RemoveEmptyEntries)
+        | :? string as sep ->
+            string.Split(sep, System.StringSplitOptions.RemoveEmptyEntries)
+        | _ ->
+            failwith
+                "Utils.String.splitNoEmpty separator must be char or string"
 
     let toCharArray (string: string) = string.ToCharArray()
 
@@ -104,8 +119,11 @@ module String =
 
     let startsWith (prefix: string) (string: string) = string.StartsWith prefix
 
-    let parseInts sep line =
-        line |> splitNoEmpty sep |> List.ofArray |> List.map int
+    let inline parseInts<'a> (sep: 'a) line =
+        line |> splitNoEmpty<'a> sep |> List.ofArray |> List.map int
+
+    let inline parseInt64s<'a> (sep: 'a) line =
+        line |> splitNoEmpty<'a> sep |> List.ofArray |> List.map int64
 
 open System.IO
 
