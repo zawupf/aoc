@@ -1,52 +1,53 @@
 #load "Utils.fsx"
 
+[<RequireQualifiedAccess>]
 type Card =
-    | Card_A
-    | Card_K
-    | Card_Q
-    | Card_J
-    | Card_T
-    | Card_9
-    | Card_8
-    | Card_7
-    | Card_6
-    | Card_5
-    | Card_4
-    | Card_3
-    | Card_2
+    | Ace
+    | King
+    | Queen
+    | Jack
+    | Ten
+    | Nine
+    | Eight
+    | Seven
+    | Six
+    | Five
+    | Four
+    | Three
+    | Two
 
 module Card =
     let strength =
         function
-        | Card_A -> (13, 13)
-        | Card_K -> (12, 12)
-        | Card_Q -> (11, 11)
-        | Card_J -> (10, 0)
-        | Card_T -> (9, 9)
-        | Card_9 -> (8, 8)
-        | Card_8 -> (7, 7)
-        | Card_7 -> (6, 6)
-        | Card_6 -> (5, 5)
-        | Card_5 -> (4, 4)
-        | Card_4 -> (3, 3)
-        | Card_3 -> (2, 2)
-        | Card_2 -> (1, 1)
+        | Card.Ace -> (13, 13)
+        | Card.King -> (12, 12)
+        | Card.Queen -> (11, 11)
+        | Card.Jack -> (10, 0)
+        | Card.Ten -> (9, 9)
+        | Card.Nine -> (8, 8)
+        | Card.Eight -> (7, 7)
+        | Card.Seven -> (6, 6)
+        | Card.Six -> (5, 5)
+        | Card.Five -> (4, 4)
+        | Card.Four -> (3, 3)
+        | Card.Three -> (2, 2)
+        | Card.Two -> (1, 1)
 
     let parse =
         function
-        | 'A' -> Card_A
-        | 'K' -> Card_K
-        | 'Q' -> Card_Q
-        | 'J' -> Card_J
-        | 'T' -> Card_T
-        | '9' -> Card_9
-        | '8' -> Card_8
-        | '7' -> Card_7
-        | '6' -> Card_6
-        | '5' -> Card_5
-        | '4' -> Card_4
-        | '3' -> Card_3
-        | '2' -> Card_2
+        | 'A' -> Card.Ace
+        | 'K' -> Card.King
+        | 'Q' -> Card.Queen
+        | 'J' -> Card.Jack
+        | 'T' -> Card.Ten
+        | '9' -> Card.Nine
+        | '8' -> Card.Eight
+        | '7' -> Card.Seven
+        | '6' -> Card.Six
+        | '5' -> Card.Five
+        | '4' -> Card.Four
+        | '3' -> Card.Three
+        | '2' -> Card.Two
         | c -> failwithf "Invalid card: %A" c
 
 type Hand = Hand of Card[]
@@ -97,14 +98,14 @@ module Hand =
 
     let replaceJoker (Hand cards) =
         cards
-        |> Array.filter (fun card -> card <> Card_J)
+        |> Array.filter (fun card -> card <> Card.Jack)
         |> Array.countBy id
         |> Array.sortByDescending snd
         |> Array.tryHead
         |> function
             | Some(card, _) ->
-                cards |> Array.map (fun c -> if c = Card_J then card else c)
-            | None -> Array.create 5 Card_A
+                cards |> Array.map (fun c -> if c = Card.Jack then card else c)
+            | None -> Array.create 5 Card.Ace
 
     let sortKey2 hand =
         let hand' = replaceJoker hand |> Hand
