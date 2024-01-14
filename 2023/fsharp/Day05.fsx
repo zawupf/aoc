@@ -81,7 +81,7 @@ let parse input =
             |> Array.skip 1
             |> Array.map (fun line ->
                 match line |> Utils.String.parseInt64s ' ' with
-                | [ dst; src; len ] -> RangeMap.create dst src len
+                | [| dst; src; len |] -> RangeMap.create dst src len
                 | _ -> failwithf "Invalid range map: %A" line))
 
     seeds, maps
@@ -90,14 +90,15 @@ let part1 input = //
     let seeds, maps = parse input
 
     seeds
-    |> List.map (fun seed -> maps |> List.fold RangeMap.mapValue seed)
-    |> List.min
+    |> Array.map (fun seed -> maps |> List.fold RangeMap.mapValue seed)
+    |> Array.min
 
 let part2 input = //
     let seeds, maps = parse input
 
     let seeds =
         seeds
+        |> List.ofArray
         |> List.chunkBySize 2
         |> List.map (function
             | [ start; length ] -> Range(start, start + length - 1L)

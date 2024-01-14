@@ -122,6 +122,7 @@ let arrangementCountWithRepeat repeat line =
         List.replicate repeat lineParts[1]
         |> Utils.String.join ","
         |> Utils.String.parseInts ','
+        |> Array.toList
 
     countArrangements 0L [ springChunks, counts, 1L ]
 

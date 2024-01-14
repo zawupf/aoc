@@ -120,10 +120,10 @@ module String =
     let startsWith (prefix: string) (string: string) = string.StartsWith prefix
 
     let inline parseInts<'a> (sep: 'a) line =
-        line |> splitNoEmpty<'a> sep |> List.ofArray |> List.map int
+        line |> splitNoEmpty<'a> sep |> Array.map int
 
     let inline parseInt64s<'a> (sep: 'a) line =
-        line |> splitNoEmpty<'a> sep |> List.ofArray |> List.map int64
+        line |> splitNoEmpty<'a> sep |> Array.map int64
 
 open System.IO
 

@@ -14,7 +14,7 @@ let nextNumber = calculateNumber Array.last Array.sum
 
 let previousNumber = calculateNumber Array.head (Array.reduceBack (-))
 
-let parse = Array.map (Utils.String.parseInts ' ' >> List.toArray)
+let parse = Array.map (Utils.String.parseInts ' ')
 
 let part1 input = //
     input |> parse |> Array.map nextNumber |> Array.sum

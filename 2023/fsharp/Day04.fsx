@@ -16,7 +16,7 @@ module Card =
 
     let parse line =
         let toNumberSet =
-            Utils.String.parseInts ' ' >> List.map Number >> Set.ofList
+            Utils.String.parseInts ' ' >> Array.map Number >> Set.ofArray
 
         match line with
         | Regex @"Card +(\d+):(.+)\|(.+)" [ Int id; winning; numbers ] -> {
