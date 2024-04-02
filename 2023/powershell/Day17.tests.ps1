@@ -3,8 +3,8 @@ BeforeAll {
 }
 
 Describe 'Test Day17.ps1' {
-    # It "Part 1" { Get-Day17_1 | Should -BeExactly 1128 }
-    # It "Part 2" { Get-Day17_2 | Should -BeExactly 1268 }
+    It "Part 1" { Get-Day17_1 | Should -BeExactly 1128 } # ~25min
+    It "Part 2" { Get-Day17_2 | Should -BeExactly 1268 } # ~30min
 
     BeforeDiscovery {
         $testData1 = @(

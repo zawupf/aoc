@@ -116,12 +116,22 @@ function parseModules ([string[]] $lines) {
 
     foreach ($m in $modules) {
         if ($m -is [Conjunction]) {
-            foreach ($m_ in $modules) {
-                if ($m_.Receivers -contains $m.Name) {
-                    $m.Inputs[$m_.Name] = 0
-                }
-            }
+            $modules
+            | Where-Object Receivers -Contains $m.Name
+            | ForEach-Object { $m.Inputs[$_.Name] = 0 }
         }
+    }
+
+    $deps = [ordered]@{}
+    $ms = @('rx')
+    while ($ms.Count) {
+        $ms_ = @()
+        $ms | Where-Object { $deps.Keys -notcontains $_ } | ForEach-Object {
+            $deps_ = $modules | Where-Object Receivers -Contains $_ | Select-Object -ExpandProperty Name
+            $deps[$_] = $deps_ -join ','
+            $ms_ += $deps_
+        }
+        $ms = $ms_
     }
 
     $map = [ordered]@{}

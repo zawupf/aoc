@@ -30,8 +30,8 @@ Describe 'Test Day21.ps1' {
         $testData2 = @(
             # @{ expected = 16; steps = 6; in = $testData1[0].in }
             # @{ expected = 50; steps = 10; in = $testData1[0].in }
-            @{ expected = 1594; steps = 50; in = $testData1[0].in }
-            # @{ expected = 6536; steps = 100; in = $testData1[0].in }
+            # @{ expected = 1594; steps = 50; in = $testData1[0].in }
+            @{ expected = 6536; steps = 100; in = $testData1[0].in }
             # @{ expected = 167004; steps = 500; in = $testData1[0].in }
             # @{ expected = 668697; steps = 1000; in = $testData1[0].in }
             # @{ expected = 16733044; steps = 5000; in = $testData1[0].in }
