@@ -16,6 +16,13 @@ export async function readInputLines(day: string): Promise<string[]> {
     return lines.map(line => line.trim())
 }
 
+export function toLines(input: string): string[] {
+    return input
+        .trim()
+        .split('\n')
+        .map(line => line.trim())
+}
+
 export function test_run(
     name: string,
     expected: number | string,

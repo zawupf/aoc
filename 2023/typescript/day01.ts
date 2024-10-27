@@ -29,8 +29,6 @@ function getCalibrationSum(digitPattern: string, input: string[]): number {
         .reduce((acc, val) => acc + val, 0)
 }
 
-const input = await utils.readInputLines(day)
-
 function part1(data = input) {
     return () => getCalibrationSum('\\d', data)
 }
@@ -42,6 +40,8 @@ function part2(data = input) {
             data,
         )
 }
+
+const input = await utils.readInputLines(day)
 
 utils.test_run('Part 1', 54990, part1())
 utils.test_run('Part 2', 54473, part2())
