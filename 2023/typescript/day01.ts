@@ -29,11 +29,11 @@ function getCalibrationSum(digitPattern: string, input: string[]): number {
         .reduce((acc, val) => acc + val, 0)
 }
 
-function part1(data = input) {
+export function part1(data = input) {
     return () => getCalibrationSum('\\d', data)
 }
 
-function part2(data = input) {
+export function part2(data = input) {
     return () =>
         getCalibrationSum(
             '\\d|one|two|three|four|five|six|seven|eight|nine',
@@ -42,6 +42,10 @@ function part2(data = input) {
 }
 
 const input = await utils.readInputLines(day)
+part1.solution = 54990
+part2.solution = 54473
 
-utils.test_run('Part 1', 54990, part1())
-utils.test_run('Part 2', 54473, part2())
+if (import.meta.main) {
+    utils.test_run('Part 1', part1.solution, part1())
+    utils.test_run('Part 2', part2.solution, part2())
+}
