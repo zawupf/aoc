@@ -1,4 +1,5 @@
 import * as path from 'path'
+import type { Solution, SolutionFun } from './types'
 
 function findInputFile(day: string): string {
     return path.normalize(path.join(__dirname, `../_inputs/Day${day}.txt`))
@@ -23,13 +24,13 @@ export function toLines(input: string): string[] {
         .map(line => line.trim())
 }
 
-export function test_run(
+export async function test_run<T extends Solution>(
     name: string,
-    expected: number | string,
-    fn: () => number | string,
+    expected: T,
+    fn: SolutionFun<T>,
 ) {
     const start = Bun.nanoseconds()
-    const result = fn()
+    const result = await Promise.resolve(fn())
     const duration = Bun.nanoseconds() - start
     const durationMs = duration / 1_000_000
 

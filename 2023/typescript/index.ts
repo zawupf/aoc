@@ -1,12 +1,15 @@
+import type { DayModule } from './types'
 import { test_run } from './utils'
 
-const days = Array.from({ length: 24 }, (_, i) =>
-    (i + 1).toString().padStart(2, '0'),
-)
+async function* generateDays() {
+    for (let i = 1; i <= 24; i++) {
+        yield `${i}`.padStart(2, '0')
+    }
+}
 
-for await (const day of days) {
+for await (const day of generateDays()) {
     try {
-        const { part1, part2 } = await import(`./day${day}`)
+        const { part1, part2 }: DayModule = await import(`./day${day}`)
         test_run(`Day ${day} (part 1)`, part1.solution, part1())
         test_run(`Day ${day} (part 2)`, part2.solution, part2())
     } catch (e) {

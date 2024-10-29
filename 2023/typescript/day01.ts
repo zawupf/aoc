@@ -1,3 +1,4 @@
+import type { SolutionFactory } from './types'
 import * as utils from './utils'
 
 const day = '01'
@@ -17,9 +18,9 @@ function toNumber(str: string): number {
     return numbersMap[str] ?? parseInt(str)
 }
 
-function getCalibrationSum(digitPattern: string, input: string[]): number {
-    const rxA = new RegExp(`.*?(${digitPattern})`)
-    const rxB = new RegExp(`.*(${digitPattern})`)
+function getCalibrationSum(digitRegex: RegExp, input: string[]): number {
+    const rxA = new RegExp(`.*?(${digitRegex.source})`)
+    const rxB = new RegExp(`.*(${digitRegex.source})`)
     return input
         .map(line => {
             const a = toNumber(line.match(rxA)![1])
@@ -29,18 +30,19 @@ function getCalibrationSum(digitPattern: string, input: string[]): number {
         .reduce((acc, val) => acc + val, 0)
 }
 
-export function part1(data = input) {
-    return () => getCalibrationSum('\\d', data)
+export const part1: Part = function (data = input) {
+    return async () => getCalibrationSum(/\d/, data)
 }
 
-export function part2(data = input) {
-    return () =>
+export const part2: Part = function (data = input) {
+    return async () =>
         getCalibrationSum(
-            '\\d|one|two|three|four|five|six|seven|eight|nine',
+            /\d|one|two|three|four|five|six|seven|eight|nine/,
             data,
         )
 }
 
+type Part = SolutionFactory<number, typeof input>
 const input = await utils.readInputLines(day)
 part1.solution = 54990
 part2.solution = 54473
