@@ -1,4 +1,4 @@
-import type { SolutionFactory } from './types'
+import { type SolutionFactory } from './types'
 import * as utils from './utils'
 
 const day = '02'
