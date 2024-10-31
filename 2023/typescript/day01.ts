@@ -1,7 +1,7 @@
-import type { SolutionFactory } from './types'
+import type { DayModule, SolutionFactory } from './types'
 import * as utils from './utils'
 
-const day = '01'
+export const day = '01'
 
 const numbersMap: Record<string, number> = {
     one: 1,
@@ -30,24 +30,34 @@ function getCalibrationSum(digitRegex: RegExp, input: string[]): number {
         .reduce((acc, val) => acc + val, 0)
 }
 
-export const part1: Part = function (data = input) {
-    return async () => getCalibrationSum(/\d/, data)
+export const part1: Part = function (input) {
+    return async () => getCalibrationSum(/\d/, input)
 }
 
-export const part2: Part = function (data = input) {
+export const part2: Part = function (input) {
     return async () =>
         getCalibrationSum(
             /\d|one|two|three|four|five|six|seven|eight|nine/,
-            data,
+            input,
         )
 }
 
-type Part = SolutionFactory<number, typeof input>
-const input = await utils.readInputLines(day)
+type In = typeof input
+type Out = number
+type Module = DayModule<Out, In>
+type Part = SolutionFactory<Out, In>
+export const input = await utils.readInputLines(day)
 part1.solution = 54990
 part2.solution = 54473
 
-if (import.meta.main) {
-    utils.test_run('Part 1', part1.solution, part1())
-    utils.test_run('Part 2', part2.solution, part2())
+export const main = import.meta.main
+if (main) {
+    const module: Module = await import(import.meta.path)
+
+    const testInput = utils.as_lines([])
+
+    await utils.tests(
+        () => utils.test_all(),
+        () => utils.test_day(module),
+    )
 }

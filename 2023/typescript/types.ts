@@ -1,16 +1,18 @@
-type Input = string | string[]
+export type Input = string | string[]
 export type Solution = string | number
 export type SolutionFun<T extends Solution> = () => T | Promise<T>
 export interface SolutionFactory<T extends Solution, In extends Input> {
-    (input?: In): SolutionFun<T>
+    (input: In): SolutionFun<T>
     solution: T
 }
 
-type DayModule_<T extends Solution, In extends Input> = {
+export type DayModule<T extends Solution, In extends Input> = {
+    day: string
     part1: SolutionFactory<T, In>
     part2: SolutionFactory<T, In>
+    input: In
+    main: boolean
 }
-export type DayModule = DayModule_<Solution, Input>
 
 export class NotImplementedError extends Error {
     constructor(message?: string) {
