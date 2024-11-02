@@ -122,3 +122,15 @@ export async function tests(...tests: TestFactory[]) {
 export function notImplemented(): never {
     throw new NotImplementedError()
 }
+
+export function dump<T>(value: T, fn?: any): T {
+    console.log(fn instanceof Function ? fn(value) : value)
+    return value
+}
+
+export function dump_map<T, U>(fn: (value: T) => U): (value: T) => T {
+    return value => {
+        console.log(fn(value))
+        return value
+    }
+}
