@@ -1,7 +1,7 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = '03'
+export const day = import.meta.file.match(/day(\d+)/)![1]
 
 type Pos = { x: number; y: number }
 type Symbol = { value: string; pos: Pos }

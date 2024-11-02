@@ -1,7 +1,7 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = '02'
+export const day = import.meta.file.match(/day(\d+)/)![1]
 
 const CubeKeys = ['red', 'green', 'blue'] as const
 type Cube = (typeof CubeKeys)[number]

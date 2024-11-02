@@ -1,7 +1,7 @@
 import type { DayModule, SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = '01'
+export const day = import.meta.file.match(/day(\d+)/)![1]
 
 const numbersMap: Record<string, number> = {
     one: 1,

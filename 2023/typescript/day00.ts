@@ -1,7 +1,7 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = '00'
+export const day = import.meta.file.match(/day(\d+)/)![1]
 
 export const part1: Part = function (input) {
     return async function () {
