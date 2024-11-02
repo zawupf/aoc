@@ -49,6 +49,10 @@ export async function test_run<T extends Solution>(
     fn: SolutionFun<T>,
 ): Promise<TestStatus> {
     try {
+        if (Number.isNaN(expected) || expected === '') {
+            notImplemented()
+        }
+
         const start = Bun.nanoseconds()
         const result = await Promise.resolve(fn())
         const duration = Bun.nanoseconds() - start
