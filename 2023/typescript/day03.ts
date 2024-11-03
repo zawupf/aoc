@@ -36,33 +36,27 @@ function findNumbers(lines: string[]): Number[] {
     )
 }
 
-export const part1: Part = function (input) {
-    return async function () {
-        return findNumbers(input)
-            .filter(n => n.symbol)
-            .reduce((sum, n) => sum + n.value, 0)
-    }
-}
+export const part1: Part = input => async () =>
+    findNumbers(input)
+        .filter(n => n.symbol)
+        .reduce((sum, n) => sum + n.value, 0)
 
-export const part2: Part = function (input) {
-    return async function () {
-        return findNumbers(input)
-            .reduce((gears, number) => {
-                if (number.symbol?.value === '*') {
-                    const key = `${number.symbol.pos.x},${number.symbol.pos.y}`
-                    const numbers = gears.get(key) || []
-                    numbers.push(number.value)
-                    gears.set(key, numbers)
-                }
-                return gears
-            }, new Map<string, number[]>())
-            .values()
-            .map(numbers =>
-                numbers.length === 2 ? numbers.reduce((a, b) => a * b, 1) : 0,
-            )
-            .reduce((a, b) => a + b, 0)
-    }
-}
+export const part2: Part = input => async () =>
+    findNumbers(input)
+        .reduce((gears, number) => {
+            if (number.symbol?.value === '*') {
+                const key = `${number.symbol.pos.x},${number.symbol.pos.y}`
+                const numbers = gears.get(key) || []
+                numbers.push(number.value)
+                gears.set(key, numbers)
+            }
+            return gears
+        }, new Map<string, number[]>())
+        .values()
+        .map(numbers =>
+            numbers.length === 2 ? numbers.reduce((a, b) => a * b, 1) : 0,
+        )
+        .reduce((a, b) => a + b, 0)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)

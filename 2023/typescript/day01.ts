@@ -28,17 +28,10 @@ function getCalibrationSum(digitRegex: RegExp, input: string[]): number {
         .reduce((acc, val) => acc + val, 0)
 }
 
-export const part1: Part = function (input) {
-    return async () => getCalibrationSum(/\d/, input)
-}
+export const part1: Part = input => async () => getCalibrationSum(/\d/, input)
 
-export const part2: Part = function (input) {
-    return async () =>
-        getCalibrationSum(
-            /\d|one|two|three|four|five|six|seven|eight|nine/,
-            input,
-        )
-}
+export const part2: Part = input => async () =>
+    getCalibrationSum(/\d|one|two|three|four|five|six|seven|eight|nine/, input)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)

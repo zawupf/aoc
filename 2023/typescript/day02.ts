@@ -53,24 +53,19 @@ function parseGame(line: string): Game {
     return game
 }
 
-export const part1: Part = function (input) {
-    const bag = { red: 12, green: 13, blue: 14 }
-    return async function () {
-        return input
+export const part1: Part =
+    input =>
+    async (bag = { red: 12, green: 13, blue: 14 }) =>
+        input
             .map(parseGame)
             .filter(game => isValidGameWithRef(game, bag))
             .reduce((acc, game) => acc + game.id, 0)
-    }
-}
 
-export const part2: Part = function (input) {
-    return async function () {
-        return input
-            .map(parseGame)
-            .map(findSmallestValidBag)
-            .reduce((acc, val) => acc + powerOfBag(val), 0)
-    }
-}
+export const part2: Part = input => async () =>
+    input
+        .map(parseGame)
+        .map(findSmallestValidBag)
+        .reduce((acc, val) => acc + powerOfBag(val), 0)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
