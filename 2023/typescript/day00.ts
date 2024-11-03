@@ -1,8 +1,6 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
-
 export const part1: Part = function (input) {
     return async function () {
         return utils.notImplemented()
@@ -15,10 +13,7 @@ export const part2: Part = function (input) {
     }
 }
 
-type In = typeof input
-type Out = number
-type Module = DayModule<Out, In>
-type Part = SolutionFactory<Out, In>
+export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = NaN
 part2.solution = NaN
@@ -38,3 +33,8 @@ if (main) {
         () => utils.test_day(module),
     )
 }
+
+type In = typeof input
+type Out = number
+type Module = DayModule<Out, In>
+type Part = SolutionFactory<Out, In>

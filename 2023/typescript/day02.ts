@@ -1,8 +1,6 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
-
 const CubeKeys = ['red', 'green', 'blue'] as const
 type Cube = (typeof CubeKeys)[number]
 type Bag = Record<Cube, number>
@@ -74,10 +72,7 @@ export const part2: Part = function (input) {
     }
 }
 
-type In = typeof input
-type Out = number
-type Module = DayModule<Out, In>
-type Part = SolutionFactory<Out, In>
+export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = 2204
 part2.solution = 71036
@@ -105,3 +100,8 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
         () => utils.test_day(module),
     )
 }
+
+type In = typeof input
+type Out = number
+type Module = DayModule<Out, In>
+type Part = SolutionFactory<Out, In>

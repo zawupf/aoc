@@ -1,8 +1,6 @@
 import type { DayModule, SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
-
 const numbersMap: Record<string, number> = {
     one: 1,
     two: 2,
@@ -42,10 +40,7 @@ export const part2: Part = function (input) {
         )
 }
 
-type In = typeof input
-type Out = number
-type Module = DayModule<Out, In>
-type Part = SolutionFactory<Out, In>
+export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = 54990
 part2.solution = 54473
@@ -61,3 +56,8 @@ if (main) {
         () => utils.test_day(module),
     )
 }
+
+type In = typeof input
+type Out = number
+type Module = DayModule<Out, In>
+type Part = SolutionFactory<Out, In>
