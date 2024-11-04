@@ -21,7 +21,7 @@ export const part1: Part = input => async () =>
         .map(parseCard)
         .map(findWinsInDeck)
         .reduce(
-            (sum, wins) => sum + (wins.length ? 2 ** (wins.length - 1) : 0),
+            utils.sumBy(wins => (wins.length ? 1 << --wins.length : 0)),
             0,
         )
 
@@ -36,7 +36,7 @@ export const part2: Part = input => async () =>
             }
             return count
         })
-        .reduce((sum, count) => sum + count, 0)
+        .reduce(utils.sum, 0)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)

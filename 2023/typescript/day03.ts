@@ -39,7 +39,10 @@ function findNumbers(lines: string[]): Number[] {
 export const part1: Part = input => async () =>
     findNumbers(input)
         .filter(n => n.symbol)
-        .reduce((sum, n) => sum + n.value, 0)
+        .reduce(
+            utils.sumBy(n => n.value),
+            0,
+        )
 
 export const part2: Part = input => async () =>
     findNumbers(input)
@@ -53,10 +56,12 @@ export const part2: Part = input => async () =>
             return gears
         }, new Map<string, number[]>())
         .values()
-        .map(numbers =>
-            numbers.length === 2 ? numbers.reduce((a, b) => a * b, 1) : 0,
+        .reduce(
+            utils.sumBy(numbers =>
+                numbers.length === 2 ? numbers.reduce(utils.multiply, 1) : 0,
+            ),
+            0,
         )
-        .reduce((a, b) => a + b, 0)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)

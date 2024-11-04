@@ -10,7 +10,10 @@ function isValidBagWithRef(bag: Bag, reference: Bag): boolean {
 }
 
 function powerOfBag(bag: Bag): number {
-    return CubeKeys.reduce((acc, key) => acc * (bag[key] ?? 0), 1)
+    return CubeKeys.reduce(
+        utils.multiplyBy(key => bag[key] ?? 0),
+        1,
+    )
 }
 
 function parseBag(line: string): Bag {
@@ -59,13 +62,16 @@ export const part1: Part =
         input
             .map(parseGame)
             .filter(game => isValidGameWithRef(game, bag))
-            .reduce((acc, game) => acc + game.id, 0)
+            .reduce(
+                utils.sumBy(game => game.id),
+                0,
+            )
 
 export const part2: Part = input => async () =>
     input
         .map(parseGame)
         .map(findSmallestValidBag)
-        .reduce((acc, val) => acc + powerOfBag(val), 0)
+        .reduce(utils.sumBy(powerOfBag), 0)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)

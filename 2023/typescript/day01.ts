@@ -25,7 +25,7 @@ function getCalibrationSum(digitRegex: RegExp, input: string[]): number {
             const b = toNumber(line.match(rxB)![1])
             return +`${a}${b}`
         })
-        .reduce((acc, val) => acc + val, 0)
+        .reduce(utils.sum, 0)
 }
 
 export const part1: Part = input => async () => getCalibrationSum(/\d/, input)

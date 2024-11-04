@@ -142,3 +142,23 @@ export function dump_map<T, U>(fn: (value: T) => U): (value: T) => T {
 export function parseInt(value: string): number {
     return globalThis.parseInt(value, 10)
 }
+
+export function sum(sum: number, value: number): number {
+    return sum + value
+}
+
+export function sumBy<T>(
+    fn: (value: T) => number,
+): (sum: number, value: T) => number {
+    return (sum, value) => sum + fn(value)
+}
+
+export function multiply(sum: number, value: number): number {
+    return sum * value
+}
+
+export function multiplyBy<T>(
+    fn: (value: T) => number,
+): (sum: number, value: T) => number {
+    return (sum, value) => sum * fn(value)
+}
