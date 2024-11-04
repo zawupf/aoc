@@ -138,3 +138,7 @@ export function dump_map<T, U>(fn: (value: T) => U): (value: T) => T {
         return value
     }
 }
+
+export function parseInt(value: string): number {
+    return globalThis.parseInt(value, 10)
+}
