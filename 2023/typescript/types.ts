@@ -21,6 +21,20 @@ export class NotImplementedError extends Error {
     }
 }
 
+export class UnreachableError extends Error {
+    constructor(message?: string) {
+        super(message || 'Unreachable code')
+        this.name = 'UnreachableError'
+    }
+}
+
+export class AssertionError extends Error {
+    constructor(message: string) {
+        super(message || 'Assertion failed')
+        this.name = 'AssertionError'
+    }
+}
+
 const gray = Bun.color('gray', 'ansi') ?? ''
 const red = Bun.color('red', 'ansi') ?? ''
 const green = Bun.color('green', 'ansi') ?? ''

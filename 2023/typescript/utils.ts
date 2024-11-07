@@ -1,7 +1,9 @@
 import * as path from 'path'
 import {
     ansi,
+    AssertionError,
     NotImplementedError,
+    UnreachableError,
     type DayModule,
     type Input,
     type Solution,
@@ -33,7 +35,7 @@ export function as_lines(inputs: string[]): string[][] {
     )
 }
 
-export function as_content(inputs: string[]): string[] {
+export function as_text(inputs: string[]): string[] {
     return inputs.map(input => input.trim())
 }
 
@@ -127,6 +129,16 @@ export function notImplemented(): never {
     throw new NotImplementedError()
 }
 
+export function unreachable(message?: string): never {
+    throw new UnreachableError(message)
+}
+
+export function assert(condition: boolean, message: string): void | never {
+    if (!condition) {
+        throw new AssertionError(message)
+    }
+}
+
 export function dump<T>(value: T, fn?: any): T {
     console.log(fn instanceof Function ? fn(value) : value)
     return value
@@ -161,4 +173,24 @@ export function multiplyBy<T>(
     fn: (value: T) => number,
 ): (sum: number, value: T) => number {
     return (sum, value) => sum * fn(value)
+}
+
+export function min(a: number, b: number): number {
+    return Math.min(a, b)
+}
+
+export function minBy<T>(
+    fn: (value: T) => number,
+): (a: number, b: T) => number {
+    return (a, b) => Math.min(a, fn(b))
+}
+
+export function max(a: number, b: number): number {
+    return Math.max(a, b)
+}
+
+export function maxBy<T>(
+    fn: (value: T) => number,
+): (a: number, b: T) => number {
+    return (a, b) => Math.max(a, fn(b))
 }
