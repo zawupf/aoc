@@ -194,3 +194,43 @@ export function maxBy<T>(
 ): (a: number, b: T) => number {
     return (a, b) => Math.max(a, fn(b))
 }
+
+export function groupBy<K extends keyof any, V>(
+    fn: (value: V) => K,
+): (groups: Record<K, V[]>, value: V) => Record<K, V[]> {
+    return (groups, value) => {
+        const key = fn(value)
+        if (key in groups) {
+            groups[key].push(value)
+        } else {
+            groups[key] = [value]
+        }
+        return groups
+    }
+}
+
+export function count<T extends keyof any>(
+    counts: Record<T, number>,
+    value: T,
+): Record<T, number> {
+    if (value in counts) {
+        counts[value]++
+    } else {
+        counts[value] = 1
+    }
+    return counts
+}
+
+export function countBy<K extends keyof any, V>(
+    fn: (value: V) => K,
+): (counts: Record<K, number>, value: V) => Record<K, number> {
+    return (counts, value) => {
+        const key = fn(value)
+        if (key in counts) {
+            counts[key]++
+        } else {
+            counts[key] = 1
+        }
+        return counts
+    }
+}
