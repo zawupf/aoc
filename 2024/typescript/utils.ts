@@ -234,3 +234,22 @@ export function countBy<K extends keyof any, V>(
         return counts
     }
 }
+
+export function sortNumbers(numbers: number[]): number[] {
+    return numbers.sort((a, b) => a - b)
+}
+
+export function zip<T, U>(a: T[], b: U[]): [T, U][] {
+    return a.map((value, index) => [value, b[index]])
+}
+
+export function unzip<T, U>(pairs: [T, U][]): [T[], U[]] {
+    return pairs.reduce(
+        (acc, [x, y]) => {
+            acc[0].push(x)
+            acc[1].push(y)
+            return acc
+        },
+        [[], []] as [T[], U[]],
+    )
+}
