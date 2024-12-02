@@ -11,10 +11,10 @@ module Test =
         watch.Stop()
 
         if result = expected then
-            printfn "%s: %A [%A]" title result watch
+            printfn "✅ %s: %A [%A]" title result watch
         else
             eprintfn
-                "FAILED - %s: %A (expected: %A) [%A]"
+                "❌ %s: %A (expected: %A) [%A]"
                 title
                 result
                 expected
