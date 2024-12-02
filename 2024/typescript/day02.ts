@@ -4,39 +4,34 @@ import * as utils from './utils'
 type Report = number[]
 
 function parseReport(line: string): Report {
-    return line.split(' ').map(Number)
+    return line.split(' ').map(utils.parseInt)
 }
 
 function isGraduallyChanging(report: Report): boolean {
-    let sign = Math.sign(report[1] - report[0])
-    if (sign === 0) {
-        return false
-    }
-    for (let i = 1; i < report.length; i++) {
-        const diff = report[i] - report[i - 1]
-        if (sign !== Math.sign(diff)) {
-            return false
-        }
-        const delta = Math.abs(diff)
-        if (delta === 0 || delta > 3) {
-            return false
-        }
-    }
-    return true
+    const sign = Math.sign(report[1] - report[0])
+    return (
+        sign !== 0 &&
+        report.slice(1).every((v, i) => {
+            const diff = v - report[i]
+            const delta = Math.abs(diff)
+            return sign === Math.sign(diff) && delta !== 0 && delta <= 3
+        })
+    )
 }
 
-function isGraduallyChangingWithProblemDampener(report: Report): boolean {
-    if (isGraduallyChanging(report)) {
-        return true
-    }
+function* generateSubsets(report: Report): Generator<Report> {
     for (let i = 0; i < report.length; i++) {
         const r = [...report]
         r.splice(i, 1)
-        if (isGraduallyChanging(r)) {
-            return true
-        }
+        yield r
     }
-    return false
+}
+
+function isGraduallyChangingWithProblemDampener(report: Report): boolean {
+    return (
+        isGraduallyChanging(report) ||
+        generateSubsets(report).some(isGraduallyChanging)
+    )
 }
 
 export const part1: Part = input => async () =>
