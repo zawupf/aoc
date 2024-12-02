@@ -10,6 +10,24 @@ import {
     type SolutionFun,
 } from './types'
 
+export function humanize(nanoseconds: number): string {
+    const durationMs = nanoseconds / 1_000_000
+    const durationSec = Math.floor(durationMs / 1000)
+    const hours = Math.floor(durationSec / 3600)
+    const minutes = Math.floor((durationSec % 3600) / 60)
+    const seconds = durationSec % 60
+    const milliseconds = durationMs % 1000
+
+    const parts = []
+    if (hours > 0) parts.push(`${hours}h`)
+    if (minutes > 0 || parts.length) parts.push(`${minutes}m`)
+    if (seconds > 0 || parts.length) parts.push(`${seconds}s`)
+    if (milliseconds > 0 || parts.length)
+        parts.push(`${milliseconds.toFixed(3)}ms`)
+
+    return parts.slice(0, 2).join(':')
+}
+
 function findInputFile(day: string): string {
     return path.normalize(path.join(__dirname, `../_inputs/Day${day}.txt`))
 }
@@ -118,11 +136,14 @@ export async function test_day<T extends Solution, In extends Input>({
 
 type TestFactory = () => Promise<boolean>
 export async function tests(...tests: TestFactory[]) {
+    const start = Bun.nanoseconds()
     for (const test of tests) {
         if (!(await test())) {
             break
         }
     }
+    const duration = Bun.nanoseconds() - start
+    console.log(`🏁 Tests completed in ${humanize(duration)}`)
 }
 
 export function notImplemented(): never {
