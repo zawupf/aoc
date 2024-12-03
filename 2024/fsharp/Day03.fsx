@@ -1,10 +1,6 @@
 #load "Utils.fsx"
 open System.Text.RegularExpressions
 
-let day = __SOURCE_FILE__[3..4]
-
-let input = Utils.readInputText day
-
 let mul a b = int a * int b
 
 let part1 input =
@@ -29,8 +25,9 @@ let part2 input =
         (0, true)
     |> fst
 
+let day = __SOURCE_FILE__[3..4]
+let input = Utils.readInputText day
 let solution1 () = part1 input
-
 let solution2 () = part2 input
 
 Utils.Test.run "Part 1" 173529487 solution1

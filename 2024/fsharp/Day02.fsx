@@ -1,9 +1,5 @@
 #load "Utils.fsx"
 
-let day = __SOURCE_FILE__[3..4]
-
-let input = Utils.readInputLines day
-
 type Report = int array
 
 let parseReport (line: string) : Report =
@@ -35,8 +31,9 @@ let part2 input = input |> Array.sumBy (fun line ->
     if line |> parseReport |> isGraduallyChangingWithProblemDampener
         then 1 else 0)
 
+let day = __SOURCE_FILE__[3..4]
+let input = Utils.readInputLines day
 let solution1 () = part1 input
-
 let solution2 () = part2 input
 
 Utils.Test.run "Part 1" 490 solution1

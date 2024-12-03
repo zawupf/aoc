@@ -1,10 +1,6 @@
 #load "Utils.fsx"
 open Utils.FancyPatterns
 
-let day = __SOURCE_FILE__[3..4]
-
-let input = Utils.readInputLines day
-
 let parseInput (lines: string array) =
     lines
     |> Array.map (fun line ->
@@ -28,8 +24,9 @@ let part2 input =
     left |> Array.sumBy (fun (k, v) ->
         v * k * (right |> Map.tryFind k |> Option.defaultValue 0))
 
+let day = __SOURCE_FILE__[3..4]
+let input = Utils.readInputLines day
 let solution1 () = part1 input
-
 let solution2 () = part2 input
 
 Utils.Test.run "Part 1" 1651298 solution1
