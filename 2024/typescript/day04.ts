@@ -20,37 +20,30 @@ function count_XMAS(lines: string[], x: number, y: number): number {
         [1, -1],
         [-1, 1],
     ]
-    for (let i = 1; i < XMAS.length; i++) {
-        directions = directions.filter(
-            ([dx, dy]) => lines[y + dy * i]?.[x + dx * i] === XMAS[i],
-        )
-    }
-    return directions.length
+
+    return Array.from(XMAS.slice(1), (c, i) => [c, i + 1] as const).reduce(
+        (directions, [c, i]) =>
+            directions.filter(
+                ([dx, dy]) => lines[y + dy * i]?.[x + dx * i] === c,
+            ),
+        directions,
+    ).length
 }
 
 function count_MAS_cross(lines: string[], x: number, y: number): number {
-    if (lines[y][x] !== 'A') {
-        return 0
-    }
+    const diag1 = () => lines[y + 1]?.[x + 1] + lines[y - 1]?.[x - 1]
+    const diag2 = () => lines[y + 1]?.[x - 1] + lines[y - 1]?.[x + 1]
+    const isMS = (s: string) => s === 'MS' || s === 'SM'
 
-    const diag1 = lines[y + 1]?.[x + 1] + lines[y - 1]?.[x - 1]
-    const diag2 = lines[y + 1]?.[x - 1] + lines[y - 1]?.[x + 1]
-
-    function isMS(s: string): boolean {
-        return s == 'MS' || s == 'SM'
-    }
-
-    return isMS(diag1) && isMS(diag2) ? 1 : 0
+    return lines[y][x] === 'A' && isMS(diag1()) && isMS(diag2()) ? 1 : 0
 }
 
 function count(lines: string[], counter: CounterFn): number {
-    let count = 0
-    for (let y = 0; y < lines.length; y++) {
-        for (let x = 0; x < lines[0].length; x++) {
-            count += counter(lines, x, y)
-        }
-    }
-    return count
+    return lines.reduce(
+        (sum, _, y) =>
+            _.split('').reduce((sum, _, x) => sum + counter(lines, x, y), sum),
+        0,
+    )
 }
 
 export const part1: Part = input => async () => count(input, count_XMAS)
