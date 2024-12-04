@@ -13,12 +13,7 @@ module Test =
         if result = expected then
             printfn "✅ %s: %A [%A]" title result watch
         else
-            eprintfn
-                "❌ %s: %A (expected: %A) [%A]"
-                title
-                result
-                expected
-                watch
+            eprintfn "❌ %s: %A (expected: %A) [%A]" title result expected watch
 
 let inline dump (obj: 'a) =
     printfn "%A" obj

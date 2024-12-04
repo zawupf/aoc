@@ -21,7 +21,8 @@ let part2 input =
     let left = Array.countBy id left
     let right = Array.countBy id right |> Map.ofArray
 
-    left |> Array.sumBy (fun (k, v) ->
+    left
+    |> Array.sumBy (fun (k, v) ->
         v * k * (right |> Map.tryFind k |> Option.defaultValue 0))
 
 let day = __SOURCE_FILE__[3..4]

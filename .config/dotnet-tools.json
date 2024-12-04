@@ -3,11 +3,11 @@
   "isRoot": true,
   "tools": {
     "fantomas": {
-      "version": "6.3.13",
+      "version": "7.0.0-alpha-003",
       "commands": [
         "fantomas"
       ],
-      "rollForward": false
+      "rollForward": true
     }
   }
 }
