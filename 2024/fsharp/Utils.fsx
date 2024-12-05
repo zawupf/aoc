@@ -106,6 +106,8 @@ module String =
     let toByteArray (string: string) =
         string |> System.Text.Encoding.ASCII.GetBytes
 
+    let toSections = trim >> split "\n\n" >> Array.map trim
+
     let toLines = trim >> split '\n' >> Array.map trim
 
     let ofChars chars = chars |> Seq.toArray |> string
