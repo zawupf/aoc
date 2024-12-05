@@ -44,13 +44,33 @@ export async function readInputLines(day: string): Promise<string[]> {
     return lines.map(line => line.trim())
 }
 
+export function split_numbers(
+    input: string,
+    separator: string | RegExp,
+    limit?: number,
+): number[] {
+    return input
+        .trim()
+        .split(separator, limit)
+        .map(chunk => parseInt(chunk.trim()))
+}
+
+export function split_lines(input: string): string[] {
+    return input
+        .trim()
+        .split('\n')
+        .map(line => line.trim())
+}
+
+export function split_sections(input: string): string[] {
+    return input
+        .trim()
+        .split('\n\n')
+        .map(section => section.trim())
+}
+
 export function as_lines(inputs: string[]): string[][] {
-    return inputs.map(input =>
-        input
-            .trim()
-            .split('\n')
-            .map(line => line.trim()),
-    )
+    return inputs.map(split_lines)
 }
 
 export function as_text(inputs: string[]): string[] {
