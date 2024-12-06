@@ -34,13 +34,13 @@ function isGraduallyChangingWithProblemDampener(report: Report): boolean {
     )
 }
 
-export const part1: Part = input => async () =>
+export const part1: Part = input => () =>
     input.map(parseReport).reduce(
         utils.sumBy(r => (isGraduallyChanging(r) ? 1 : 0)),
         0,
     )
 
-export const part2: Part = input => async () =>
+export const part2: Part = input => () =>
     input.map(parseReport).reduce(
         utils.sumBy(r => (isGraduallyChangingWithProblemDampener(r) ? 1 : 0)),
         0,

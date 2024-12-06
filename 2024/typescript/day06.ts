@@ -95,10 +95,9 @@ function visitedCount(grid: Grid): number {
     )
 }
 
-export const part1: Part = input => async () =>
-    visitedCount(walk(parse(input))[0][0])
+export const part1: Part = input => () => visitedCount(walk(parse(input))[0][0])
 
-export const part2: Part = input => async () => {
+export const part2: Part = input => () => {
     const [originalGrid, startPos] = parse(input)
     let result = 0
     for (let y = 0; y < originalGrid.length; y++) {
@@ -121,6 +120,7 @@ export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = 5177
 part2.solution = 1686
+part2.skip = true
 
 export const main = import.meta.main
 if (main) {

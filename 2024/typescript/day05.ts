@@ -38,14 +38,14 @@ function middlePage(update: Update): number {
     return update[update.length >> 1]
 }
 
-export const part1: Part = input => async () => {
+export const part1: Part = input => () => {
     const [rules, updates] = parse(input)
     return updates
         .filter(update => isUpdateValid(update, rules))
         .reduce(utils.sumBy(middlePage), 0)
 }
 
-export const part2: Part = input => async () => {
+export const part2: Part = input => () => {
     const [rules, updates] = parse(input)
     return updates
         .filter(update => !isUpdateValid(update, rules))

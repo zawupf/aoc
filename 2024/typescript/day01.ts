@@ -10,13 +10,13 @@ function parseInput(input: string[]): Lists {
     )
 }
 
-export const part1: Part = input => async () =>
+export const part1: Part = input => () =>
     utils.zip(...(parseInput(input).map(utils.sortNumbers) as Lists)).reduce(
         utils.sumBy(([l, r]) => Math.abs(l - r)),
         0,
     )
 
-export const part2: Part = input => async () => {
+export const part2: Part = input => () => {
     const [leftCounts, rightCounts] = parseInput(input).map(list =>
         list.reduce(utils.count, {} as Record<number, number>),
     )

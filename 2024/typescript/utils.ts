@@ -7,6 +7,7 @@ import {
     type DayModule,
     type Input,
     type Solution,
+    type SolutionFactory,
     type SolutionFun,
 } from './types'
 
@@ -83,24 +84,23 @@ export function isStatusOk(status: TestStatus): boolean {
     return status !== 'failed'
 }
 
-export async function test_run<T extends Solution>(
+export function test_run<T extends Solution>(
     title: string,
     expected: T,
     fn: SolutionFun<T>,
-): Promise<TestStatus> {
+): TestStatus {
     try {
         if (Number.isNaN(expected) || expected === '') {
             notImplemented()
         }
 
         const start = Bun.nanoseconds()
-        const result = await Promise.resolve(fn())
+        const result = fn()
         const duration = Bun.nanoseconds() - start
-        const durationMs = duration / 1_000_000
 
         const equal = Bun.deepEquals(result, expected)
         if (equal) {
-            console.log(`✅ ${title}: ${result} [${durationMs}ms]`)
+            console.log(`✅ ${title}: ${result} [${humanize(duration)}]`)
         } else {
             const first = `❌ ${title}: Expected`
             const second = 'but got'.padStart(Bun.stringWidth(first))
@@ -148,10 +148,25 @@ export async function test_day<T extends Solution, In extends Input>({
     main,
 }: DayModule<T, In>): Promise<boolean> {
     const title = (n: number) => (main ? `Part ${n}` : `Day ${day} (part ${n})`)
-    return await test_all(
-        [title(1), part1.solution, part1(input)],
-        [title(2), part2.solution, part2(input)],
-    )
+    const tests: [SolutionFactory<T, In>, TestArgs<T>][] = [
+        [part1, [title(1), part1.solution, part1(input)]],
+        [part2, [title(2), part2.solution, part2(input)]],
+    ]
+    const activeTests = tests
+        .filter(([f, _]) => !f.skip)
+        .map(([_, args]) => args)
+    const result = await test_all(...activeTests)
+
+    tests
+        .filter(([f, _]) => f.skip)
+        .map(([_, [title, ...__]]) => title)
+        .forEach(title => {
+            console.log(
+                `${ansi.gray}🚧 ${title}: Explicitly skipped due to duration${ansi.clear}`,
+            )
+        })
+
+    return result
 }
 
 type TestFactory = () => Promise<boolean>

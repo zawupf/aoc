@@ -46,9 +46,9 @@ function count(lines: string[], counter: CounterFn): number {
     )
 }
 
-export const part1: Part = input => async () => count(input, count_XMAS)
+export const part1: Part = input => () => count(input, count_XMAS)
 
-export const part2: Part = input => async () => count(input, count_MAS_cross)
+export const part2: Part = input => () => count(input, count_MAS_cross)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)

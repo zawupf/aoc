@@ -5,13 +5,13 @@ function mul(a: string, b: string): number {
     return utils.parseInt(a) * utils.parseInt(b)
 }
 
-export const part1: Part = input => async () =>
+export const part1: Part = input => () =>
     input.matchAll(/mul\((\d{1,3}),(\d{1,3})\)/g).reduce(
         utils.sumBy(([_, a, b]) => mul(a, b)),
         0,
     )
 
-export const part2: Part = input => async () =>
+export const part2: Part = input => () =>
     input.matchAll(/mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)/g).reduce(
         ([sum, enabled]: [number, boolean], [m, a, b]): [number, boolean] => {
             switch (m) {

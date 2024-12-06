@@ -1,9 +1,9 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const part1: Part = input => async () => utils.notImplemented()
+export const part1: Part = input => () => utils.notImplemented()
 
-export const part2: Part = input => async () => utils.notImplemented()
+export const part2: Part = input => () => utils.notImplemented()
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
