@@ -27,8 +27,7 @@ function parse(lines: string[]): State {
         }
         throw new Error('Guard not found')
     }
-    const guard = findGuard(grid)
-    return [grid, guard]
+    return [grid, findGuard(grid)]
 }
 
 function walk(state: State): FinalState {
@@ -77,8 +76,7 @@ function walk(state: State): FinalState {
         }
 
         guardStates.add(key)
-        const cell = grid[ny][nx]
-        if (cell === '#') {
+        if (grid[ny][nx] === '#') {
             dir = turnRight(dir)
             continue
         }
@@ -99,10 +97,16 @@ export const part1: Part = input => () => visitedCount(walk(parse(input))[0][0])
 
 export const part2: Part = input => () => {
     const [originalGrid, startPos] = parse(input)
+    const escapeGrid = walk([
+        originalGrid.map(row => row.slice()),
+        startPos,
+    ])[0][0]
+    const [sx, sy] = startPos[0]
+    escapeGrid[sy][sx] = '.'
     let result = 0
     for (let y = 0; y < originalGrid.length; y++) {
         for (let x = 0; x < originalGrid[0].length; x++) {
-            if (originalGrid[y][x] === '.') {
+            if (escapeGrid[y][x] === 'X' && originalGrid[y][x] === '.') {
                 const grid = originalGrid.map(row => row.slice())
                 grid[y][x] = '#'
                 const state: State = [grid, startPos]
@@ -120,7 +124,7 @@ export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = 5177
 part2.solution = 1686
-part2.skip = true
+part2.skip = false
 
 export const main = import.meta.main
 if (main) {
