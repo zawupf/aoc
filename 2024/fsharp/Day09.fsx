@@ -86,16 +86,19 @@ let fragment (blocks: Blocks) =
     blocks
 
 let defragment (blocks: Blocks) =
-    let findFreeBlockIndex i j =
-        blocks.FindIndex(i, j - i, fun b -> b.Free >= blocks[j].Used)
+    let findFreeBlockIndex n i j =
+        blocks.FindIndex(i, max 0 (j - i), fun b -> b.Free >= n)
 
     let mutable j = blocks.Count - 1
+    let mutable start = findFreeBlockIndex 1 0 j
 
-    while j > 0 do
-        match findFreeBlockIndex 0 j with
+    while start < j && start <> -1 do
+        let bj = blocks[j]
+
+        match findFreeBlockIndex bj.Used start j with
         | -1 -> j <- j - 1
         | i ->
-            let bi, bj = blocks[i], blocks[j]
+            let bi = blocks[i]
 
             blocks[i] <- { bi with Free = 0 }
             blocks.RemoveAt j
@@ -105,6 +108,8 @@ let defragment (blocks: Blocks) =
                 blocks[j] with
                     Free = blocks[j].Free + bj.Length
             }
+
+            start <- findFreeBlockIndex 1 start j
 
     blocks
 
