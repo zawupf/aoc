@@ -1,69 +1,50 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-type Value = string
-type NewValues = Value[]
-type TotalCount = number
-type CacheEntry = [NewValues, TotalCount]
-
-type Cache = Record<Value, CacheEntry[]>
+type Cache = Map<string, string[]>
 
 function parse(line: string) {
     return line.split(' ')
 }
 
-function blink(n: number, value: Value, cache: Cache): CacheEntry {
-    console.assert(n > 0)
+function blink(n: number, value: string, cache: Cache): string[] {
+    const key = `${n}:${value}`
 
-    let entry = cache[value]?.[n - 1]
+    let entry = cache.get(key)
     if (entry) {
         return entry
     }
 
-    if (n > 1) {
-        const [vs, _] = blink(n - 1, value, cache)
-        const newValues: NewValues[] = []
-        let count = 0
-        for (const v of vs) {
-            const [subVs, subCount] = blink(1, v, cache)
-            newValues.push(subVs)
-            count += subCount
+    const values: string[] = n === 1 ? [value] : blink(n - 1, value, cache)
+    for (let i = 0; i < values.length; i++) {
+        const v = values[i]
+        if (v === '0') {
+            values[i] = '1'
+        } else if (v.length % 2 === 0) {
+            const l = v.length / 2
+            const vs = [v.substring(0, l), `${utils.parseInt(v.substring(l))}`]
+            values.splice(i, 1, ...vs)
+            i++
+        } else {
+            values[i] = `${utils.parseInt(v) * 2024}`
         }
-
-        entry = [newValues.flat(), count]
-        cache[value].push(entry)
-        console.assert(cache[value].length === n)
-        // console.log('blink', n, value, [...entry[0]])
-        return entry
     }
+    entry = values
+    cache.set(key, values)
+    // console.log(n, value, '->', i, values.length)
 
-    if (value === '0') {
-        entry = [['1'], 1]
-    } else if (value.length % 2 === 0) {
-        const l = value.length / 2
-        const [a, b] = [
-            value.substring(0, l),
-            `${utils.parseInt(value.substring(l))}`,
-        ]
-        entry = [[a, b], 2]
-    } else {
-        entry = [[`${utils.parseInt(value) * 2024}`], 1]
-    }
-
-    cache[value] = [entry]
-    // console.log('blink', n, value, entry)
     return entry
 }
 
-function blinkCount(n: number, values: Value[]): TotalCount {
+function blinkCount(n: number, values: string[]): number {
     let sum = 0
-    const cache: Cache = {}
+    const cache: Cache = new Map()
     for (const value of values) {
-        const [vals, count] = blink(n, value, cache)
-        console.log(value, count)
+        const entry = blink(n, value, cache)
+        console.log(value, entry.length)
         // console.log('blink', n, value, count, [...vals])
         // console.log([...vals], count)
-        sum += count
+        sum += entry.length
     }
     return sum
     // return values.reduce(
@@ -79,7 +60,7 @@ export const part2: Part = input => () => blinkCount(75, parse(input))
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputText(day)
 part1.solution = 220722
-part2.solution = NaN
+part2.solution = 0
 
 export const main = import.meta.main
 if (main) {
