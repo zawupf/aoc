@@ -1,8 +1,18 @@
 #load "Utils.fsx"
+open Utils.FancyPatterns
 
 type Cache = System.Collections.Generic.Dictionary<int64 * int, int64>
 
 let parse line = line |> Utils.String.parseInt64s ' '
+
+let (|SplitEven|_|) value =
+    let s = value |> string
+
+    match s.Length with
+    | Even ->
+        let m = s.Length / 2
+        Some(s.[0 .. m - 1] |> int64, s.[m..] |> int64)
+    | Odd -> None
 
 let rec count (cache: Cache) blinks stone =
     match blinks with
@@ -14,13 +24,9 @@ let rec count (cache: Cache) blinks stone =
         | true, value -> value
         | false, _ ->
             let result =
-                match stone |> string with
-                | "0" -> count cache (blinks - 1) 1
-                | s when s.Length % 2 = 0 ->
-                    let mid = s.Length / 2
-                    let left = s.[0 .. mid - 1] |> int64
-                    let right = s.[mid..] |> int64
-
+                match stone with
+                | 0L -> count cache (blinks - 1) 1
+                | SplitEven(left, right) ->
                     count cache (blinks - 1) left
                     + count cache (blinks - 1) right
                 | _ -> count cache (blinks - 1) (stone * 2024L)
