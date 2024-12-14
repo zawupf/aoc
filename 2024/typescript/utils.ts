@@ -309,3 +309,15 @@ export function unzip<T, U>(pairs: [T, U][]): [T[], U[]] {
         [[], []] as [T[], U[]],
     )
 }
+
+export function greatesCommonDivisor(a: number, b: number): number {
+    return b === 0 ? a : greatesCommonDivisor(b, a % b)
+}
+
+export const gcd = greatesCommonDivisor
+
+export function leastCommonMultiple(a: number, b: number): number {
+    return (a * b) / greatesCommonDivisor(a, b)
+}
+
+export const lcm = leastCommonMultiple
