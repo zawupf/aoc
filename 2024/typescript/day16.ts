@@ -2,10 +2,10 @@ import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
 type Pos = [number, number]
-type Path = Pos[]
+type Path = [Pos] | [Pos, Path]
 type Orientation = 'north' | 'east' | 'south' | 'west'
 type State = [Pos, Orientation, Path]
-type Score = { score: number }
+type Score = number
 type Field = {
     isWall: boolean
     scores: Record<Orientation, Score>
@@ -17,10 +17,10 @@ function parse(lines: string[]): Maze {
         line.split('').map(c => ({
             isWall: c === '#',
             scores: {
-                north: { score: Infinity, paths: [] },
-                east: { score: Infinity, paths: [] },
-                south: { score: Infinity, paths: [] },
-                west: { score: Infinity, paths: [] },
+                north: Infinity,
+                east: Infinity,
+                south: Infinity,
+                west: Infinity,
             },
         })),
     )
@@ -46,18 +46,24 @@ function right(orientation: Orientation): Orientation {
         : 'north'
 }
 
-function walk(maze: Maze) {
+type Result = { score: Score; paths: Path[] }
+type CancelPathPred = (previousScore: Score, currentScore: Score) => boolean
+type JoinPathFn = (a: Pos, b: Path) => Path
+function walk(
+    maze: Maze,
+    cancelCurrentPath: CancelPathPred,
+    joinPath: JoinPathFn,
+): Result {
     const startPos = [1, maze.length - 2] as Pos
-    const endPos = [maze[0].length - 2, 1] as Pos
-    const start = [startPos, 'east', []] as State
-    maze[startPos[1]][startPos[0]].scores.east = { score: 0 }
+    const [startX, startY] = startPos
+    maze[startY][startX].scores.east = 0
+    const [endX, endY] = [maze[0].length - 2, 1] as Pos
 
-    function isEnd([pos]: State): boolean {
-        return pos[0] === endPos[0] && pos[1] === endPos[1]
+    function isEnd([[x, y], _orientation, _path]: State): boolean {
+        return x === endX && y === endY
     }
 
-    function tryMove([pos, orientation]: State): State | null {
-        const [x, y] = pos
+    function tryMove([[x, y], orientation, path]: State): State | null {
         const current = maze[y][x]
         const [x2, y2] = [
             x + (orientation === 'east' ? 1 : orientation === 'west' ? -1 : 0),
@@ -74,79 +80,13 @@ function walk(maze: Maze) {
             return null
         }
 
-        const score = current.scores[orientation].score + 1
-        if (next.scores[orientation].score <= score) {
+        const score = current.scores[orientation] + 1
+        if (cancelCurrentPath(next.scores[orientation], score)) {
             return null
         }
 
-        next.scores[orientation].score = score
-        return [[x2, y2], orientation, []]
-    }
-
-    function tryTurn(
-        turn: (o: Orientation) => Orientation,
-        [pos, orientation]: State,
-    ): State | null {
-        const [x, y] = pos
-        const current = maze[y][x]
-        const nextOrientation = turn(orientation)
-        const score = current.scores[orientation].score + 1000
-        if (current.scores[nextOrientation].score <= score) {
-            return null
-        }
-
-        current.scores[nextOrientation].score = score
-        return [pos, nextOrientation, []]
-    }
-
-    const stack = [start]
-    while (stack.length > 0) {
-        let state = stack.pop()!
-        let newState = tryMove(state)
-        if (newState && !isEnd(newState)) stack.push(newState)
-        newState = tryTurn(left, state)
-        if (newState) stack.push(newState)
-        newState = tryTurn(right, state)
-        if (newState) stack.push(newState)
-    }
-}
-
-type Result = { score: number; paths: Path[] }
-function walk2(maze: Maze): Result {
-    const startPos = [1, maze.length - 2] as Pos
-    const endPos = [maze[0].length - 2, 1] as Pos
-    const start = [startPos, 'east', [startPos]] as State
-    maze[startPos[1]][startPos[0]].scores.east = { score: 0 }
-
-    function isEnd([pos]: State): boolean {
-        return pos[0] === endPos[0] && pos[1] === endPos[1]
-    }
-
-    function tryMove([pos, orientation, path]: State): State | null {
-        const [x, y] = pos
-        const current = maze[y][x]
-        const [x2, y2] = [
-            x + (orientation === 'east' ? 1 : orientation === 'west' ? -1 : 0),
-            y +
-                (orientation === 'south'
-                    ? 1
-                    : orientation === 'north'
-                    ? -1
-                    : 0),
-        ] as Pos
-
-        const next = maze[y2][x2]
-        if (next.isWall) {
-            return null
-        }
-
-        const score = current.scores[orientation].score + 1
-        if (next.scores[orientation].score < score) {
-            return null
-        }
-
-        next.scores[orientation].score = score
-        return [[x2, y2], orientation, [...path, [x2, y2]]]
+        next.scores[orientation] = score
+        return [[x2, y2], orientation, joinPath([x2, y2], path)]
     }
 
     function tryTurn(
@@ -156,53 +96,66 @@ function walk2(maze: Maze): Result {
         const [x, y] = pos
         const current = maze[y][x]
         const nextOrientation = turn(orientation)
-        const score = current.scores[orientation].score + 1000
-        if (current.scores[nextOrientation].score < score) {
+        const score = current.scores[orientation] + 1000
+        if (cancelCurrentPath(current.scores[nextOrientation], score)) {
             return null
         }
 
-        current.scores[nextOrientation].score = score
+        current.scores[nextOrientation] = score
         return [pos, nextOrientation, path]
     }
 
-    const stack = [start]
+    const stack: State[] = [[startPos, 'east', [startPos]]]
     const result: Result = { score: Infinity, paths: [] }
-    while (stack.length > 0) {
-        let state = stack.pop()!
+    let state: State | undefined
+    while ((state = stack.pop())) {
         let newState = tryMove(state)
         if (newState) {
+            const [_, newOrientation, newPath] = newState
             if (isEnd(newState)) {
-                const score =
-                    maze[endPos[1]][endPos[0]].scores[newState[1]].score
+                const score = maze[endY][endX].scores[newOrientation]
                 if (score < result.score) {
                     result.score = score
-                    result.paths = [newState[2]]
+                    result.paths = [newPath]
                 } else if (score === result.score) {
-                    result.paths.push(newState[2])
+                    result.paths.push(newPath)
                 }
             } else {
                 stack.push(newState)
             }
         }
-        newState = tryTurn(left, state)
-        if (newState) stack.push(newState)
-        newState = tryTurn(right, state)
-        if (newState) stack.push(newState)
+
+        if ((newState = tryTurn(left, state))) {
+            stack.push(newState)
+        }
+
+        if ((newState = tryTurn(right, state))) {
+            stack.push(newState)
+        }
     }
 
     return result
 }
 
 function lowestScore(maze: Maze): number {
-    const [x, y] = [maze[0].length - 2, 1] as Pos
-    walk(maze)
-    return Math.min(...Object.values(maze[y][x].scores).map(s => s.score))
+    return walk(
+        maze,
+        (previousScore, currentScore) => previousScore <= currentScore,
+        (_, path) => path,
+    ).score
+}
+
+function flat(path: Path): Pos[] {
+    return path.length === 1 ? path : [path[0], ...flat(path[1])]
 }
 
 function posCount(maze: Maze): number {
-    const result = walk2(maze)
     return new Set(
-        result.paths.flatMap(path => path.map(([x, y]) => `${x},${y}`)),
+        walk(
+            maze,
+            (previousScore, currentScore) => previousScore < currentScore,
+            (pos, path) => [pos, path],
+        ).paths.flatMap(path => flat(path).map(([x, y]) => `${x},${y}`)),
     ).size
 }
 
