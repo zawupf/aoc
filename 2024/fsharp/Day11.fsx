@@ -21,8 +21,8 @@ let rec count (cache: Cache) blinks stone =
         let key = stone, blinks
 
         match cache.TryGetValue key with
-        | true, value -> value
-        | false, _ ->
+        | Found value -> value
+        | NotFound ->
             let result =
                 match stone with
                 | 0L -> count cache (blinks - 1) 1

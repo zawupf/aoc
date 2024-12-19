@@ -1,4 +1,6 @@
 #load "Utils.fsx"
+
+open Utils.FancyPatterns
 open System
 
 type Towels = {
@@ -57,8 +59,8 @@ let countAllPatternCombinations towels =
         | true -> 1L
         | _ ->
             match cache.TryGetValue design with
-            | true, result -> result
-            | false, _ ->
+            | Found result -> result
+            | NotFound ->
                 let result =
                     patterns
                     |> Seq.filter design.StartsWith

@@ -44,6 +44,11 @@ module FancyPatterns =
         else
             None
 
+    let (|Found|NotFound|) =
+        function
+        | true, value -> Found value
+        | false, _ -> NotFound
+
     let (|Char|_|) (str: string) =
         match str.Length with
         | 1 -> Some str.[0]
@@ -51,28 +56,28 @@ module FancyPatterns =
 
     let (|Byte|_|) (str: string) =
         match System.Byte.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|Int|_|) (str: string) =
         match System.Int32.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|UInt|_|) (str: string) =
         match System.UInt32.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|Int64|_|) (str: string) =
         match System.Int64.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|UInt64|_|) (str: string) =
         match System.UInt64.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|Even|Odd|) number =
         match number % 2 with
