@@ -72,3 +72,5 @@ let solution2 () = part2 input
 
 Utils.Test.run "Part 1" 1260333054159L solution1
 Utils.Test.run "Part 2" 162042343638683L solution2
+
+#load "_benchmark.fsx"

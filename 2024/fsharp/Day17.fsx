@@ -12,3 +12,5 @@ let solution2 () = part2 input
 
 Utils.Test.run "Part 1" nan solution1
 Utils.Test.run "Part 2" nan solution2
+
+#load "_benchmark.fsx"

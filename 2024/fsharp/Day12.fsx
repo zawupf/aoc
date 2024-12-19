@@ -170,3 +170,5 @@ Utils.Test.run "Test 2" 1206 (fun () -> part2 testInput[2])
 
 Utils.Test.run "Part 1" 1381056 solution1
 Utils.Test.run "Part 2" 834828 solution2
+
+#load "_benchmark.fsx"
