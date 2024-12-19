@@ -1,4 +1,5 @@
 #load "Utils.fsx"
+open System
 
 type Towels = {
     Patterns: string[]
@@ -14,36 +15,46 @@ let parse (lines: string[]) =
         Designs = designs
     }
 
-let countPossibleDesigns towels =
-    let {
-            Patterns = patterns
-            Designs = designs
-        } =
-        towels
+type Span = {
+    String: string
+    Start: int
+} with
 
-    let rec isPossibleDesign (design: string) =
-        match design with
-        | "" -> true
+    static member ofString string = { String = string; Start = 0 }
+
+    member this.StartsWith start =
+        this.String
+            .AsSpan(this.Start)
+            .StartsWith(start.String.AsSpan start.Start)
+
+    member this.IsEmpty = this.Start >= this.String.Length
+    member this.Length = this.String.Length - this.Start
+    member this.Slice start = { this with Start = this.Start + start }
+
+let countPossibleDesigns towels =
+    let patterns = towels.Patterns |> Array.map Span.ofString
+    let designs = towels.Designs |> Array.map Span.ofString
+
+    let rec isPossibleDesign (design: Span) =
+        match design.IsEmpty with
+        | true -> true
         | _ ->
             patterns
-            |> Seq.filter design.StartsWith
+            |> Seq.filter (fun pattern -> design.StartsWith pattern)
             |> Seq.exists (fun pattern ->
-                design.[pattern.Length ..] |> isPossibleDesign)
+                isPossibleDesign (design.Slice pattern.Length))
 
-    designs |> Seq.filter isPossibleDesign |> Seq.length
+    designs |> Array.filter isPossibleDesign |> Array.length
 
 let countAllPatternCombinations towels =
-    let {
-            Patterns = patterns
-            Designs = designs
-        } =
-        towels
+    let patterns = towels.Patterns |> Array.map Span.ofString
+    let designs = towels.Designs |> Array.map Span.ofString
 
-    let cache = System.Collections.Generic.Dictionary<string, int64>()
+    let cache = Collections.Generic.Dictionary<Span, int64>()
 
-    let rec countCombinations (design: string) =
-        match design with
-        | "" -> 1L
+    let rec countCombinations (design: Span) =
+        match design.IsEmpty with
+        | true -> 1L
         | _ ->
             match cache.TryGetValue design with
             | true, result -> result
@@ -52,7 +63,7 @@ let countAllPatternCombinations towels =
                     patterns
                     |> Seq.filter design.StartsWith
                     |> Seq.sumBy (fun pattern ->
-                        design[pattern.Length ..] |> countCombinations)
+                        design.Slice pattern.Length |> countCombinations)
 
                 cache.Add(design, result)
                 result
