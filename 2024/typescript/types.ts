@@ -40,7 +40,8 @@ const gray = Bun.color('gray', 'ansi') ?? ''
 const red = Bun.color('red', 'ansi') ?? ''
 const green = Bun.color('green', 'ansi') ?? ''
 const blue = Bun.color('blue', 'ansi') ?? ''
+const yellow = Bun.color('yellow', 'ansi') ?? ''
 const clear = '\x1b[0m'
 const marker = `${red}|${clear}`
 const marked = (value: Solution) => `${marker}${value}${marker}`
-export const ansi = { gray, red, green, blue, clear, marker, marked }
+export const ansi = { gray, red, green, blue, yellow, clear, marker, marked }

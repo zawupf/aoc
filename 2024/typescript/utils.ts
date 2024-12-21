@@ -11,7 +11,27 @@ import {
     type SolutionFun,
 } from './types'
 
-export function humanize(nanoseconds: number): string {
+export type HumanizeOptions = {
+    prefix: string
+    suffix: string
+    colorize: boolean
+}
+
+const defaultOptions: HumanizeOptions = {
+    prefix: '[ ',
+    suffix: ' ]',
+    colorize: true,
+}
+const noDecorationOptions: HumanizeOptions = {
+    prefix: '',
+    suffix: '',
+    colorize: false,
+}
+
+export function humanize(
+    nanoseconds: number,
+    options: Partial<HumanizeOptions> | false = {},
+): string {
     const durationMs = nanoseconds / 1_000_000
     const durationSec = Math.floor(durationMs / 1000)
     const hours = Math.floor(durationSec / 3600)
@@ -26,7 +46,23 @@ export function humanize(nanoseconds: number): string {
     if (milliseconds > 0 || parts.length)
         parts.push(`${milliseconds.toFixed(3)}ms`)
 
-    return parts.slice(0, 2).join(':')
+    const result = parts.slice(0, 2).join(':')
+
+    const { prefix, suffix, colorize } =
+        options === false
+            ? noDecorationOptions
+            : { ...defaultOptions, ...options }
+    if (!colorize) {
+        return `${prefix}${result}${suffix}`
+    }
+
+    const color =
+        durationMs < 300
+            ? ansi.green
+            : durationMs < 1000
+            ? ansi.yellow
+            : ansi.red
+    return `${color}${prefix}${result}${suffix}${ansi.clear}`
 }
 
 function findInputFile(day: string): string {
@@ -100,7 +136,7 @@ export function test_run<T extends Solution>(
 
         const equal = Bun.deepEquals(result, expected)
         if (equal) {
-            console.log(`✅ ${title}: ${result} [${humanize(duration)}]`)
+            console.log(`✅ ${title}: ${result} ${humanize(duration)}`)
         } else {
             const first = `❌ ${title}: Expected`
             const second = 'but got'.padStart(Bun.stringWidth(first))

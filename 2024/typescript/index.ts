@@ -19,4 +19,4 @@ for await (const day of generateDays()) {
 }
 
 const duration = Bun.nanoseconds() - start
-console.log(`🏁 All days completed in ${humanize(duration)}`)
+console.log(`🏁 All days completed in ${humanize(duration, false)}`)
