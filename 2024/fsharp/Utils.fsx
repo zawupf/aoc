@@ -84,6 +84,34 @@ module FancyPatterns =
         | 0 -> Even
         | _ -> Odd
 
+module Option =
+    let ofTry (ok, value) =
+        match ok with
+        | true -> Some value
+        | false -> None
+
+    let defaultValue defaultValue =
+        function
+        | true, value -> value
+        | false, _ -> defaultValue
+
+type Dictionary<'key, 'value> =
+    System.Collections.Generic.Dictionary<'key, 'value>
+
+module Dictionary =
+    let tryGetValue key (d: Dictionary<_, _>) =
+        match d.TryGetValue key with
+        | true, value -> Some value
+        | false, _ -> None
+
+    let tryAdd key value (d: Dictionary<_, _>) =
+        d.TryAdd(key, value) |> ignore
+        d
+
+    let add key value (d: Dictionary<_, _>) =
+        d.Add(key, value) |> ignore
+        d
+
 module String =
     let join separator (chunks: Collections.seq<_>) =
         System.String.Join(separator, chunks)
