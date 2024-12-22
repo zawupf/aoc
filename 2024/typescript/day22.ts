@@ -32,22 +32,19 @@ function getNthSecret(secret: number, n: number): number {
     return NaN
 }
 
-type Stats = Map<string, number>
+type Stats = Map<number, number>
 function collectStats(secret: number, n: number): Stats {
     const stats: Stats = new Map()
 
     let previous = secret % 10
-    const diffs: number[] = []
+    let [a, b, c, d] = [0, 0, 0, 0]
     for (const next of generateSecrets(secret)) {
         const current = next % 10
-        const diff = current - previous
-        diffs.push(diff)
-        if (diffs.length > 4) {
-            diffs.shift()
-        }
+        const diff = current - previous + 10
+        ;(d = c), (c = b), (b = a), (a = diff)
 
-        if (diffs.length === 4) {
-            const key = diffs.join(',')
+        if (d !== 0) {
+            const key = (a << 24) | (b! << 16) | (c! << 8) | d
             if (!stats.has(key)) {
                 stats.set(key, current)
             }
@@ -71,7 +68,7 @@ export const part2: Part = input => () => {
     const stats = secrets.map(secret => collectStats(secret, 2000))
     const diffs = stats.reduce(
         (diffs, stat) => diffs.union(new Set(stat.keys())),
-        new Set<string>(),
+        new Set<number>(),
     )
     return diffs
         .values()
