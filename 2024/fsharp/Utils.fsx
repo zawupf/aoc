@@ -20,13 +20,13 @@ let inline dump (obj: 'a) =
     obj
 
 let inline f_dump fn args =
-    printf "%A -> " args
+    // printf "%A -> " args
     let watch = System.Diagnostics.Stopwatch()
     watch.Start()
     let result = fn args
     watch.Stop()
     printfn "%A [%A]" result watch
-    result
+    args
 
 let inline assert' fn =
     if not (fn ()) then
@@ -95,22 +95,85 @@ module Option =
         | true, value -> value
         | false, _ -> defaultValue
 
-type Dictionary<'key, 'value> =
+type Dictionary<'key, 'value when 'key: equality> =
     System.Collections.Generic.Dictionary<'key, 'value>
 
 module Dictionary =
+    // let ofSeq
+    //     (seq: Collections.seq<System.Collections.Generic.KeyValuePair<_, _>>)
+    //     =
+    //     Dictionary<_, _> seq
+    // let ofSeq (seq: Collections.seq<_>) = Dictionary<_, _> seq
+    // let ofSeq<'k, 'v when 'k: equality> (seq: ('k * 'v) seq) =
+    //     seq |> Seq.fold (fun d (k, v) -> add k v d) (Dictionary<'k, 'v>())
+    let ofSeq seq =
+        seq
+        |> Seq.fold
+            (fun (d: Dictionary<_, _>) (key, value) ->
+                d.Add(key, value) |> ignore
+                d)
+            (Dictionary<_, _>())
+
+    let copy (d: Dictionary<_, _>) = Dictionary<_, _> d
+
+    let isEmpty (d: Dictionary<_, _>) = d.Count = 0
+
+    let keys (d: Dictionary<_, _>) = d.Keys |> Seq.toArray
+
+    let values (d: Dictionary<_, _>) = d.Values |> Seq.toArray
+
     let tryGetValue key (d: Dictionary<_, _>) =
         match d.TryGetValue key with
         | true, value -> Some value
         | false, _ -> None
 
+    let get key (d: Dictionary<_, _>) = d[key]
+
+    let set key value (d: Dictionary<_, _>) =
+        d[key] <- value
+        d
+
     let tryAdd key value (d: Dictionary<_, _>) =
         d.TryAdd(key, value) |> ignore
         d
 
-    let add key value (d: Dictionary<_, _>) =
-        d.Add(key, value) |> ignore
+    let update key fn (d: Dictionary<_, _>) =
+        d[key] <- fn (d.TryGetValue key |> Option.ofTry)
         d
+
+type HashSet<'a> = System.Collections.Generic.HashSet<'a>
+
+module HashSet =
+    let empty<'a> = HashSet<_>()
+
+    let ofSeq (seq: Collections.seq<_>) = HashSet<_> seq
+
+    let singleton (item: 'a) = HashSet<_> [ item ]
+
+    let copy (set: HashSet<_>) = new HashSet<_>(set)
+
+    let isEmpty (set: HashSet<_>) = set.Count = 0
+
+    let add item (set: HashSet<_>) =
+        set.Add item |> ignore
+        set
+
+    let remove item (set: HashSet<_>) =
+        set.Remove item |> ignore
+        set
+
+    let contains item (set: HashSet<_>) = set.Contains item
+
+    let tryContains item (set: HashSet<_>) =
+        if set.Contains item then Some set else None
+
+    let unionWith (other: HashSet<_>) (set: HashSet<_>) =
+        set.UnionWith other
+        set
+
+    let intersectWith (other: HashSet<_>) (set: HashSet<_>) =
+        set.IntersectWith other
+        set
 
 module String =
     let join separator (chunks: Collections.seq<_>) =
