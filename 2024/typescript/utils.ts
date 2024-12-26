@@ -346,6 +346,10 @@ export function unzip<T, U>(pairs: [T, U][]): [T[], U[]] {
     )
 }
 
+export function transpose<T>(matrix: T[][]): T[][] {
+    return matrix[0].map((_, i) => matrix.map(row => row[i]))
+}
+
 export function greatesCommonDivisor(a: number, b: number): number {
     return b === 0 ? a : greatesCommonDivisor(b, a % b)
 }
