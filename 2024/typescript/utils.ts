@@ -154,6 +154,7 @@ export function test_run<T extends Solution>(
                 return 'skipped'
             default:
                 console.log(`💥 ${title}: ${ansi.red}${message}${ansi.clear}`)
+                console.error(e)
                 return 'failed'
         }
     }
