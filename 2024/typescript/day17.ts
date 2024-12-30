@@ -82,8 +82,44 @@ function run(c: Computer): Computer {
     return c
 }
 
+function runUntilOut(c: Computer): Computer {
+    const outLength = c.out.length
+    while (c.pc < c.program.length) {
+        execute(c)
+        if (c.out.length !== outLength) {
+            break
+        }
+    }
+    return c
+}
+
 function findRegisterValue(computer: Computer): number {
-    utils.notImplemented()
+    const program_ = computer.program.toReversed()
+    const range = Array.from({ length: 8 }, (_, i) => 7 - i)
+    const stack: [number, number][] = [[0, 0]]
+    let state: [number, number] | undefined
+    while ((state = stack.pop())) {
+        const [i, result] = state
+        if (i === program_.length) {
+            return result
+        }
+
+        const a_ = result * 8
+        stack.push(
+            ...range
+                .map(ai => [i + 1, a_ + ai] as [number, number])
+                .filter(
+                    ([_, a]) =>
+                        runUntilOut({
+                            ...computer,
+                            r: { ...computer.r, a },
+                            out: [],
+                        }).out[0] === program_[i],
+                ),
+        )
+    }
+
+    throw new Error('No solution found')
 }
 
 function parse(lines: string[]): Computer {
@@ -102,7 +138,7 @@ export const part2: Part = input => () =>
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = '4,1,5,3,1,5,3,5,7'
-part2.solution = ''
+part2.solution = '164542125272765'
 
 export const main = import.meta.main
 if (main) {
