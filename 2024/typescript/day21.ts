@@ -1,30 +1,33 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-type PadDirMap = Map<string, [number, string[]]>
-type Maps = { codeMap: PadDirMap; dirMap: PadDirMap }
+type KeyMap = Map<string, string[]>
 
-function initMaps(): Maps {
-    // Code Keypad Layout:
-    // 7 8 9
-    // 4 5 6
-    // 1 2 3
-    //   0 A
-    const codeMap = createDistanceMap([
-        'A0:< A3:^ 02:^ 36:^ 32:< 25:^ 21:< 14:^ 69:^ 65:< 58:^ 54:< 47:^ 98:< 87:<',
-        'A6:^^ A2:^<:<^ 03:^>:>^ 05:^^ 01:^< 39:^^ 35:^<:<^ 31:<< 26:^>:>^ 28:^^ 24:^<:<^ 15:^>:>^ 17:^^ 64:<< 68:<^:^< 59:^>:>^ 57:^<:<^ 48:^>:>^ 97:<<',
-        'A9:^^^ A5:^^<:<^^:^<^ A1:^<<:<^< 06:^^>:>^^:^>^ 08:^^^ 04:^^<:^<^ 38:^^<:<^^^<^ 34:^<<:<<^:<^< 29:^^>:>^^:^>^ 27:^^<:<^^:^<^ 16:^>>:>>^:>^> 18:^^>:>^^:^>^ 67:^<<:<<^:<^< 49:^>>:>>^:>^>',
-        'A8:^^^<:<^^^:^<^^:^^<^ A4:^^<<:^<<^:^<^< 09:^^^>:>^^^:^^>^:^>^^ 07:^^^<:^^<^:^<^^ 37:^^<<:<<^^:^<^<:^<<^:<^^<:<^<^ 19:^^>>:>>^^:^>>^:^>^>:>^^>:>^>^',
-        'A7:^^^<<:^^<<^:^^<^<:^<<^^:^<^<^:^<^^<:<^^^<:<^^<^:<^<^^',
-    ])
+function initKeyMap(): KeyMap {
+    const map = createKeyMap([
+        // Code Keypad Layout:
+        // 7 8 9
+        // 4 5 6
+        // 1 2 3
+        //   0 A
+        'A3:^ A6:^^ A9:^^^ A0:< A2:<^:^< A5:<^^:^^< A8:<^^^:^^^< A1:^<< A4:^^<< A7:^^^<<',
+        '02:^ 03:^>:>^ 01:^< 05:^^ 06:^^>:>^^ 04:^^< 08:^^^ 09:^^^>:>^^^ 07:^^^<',
+        '36:^ 39:^^ 32:< 35:^<:<^ 38:^^<:<^^ 31:<< 34:^<<:<<^ 37:^^<<:<<^^',
+        '21:< 26:^>:>^ 25:^ 24:^<:<^ 28:^^ 29:^^>:>^^ 27:^^<:<^^',
+        '14:^ 15:^>:>^ 16:^>>:>>^ 17:^^ 18:^^>:>^^ 19:^^>>:>>^^',
+        '65:< 64:<< 69:^ 68:<^:^< 67:^<<:<<^',
+        '54:< 59:^>:>^ 58:^ 57:^<:<^',
+        '47:^ 48:^>:>^ 49:^>>:>>^',
+        '98:< 97:<<',
+        '87:<',
 
-    // Direction Keypad Layout:
-    //   ^ A
-    // < v >
-    const dirMap = createDistanceMap([
-        'A^:< A>:v ^v:v >v:< v<:<',
-        'Av:<v:v< ^>:v>:>v ^<:v< ><:<<',
-        'A<:v<<:<v<',
+        // Direction Keypad Layout:
+        //   ^ A
+        // < v >
+        'A^:< A>:v Av:v<:<v A<:v<<',
+        '^v:v ^>:v>:>v ^<:v<',
+        '>v:< ><:<<',
+        'v<:<',
     ])
 
     function reverse(dir: string): string {
@@ -48,97 +51,99 @@ function initMaps(): Maps {
             .join('')
     }
 
-    function createDistanceMap(
-        pathInfo: string[],
-    ): Map<string, [number, string[]]> {
+    function createKeyMap(pathInfo: string[]): KeyMap {
         return new Map(
-            pathInfo.flatMap((row, i) => {
+            pathInfo.flatMap(row => {
                 return row.split(' ').flatMap(info => {
                     const [path, ...dirs] = info.split(':')
                     const [a, b] = path.split('')
+
                     return [
-                        [a + b, [i + 2, dirs.map(dir => dir + 'A')]],
-                        [b + a, [i + 2, dirs.map(dir => reverse(dir) + 'A')]],
-                    ] as [string, [number, string[]]][]
+                        [a + b, dirs.map(d => d + 'A')],
+                        [b + a, dirs.map(d => reverse(d) + 'A')],
+                    ]
                 })
             }),
         )
     }
 
-    return { codeMap, dirMap }
+    const numKeys = 'A0123456789'.split('')
+    for (let i = 0; i < numKeys.length; i++) {
+        const ki = numKeys[i]
+        map.set(ki + ki, ['A'])
+        for (let j = i + 1; j < numKeys.length; j++) {
+            const kj = numKeys[j]
+            console.assert(map.has(ki + kj), `Missing key: ${ki + kj}`)
+            console.assert(map.has(kj + ki), `Missing key: ${kj + ki}`)
+        }
+    }
+
+    const dirKeys = 'A<>^v'.split('')
+    for (let i = 0; i < dirKeys.length; i++) {
+        const ki = dirKeys[i]
+        map.set(ki + ki, ['A'])
+        for (let j = i + 1; j < dirKeys.length; j++) {
+            const kj = dirKeys[j]
+            console.assert(map.has(ki + kj), `Missing key: ${ki + kj}`)
+            console.assert(map.has(kj + ki), `Missing key: ${kj + ki}`)
+        }
+    }
+
+    return map
 }
 
-function pressKeys(
-    map: PadDirMap,
+function countKeys(
+    map: KeyMap,
     previous: string,
     keys: string,
-    cache: Map<string, string[]>,
-): string[] {
-    const cache_key = previous + ':' + keys
-    let result = cache.get(cache_key)
-    if (result) {
-        return cache.get(cache_key)!
+    n: number,
+    cache: Map<string, number> = new Map(),
+): number {
+    if (n === 0) {
+        return keys.length
     }
 
-    const [current, rest] = [keys[0], keys.slice(1)]
-    if (previous !== current && !map.has(previous + current)) {
-        throw new Error(`Invalid key: ${previous + current}`)
+    let result = 0
+    for (let i = 0; i < keys.length; i++) {
+        const current = keys[i]
+        const pair = previous + current
+        previous = current
+
+        const cacheKey = n + pair
+        if (cache.has(cacheKey)) {
+            result += cache.get(cacheKey)!
+            continue
+        }
+
+        const length = map
+            .get(pair)!
+            .map(keys => countKeys(map, 'A', keys, n - 1, cache))
+            .reduce(utils.min)
+        cache.set(cacheKey, length)
+        result += length
     }
 
-    const [_distance, dirs] =
-        previous === current ? [1, ['A']] : map.get(previous + current)!
-    console.assert(
-        dirs.length !== 0,
-        `dirs is empty with ${previous + current}`,
-    )
-    if (rest.length === 0) {
-        result = dirs
-    } else {
-        const restDirs = pressKeys(map, current, rest, cache)
-        result = dirs.flatMap(dir => restDirs.map(d => dir + d))
-    }
-
-    cache.set(cache_key, result)
     return result
-}
-
-function shortest(dirs: string[]): string[] {
-    const originalLength = dirs.length
-    const minDirLength = dirs.map(dir => dir.length).reduce(utils.min)
-    const result = dirs.filter(dir => dir.length === minDirLength)
-    const resultLength = result.length
-    return result
-}
-
-function minSequenceLength(code: string, maps: Maps, n: number): number {
-    const cache = new Map<string, string[]>()
-    let dirs = pressKeys(maps.codeMap, 'A', code, cache)
-
-    while (n--) {
-        dirs = shortest(
-            dirs.flatMap(dir => pressKeys(maps.dirMap, 'A', dir, cache)),
-        )
-    }
-
-    return dirs[0].length * parseInt(code, 10)
 }
 
 export const part1: Part = input => () => {
-    const maps = initMaps()
-    return input.map(code => minSequenceLength(code, maps, 2)).reduce(utils.sum)
+    const map = initKeyMap()
+    return input
+        .map(code => countKeys(map, 'A', code, 3) * parseInt(code, 10))
+        .reduce(utils.sum)
 }
 
 export const part2: Part = input => () => {
-    const maps = initMaps()
+    const map = initKeyMap()
     return input
-        .map(code => minSequenceLength(code, maps, 25))
+        .map(code => countKeys(map, 'A', code, 26) * parseInt(code, 10))
         .reduce(utils.sum)
 }
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputLines(day)
 part1.solution = 215374
-part2.solution = NaN
+part2.solution = 260586897262600
 
 export const main = import.meta.main
 if (main) {
@@ -155,11 +160,7 @@ if (main) {
     ])
 
     await utils.tests(
-        () =>
-            utils.test_all(
-                ['Test part 1', 126384, part1(testInput[0])],
-                // ['Test part 2', NaN, part2(testInput[0])],
-            ),
+        () => utils.test_all(['Test part 1', 126384, part1(testInput[0])]),
         () => utils.test_day(module),
     )
 }
