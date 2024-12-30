@@ -21,53 +21,36 @@ function parseGame(input: string): Game {
     return { buttonA, buttonB, prize }
 }
 
-function fixPrize(game: Game): Game {
-    const [px, py] = game.prize
-    return { ...game, prize: [px + 10000000000000, py + 10000000000000] }
-}
-
 function parse(input: string): Game[] {
     return utils.split_sections(input).map(parseGame)
 }
 
-function* solutions(game: Game): Generator<number> {
-    const [px, py] = game.prize
-
-    const [a_dx, a_dy] = game.buttonA
-    const a_i_max = Math.min(Math.floor(px / a_dx), Math.floor(py / a_dy))
-
-    const [b_dx, b_dy] = game.buttonB
-    const b_i_max = Math.min(Math.floor(px / b_dx), Math.floor(py / b_dy))
-
-    for (let i = 0; i <= a_i_max; i++) {
-        const [ax, ay] = [a_dx * i, a_dy * i]
-        for (let j = 0; j <= b_i_max; j++) {
-            const [bx, by] = [b_dx * j, b_dy * j]
-            if (ax + bx === px && ay + by === py) {
-                yield i * 3 + j
-            }
-        }
-    }
-}
-
-function solveGame(game: Game): number {
-    const result = Math.min(...solutions(game))
-    return result === Infinity ? 0 : result
+function solve(machine: Game, offset: number): number {
+    const [a_dx, a_dy] = machine.buttonA
+    const [b_dx, b_dy] = machine.buttonB
+    const [px, py] = [machine.prize[0] + offset, machine.prize[1] + offset]
+    const det = a_dx * b_dy - a_dy * b_dx
+    const a = Math.floor((px * b_dy - py * b_dx) / det)
+    const b = Math.floor((a_dx * py - a_dy * px) / det)
+    return a_dx * a + b_dx * b === px && a_dy * a + b_dy * b === py
+        ? a * 3 + b
+        : 0
 }
 
 export const part1: Part = input => () =>
-    parse(input).reduce(utils.sumBy(solveGame), 0)
+    parse(input)
+        .map(machine => solve(machine, 0))
+        .reduce(utils.sum)
 
 export const part2: Part = input => () =>
-    parse(input).reduce(
-        utils.sumBy(g => solveGame(fixPrize(g))),
-        0,
-    )
+    parse(input)
+        .map(machine => solve(machine, 10000000000000))
+        .reduce(utils.sum)
 
 export const day = import.meta.file.match(/day(\d+)/)![1]
 export const input = await utils.readInputText(day)
 part1.solution = 35729
-part2.solution = NaN
+part2.solution = 88584689879723
 
 export const main = import.meta.main
 if (main) {
