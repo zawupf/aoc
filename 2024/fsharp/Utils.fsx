@@ -206,7 +206,7 @@ module String =
 
     let toLines = trim >> split '\n' >> Array.map trim
 
-    let ofChars chars = chars |> Seq.toArray |> string
+    let inline ofChars<'a> chars = System.String.Concat<'a> chars
 
     let substring i (string: string) = string.Substring(i)
 
