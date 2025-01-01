@@ -65,7 +65,7 @@ let keyMap =
     ]
 
 let countKeys n keys =
-    let cache = Utils.Dictionary<int * (char * char), int64>()
+    let getPairCountPerLevel = Utils.useCache<int * (char * char), int64> ()
 
     let rec loop n keys =
         if n = 0 then
@@ -74,19 +74,12 @@ let countKeys n keys =
             Seq.concat [ Seq.singleton 'A'; seq keys ]
             |> Seq.pairwise
             |> Seq.sumBy (fun pair ->
-                let cacheKey = n, pair
-
-                match cache |> Utils.Dictionary.tryGetValue cacheKey with
-                | Some length -> length
-                | None ->
-                    let length =
-                        keyMap
-                        |> Utils.Dictionary.get pair
-                        |> List.map (fun keys -> loop (n - 1) keys)
-                        |> List.min
-
-                    cache[cacheKey] <- length
-                    length)
+                getPairCountPerLevel (n, pair)
+                <| fun () ->
+                    keyMap
+                    |> Utils.Dictionary.get pair
+                    |> List.map (fun keys -> loop (n - 1) keys)
+                    |> List.min)
 
 
     loop n keys

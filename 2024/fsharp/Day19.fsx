@@ -1,6 +1,4 @@
 #load "Utils.fsx"
-
-open Utils.FancyPatterns
 open System
 
 type Towels = {
@@ -52,23 +50,18 @@ let countAllPatternCombinations towels =
     let patterns = towels.Patterns |> Array.map Span.ofString
     let designs = towels.Designs |> Array.map Span.ofString
 
-    let cache = Collections.Generic.Dictionary<Span, int64>()
+    let getDesignCount = Utils.useCache<Span, int64> ()
 
     let rec countCombinations (design: Span) =
         match design.IsEmpty with
         | true -> 1L
         | _ ->
-            match cache.TryGetValue design with
-            | Found result -> result
-            | NotFound ->
-                let result =
-                    patterns
-                    |> Seq.filter design.StartsWith
-                    |> Seq.sumBy (fun pattern ->
-                        design.Slice pattern.Length |> countCombinations)
-
-                cache.Add(design, result)
-                result
+            getDesignCount design
+            <| fun () ->
+                patterns
+                |> Seq.filter design.StartsWith
+                |> Seq.sumBy (fun pattern ->
+                    design.Slice pattern.Length |> countCombinations)
 
     designs |> Array.sumBy countCombinations
 

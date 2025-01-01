@@ -149,6 +149,10 @@ module Dictionary =
             d[key] <- value
             value
 
+let inline useCache<'k, 'v when 'k: equality> () =
+    let cache = Dictionary<'k, 'v>()
+    fun key buildValue -> Dictionary.getOrInsertWith cache key buildValue
+
 type HashSet<'a> = System.Collections.Generic.HashSet<'a>
 
 module HashSet =
@@ -246,7 +250,7 @@ let private _findInputFile name =
 
     _findFile (Directory.GetCurrentDirectory()) subpath
 
-let useCache getterFn =
+let useFileCache getterFn =
     let mutable cache = Map.empty
 
     fun key ->
@@ -259,14 +263,16 @@ let useCache getterFn =
 
 let private _readLines filename = File.ReadLines(filename) |> Seq.toArray
 
-let readInputLines = useCache (_findInputFile >> _readLines)
+let readInputLines = useFileCache (_findInputFile >> _readLines)
 
 let private _readAllText filename = File.ReadAllText(filename).Trim()
 
-let readInputText = useCache (_findInputFile >> _readAllText)
+let readInputText = useFileCache (_findInputFile >> _readAllText)
 
 let readInputExact =
-    useCache (_findInputFile >> (fun filename -> File.ReadAllText(filename)))
+    useFileCache (
+        _findInputFile >> (fun filename -> File.ReadAllText(filename))
+    )
 
 module Math =
     let permutations list =

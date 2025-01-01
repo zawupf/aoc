@@ -89,10 +89,10 @@ let parse input =
     | _ -> failwith "Invalid input"
 
 let evaluate circuit =
-    let cache = Utils.Dictionary<Wire, uint64>()
+    let getWireValue = Utils.useCache<Wire, uint64> ()
 
     let rec eval wire =
-        Utils.Dictionary.getOrInsertWith cache wire
+        getWireValue wire
         <| fun () ->
             match wire with
             | X x -> if circuit.X &&& (1UL <<< x) = 0UL then 0UL else 1UL

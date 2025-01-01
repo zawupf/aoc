@@ -1,8 +1,6 @@
 #load "Utils.fsx"
 open Utils.FancyPatterns
 
-type Cache = System.Collections.Generic.Dictionary<int64 * int, int64>
-
 let parse line = line |> Utils.String.parseInt64s ' '
 
 let (|SplitEven|_|) value =
@@ -14,29 +12,24 @@ let (|SplitEven|_|) value =
         Some(s.[0 .. m - 1] |> int64, s.[m..] |> int64)
     | Odd -> None
 
-let rec count (cache: Cache) blinks stone =
-    match blinks with
-    | 0 -> 1L
-    | _ ->
-        let key = stone, blinks
+let count blinks stone =
+    let getStoneBlinks = Utils.useCache<int64 * int, int64> ()
 
-        match cache.TryGetValue key with
-        | Found value -> value
-        | NotFound ->
-            let result =
+    let rec loop blinks stone =
+        match blinks with
+        | 0 -> 1L
+        | _ ->
+            getStoneBlinks (stone, blinks)
+            <| fun () ->
                 match stone with
-                | 0L -> count cache (blinks - 1) 1
+                | 0L -> loop (blinks - 1) 1
                 | SplitEven(left, right) ->
-                    count cache (blinks - 1) left
-                    + count cache (blinks - 1) right
-                | _ -> count cache (blinks - 1) (stone * 2024L)
+                    loop (blinks - 1) left + loop (blinks - 1) right
+                | _ -> loop (blinks - 1) (stone * 2024L)
 
-            cache.Add(key, result)
-            result
+    loop blinks stone
 
-let sumByCount blinks stones =
-    let cache = Cache()
-    stones |> Seq.sumBy (count cache blinks)
+let sumByCount blinks stones = stones |> Seq.sumBy (count blinks)
 
 let part1 input = input |> parse |> sumByCount 25
 
