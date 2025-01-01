@@ -141,6 +141,14 @@ module Dictionary =
         d[key] <- fn (d.TryGetValue key |> Option.ofTry)
         d
 
+    let getOrInsertWith (d: Dictionary<_, _>) key fn =
+        match tryGetValue key d with
+        | Some value -> value
+        | None ->
+            let value = fn ()
+            d[key] <- value
+            value
+
 type HashSet<'a> = System.Collections.Generic.HashSet<'a>
 
 module HashSet =
