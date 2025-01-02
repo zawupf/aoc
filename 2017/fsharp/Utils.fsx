@@ -100,7 +100,7 @@ module Option =
         | true -> Some value
         | false -> None
 
-    let defaultValue defaultValue =
+    let orDefault defaultValue =
         function
         | true, value -> value
         | false, _ -> defaultValue
@@ -155,13 +155,16 @@ module Dictionary =
         match tryGetValue key d with
         | Some value -> value
         | None ->
-            let value = fn ()
+            let value = fn d
             d[key] <- value
             value
 
-let inline useCache<'k, 'v when 'k: equality> () =
-    let cache = Dictionary<'k, 'v>()
+let inline useCacheWith (initialEntries) =
+    let cache = initialEntries |> Dictionary.ofSeq
     fun key buildValue -> Dictionary.getOrInsertWith cache key buildValue
+
+let inline useCache<'k, 'v when 'k: equality> () =
+    useCacheWith Seq.empty<'k * 'v>
 
 type HashSet<'a> = System.Collections.Generic.HashSet<'a>
 
