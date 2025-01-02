@@ -10,7 +10,17 @@ let input = readInputLines day
 let solution1 () = part1 input
 let solution2 () = part2 input
 
-Test.run "Part 1" nan solution1
-Test.run "Part 2" nan solution2
+let testInput =
+    [|
+        """
+"""
+    |]
+    |> Array.map String.toLines
+
+Test.run "Test 1" None (fun () -> part1 testInput[0])
+Test.run "Test 2" None (fun () -> part2 testInput[0])
+
+Test.run "Part 1" None solution1
+Test.run "Part 2" None solution2
 
 #load "_benchmark.fsx"
