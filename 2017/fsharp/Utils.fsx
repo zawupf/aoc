@@ -3,6 +3,9 @@ module Utils
 let notImplemented () =
     raise (System.NotImplementedException())
 
+let unreachable () =
+    raise (System.Exception "Panic: Unreachable code is reached!! 😱")
+
 module Test =
     let run title expected fn =
         try
