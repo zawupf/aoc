@@ -1,25 +1,41 @@
 #load "Utils.fsx"
 open Utils
 
-let makeGenerator factor pred =
-    Seq.unfold (fun prev ->
-        let next = prev * factor % 2147483647UL
-        Some(next, next))
-    >> Seq.filter pred
+let inline predAll _ = true
+let inline predA x = x % 4UL = 0UL
+let inline predB x = x % 8UL = 0UL
 
-let genA = makeGenerator 16807UL
+let countMatches count (predA, predB) (seedA, seedB) =
+    let mutable a = seedA
+    let mutable b = seedB
 
-let genB = makeGenerator 48271UL
+    let inline nextA () = a <- a * 16807UL % 2147483647UL
+    let inline nextB () = b <- b * 48271UL % 2147483647UL
 
-let genPairs (predA, predB) (seedA, seedB) =
-    Seq.zip (genA predA seedA) (genB predB seedB)
+    let inline nextValidA () =
+        nextA ()
 
-let isMatch (a, b) =
-    let mask = 0xFFFFUL
-    a &&& mask = (b &&& mask)
+        while not (predA a) do
+            nextA ()
 
-let countMatches n pairs =
-    pairs |> Seq.truncate n |> Seq.filter isMatch |> Seq.length
+    let inline nextValidB () =
+        nextB ()
+
+        while not (predB b) do
+            nextB ()
+
+    let inline isMatch () = a &&& 0xFFFFUL = (b &&& 0xFFFFUL)
+
+    let mutable matches = 0
+
+    for _ in 1..count do
+        nextValidA ()
+        nextValidB ()
+
+        if isMatch () then
+            matches <- matches + 1
+
+    matches
 
 let parseSeeds lines =
     let parseSeed line =
@@ -27,18 +43,11 @@ let parseSeeds lines =
 
     lines |> Array.item 0 |> parseSeed, lines |> Array.item 1 |> parseSeed
 
-let predAll _ = true
-let predA x = x % 4UL = 0UL
-let predB x = x % 8UL = 0UL
-
 let part1 input =
-    input
-    |> parseSeeds
-    |> genPairs (predAll, predAll)
-    |> countMatches 40_000_000
+    input |> parseSeeds |> countMatches 40_000_000 (predAll, predAll)
 
 let part2 input =
-    input |> parseSeeds |> genPairs (predA, predB) |> countMatches 5_000_000
+    input |> parseSeeds |> countMatches 5_000_000 (predA, predB)
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputLines day
