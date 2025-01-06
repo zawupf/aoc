@@ -20,8 +20,7 @@ let countInfections generation burstCount lines =
         | 1, 0 -> 0, -1
         | _ -> failwith "Invalid direction"
 
-    let turnRight (dx, dy) =
-        turnLeft (dx, dy) |> fun (dx, dy) -> -dx, -dy
+    let turnRight (dx, dy) = turnLeft (dx, dy) |> fun (dx, dy) -> -dx, -dy
 
     let reverse (dx, dy) = -dx, -dy
 

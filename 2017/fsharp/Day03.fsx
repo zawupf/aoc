@@ -39,8 +39,7 @@ let values =
 
 let distance (x, y) = abs x + abs y
 
-let part1 input =
-    input |> int |> Seq.item <| locations |> distance
+let part1 input = input |> int |> Seq.item <| locations |> distance
 
 let part2 input =
     let input = input |> int

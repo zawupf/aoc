@@ -86,11 +86,9 @@ let countPixels grid =
     |> List.map (fun y -> grid[y, *])
     |> List.sumBy (Array.sumBy (fun c -> if c = '#' then 1 else 0))
 
-let part1 input =
-    input |> buildRules |> render 5 |> countPixels
+let part1 input = input |> buildRules |> render 5 |> countPixels
 
-let part2 input =
-    input |> buildRules |> render 18 |> countPixels
+let part2 input = input |> buildRules |> render 18 |> countPixels
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputLines day

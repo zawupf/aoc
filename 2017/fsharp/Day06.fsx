@@ -10,8 +10,7 @@ let reallocCount banks =
         let m = banks |> Array.max
         banks |> Array.findIndex (fun x -> x = m)
 
-    let toKey banks =
-        banks |> Array.map string |> String.concat " "
+    let toKey banks = banks |> Array.map string |> String.concat " "
 
     let cache = Dictionary<string, int>()
 

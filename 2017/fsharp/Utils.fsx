@@ -1,7 +1,6 @@
 module Utils
 
-let notImplemented () =
-    raise (System.NotImplementedException())
+let notImplemented () = raise (System.NotImplementedException())
 
 let unreachable () =
     raise (System.Exception "Panic: Unreachable code is reached!! 😱")
@@ -332,8 +331,7 @@ module Math =
     let inline isZero value = value = LanguagePrimitives.GenericZero
 
     let inline greatestCommonDivisor a b =
-        let rec gcd x y =
-            if y |> isZero then x else gcd y (x % y)
+        let rec gcd x y = if y |> isZero then x else gcd y (x % y)
 
         match (abs a, abs b) with
         | a, b when a < b -> b, a
@@ -506,8 +504,7 @@ module BBox =
 
     let ofSeq seq = seq |> Seq.fold merge empty
 
-    let ofMap map =
-        map |> Map.toSeq |> Seq.map fst |> ofSeq
+    let ofMap map = map |> Map.toSeq |> Seq.map fst |> ofSeq
 
 
 let render toString map =

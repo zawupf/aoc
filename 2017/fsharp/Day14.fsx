@@ -48,11 +48,9 @@ let initGrid input =
 let countUsed grid = grid |> Array.sumBy Array.sum
 
 let countRegions grid =
-    let isUsed (x, y) =
-        grid |> Array.item y |> Array.item x = 1
+    let isUsed (x, y) = grid |> Array.item y |> Array.item x = 1
 
-    let clear (x, y) =
-        grid |> Array.item y |> Array.set <|| (x, 0)
+    let clear (x, y) = grid |> Array.item y |> Array.set <|| (x, 0)
 
     let isValid (x, y) = x >= 0 && x < 128 && y >= 0 && y < 128
 

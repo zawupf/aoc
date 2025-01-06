@@ -1,11 +1,7 @@
 #load "Utils.fsx"
 open Utils
 
-type Particle = {
-    Position: int[]
-    Velocity: int[]
-    Acceleration: int[]
-}
+type Particle = { Position: int[]; Velocity: int[]; Acceleration: int[] }
 
 let parseParticle =
     let pattern = @"p=<(.+?)>, v=<(.+?)>, a=<(.+?)>"
@@ -22,12 +18,7 @@ let parse input = input |> Array.map parseParticle
 
 let positionAtTime t (particle: Particle) =
     // p_tn = p_t0 + n * v_t0 + n * (n + 1) / 2 * a
-    let {
-            Position = p
-            Velocity = v
-            Acceleration = a
-        } =
-        particle
+    let { Position = p; Velocity = v; Acceleration = a } = particle
 
     Array.map3 (fun p v a -> p + t * v + t * (t + 1) / 2 * a) p v a
 

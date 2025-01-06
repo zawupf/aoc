@@ -1,11 +1,7 @@
 #load "Utils.fsx"
 open Utils
 
-type Program = {
-    Name: string
-    Weight: int
-    Disc: Set<string>
-}
+type Program = { Name: string; Weight: int; Disc: Set<string> }
 
 let parseProgram line =
     match line with

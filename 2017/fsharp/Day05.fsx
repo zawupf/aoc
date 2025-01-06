@@ -14,8 +14,7 @@ let exitCount update jumps =
 
     loop 0 0
 
-let part1 input =
-    input |> Array.map int |> exitCount (fun x -> x + 1)
+let part1 input = input |> Array.map int |> exitCount (fun x -> x + 1)
 
 let part2 input =
     input

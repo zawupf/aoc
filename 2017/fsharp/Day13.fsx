@@ -13,10 +13,7 @@ let scannerPosition time layer =
     let period = range * 2
     let position = time % period
 
-    if position > range then
-        range - (position - range)
-    else
-        position
+    if position > range then range - (position - range) else position
 
 let findDelayToPassFirewall layers =
     let rec findDelay delay =
@@ -37,8 +34,7 @@ let part1 input =
     |> Array.filter (fun layer -> scannerPosition layer.Depth layer = 0)
     |> Array.sumBy (fun layer -> layer.Depth * layer.Range)
 
-let part2 input =
-    input |> Array.map parse |> findDelayToPassFirewall
+let part2 input = input |> Array.map parse |> findDelayToPassFirewall
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputLines day

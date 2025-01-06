@@ -28,8 +28,7 @@ let findValueAfterZero lastValue steps =
 
 let part1 input = input |> int |> findValueAfter 2017
 
-let part2 input =
-    input |> int |> findValueAfterZero 50_000_000
+let part2 input = input |> int |> findValueAfterZero 50_000_000
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputText day

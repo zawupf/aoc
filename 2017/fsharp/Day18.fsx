@@ -71,10 +71,7 @@ type Duet = {
     member private this.send x other =
         other.Messages.Enqueue(this.getR x)
 
-        {
-            this.next () with
-                SendCount = this.SendCount + 1
-        }
+        { this.next () with SendCount = this.SendCount + 1 }
 
     member private this.receive x =
         match this.Mode, this.Messages.Count with
@@ -87,10 +84,7 @@ type Duet = {
             | _ ->
                 let msg = this.Messages |> Seq.last
 
-                {
-                    this.setR x msg with
-                        LastMessage = Some msg
-                }
+                { this.setR x msg with LastMessage = Some msg }
 
     member private this.isTerminated =
         this.CurrentInstruction < 0
@@ -189,11 +183,9 @@ type Duet = {
         SendCount = 0
     }
 
-let part1 input =
-    input |> Duet.parse Single |> Duet.execute
+let part1 input = input |> Duet.parse Single |> Duet.execute
 
-let part2 input =
-    input |> Duet.parse Duet |> Duet.execute
+let part2 input = input |> Duet.parse Duet |> Duet.execute
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputLines day

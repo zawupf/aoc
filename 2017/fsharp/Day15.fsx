@@ -38,16 +38,14 @@ let countMatches count (predA, predB) (seedA, seedB) =
     matches
 
 let parseSeeds lines =
-    let parseSeed line =
-        line |> String.split ' ' |> Array.item 4 |> uint64
+    let parseSeed line = line |> String.split ' ' |> Array.item 4 |> uint64
 
     lines |> Array.item 0 |> parseSeed, lines |> Array.item 1 |> parseSeed
 
 let part1 input =
     input |> parseSeeds |> countMatches 40_000_000 (predAll, predAll)
 
-let part2 input =
-    input |> parseSeeds |> countMatches 5_000_000 (predA, predB)
+let part2 input = input |> parseSeeds |> countMatches 5_000_000 (predA, predB)
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputLines day

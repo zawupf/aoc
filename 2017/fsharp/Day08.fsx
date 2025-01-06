@@ -41,8 +41,7 @@ let parseInstr line =
         Instr(op (Reg r1, v1), cond (Reg r2, v2))
     | _ -> failwithf "Invalid instruction: %s" line
 
-let getReg (Reg r) regs =
-    Map.tryFind r regs |> Option.defaultValue 0
+let getReg (Reg r) regs = Map.tryFind r regs |> Option.defaultValue 0
 
 let changeReg (Reg r) fn regs =
     let mutable value = 0
@@ -87,8 +86,7 @@ let run instructions =
 let part1 input =
     input |> Array.map parseInstr |> run |> fst |> Map.values |> Seq.max
 
-let part2 input =
-    input |> Array.map parseInstr |> run |> snd
+let part2 input = input |> Array.map parseInstr |> run |> snd
 
 
 let day = __SOURCE_FILE__[3..4]

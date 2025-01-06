@@ -59,8 +59,7 @@ let dance count initialPrograms moves =
 
 let part1 input = input |> dance 1 "abcdefghijklmnop"
 
-let part2 input =
-    input |> dance 1_000_000_000 "abcdefghijklmnop"
+let part2 input = input |> dance 1_000_000_000 "abcdefghijklmnop"
 
 let day = __SOURCE_FILE__[3..4]
 let input = readInputText day

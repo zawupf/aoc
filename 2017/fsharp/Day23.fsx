@@ -92,10 +92,7 @@ type Duet = {
                 | true -> duet.MulCount
                 | false -> loop (duet.execute ())
 
-            loop {
-                duet with
-                    Registers = [ Reg 'a', 1L ] |> Dictionary.ofSeq
-            }
+            loop { duet with Registers = [ Reg 'a', 1L ] |> Dictionary.ofSeq }
 
     static member parse mode lines = {
         Mode = mode
@@ -124,8 +121,7 @@ type Duet = {
         MulCount = 0
     }
 
-let part1 input =
-    input |> Duet.parse Debug |> Duet.execute
+let part1 input = input |> Duet.parse Debug |> Duet.execute
 
 let part2 _input = // WTF!! 🤣
     let start, stop, step = 107900, 107900 + 17000, 17
