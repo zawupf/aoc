@@ -2,17 +2,43 @@ module Utils
 
 let notImplemented () = raise (System.NotImplementedException())
 
+let unreachable () =
+    raise (System.Exception "Panic: Unreachable code is reached!! 😱")
+
 module Test =
     let run title expected fn =
-        let watch = System.Diagnostics.Stopwatch()
-        watch.Start()
-        let result = fn ()
-        watch.Stop()
+        try
+            let watch = System.Diagnostics.Stopwatch()
+            watch.Start()
+            let result = fn ()
+            watch.Stop()
 
-        if result = expected then
-            printfn "✅ %s: %A [%A]" title result watch
-        else
-            eprintfn "❌ %s: %A (expected: %A) [%A]" title result expected watch
+            if result = expected then
+                printfn "✅ %s: %A [%A]" title result watch
+            else
+                eprintfn
+                    "❌ %s: %A (expected: %A) [%A]"
+                    title
+                    result
+                    expected
+                    watch
+        with
+        | :? System.NotImplementedException ->
+            eprintfn "🚧 %s: Not implemented" title
+        | _ -> reraise ()
+
+module Bool =
+    let inline toInt (value: bool) = if value then 1 else 0
+    let inline toByte (value: bool) = if value then 1uy else 0uy
+    let inline toChar (value: bool) = if value then '1' else '0'
+    let inline toLong (value: bool) = if value then 1L else 0L
+    let inline toInt64 (value: bool) = if value then 1L else 0L
+    let inline toUInt (value: bool) = if value then 1u else 0u
+    let inline toUInt64 (value: bool) = if value then 1UL else 0UL
+    let inline toFloat (value: bool) = if value then 1.0 else 0.0
+    let inline toDouble (value: bool) = if value then 1.0 else 0.0
+    let inline toDecimal (value: bool) = if value then 1M else 0M
+    let inline toString (value: bool) = if value then "true" else "false"
 
 let inline dump (obj: 'a) =
     printfn "%A" obj
@@ -89,7 +115,7 @@ module Option =
         | true -> Some value
         | false -> None
 
-    let defaultValue defaultValue =
+    let orDefault defaultValue =
         function
         | true, value -> value
         | false, _ -> defaultValue
@@ -140,17 +166,31 @@ module Dictionary =
         d[key] <- fn (d.TryGetValue key |> Option.ofTry)
         d
 
+    let change key fn (d: Dictionary<_, _>) =
+        match d.TryGetValue key |> Option.ofTry |> fn with
+        | Some value -> d[key] <- value
+        | None -> d.Remove key |> ignore
+
+        d
+
+    let remove key (d: Dictionary<_, _>) =
+        d.Remove key |> ignore
+        d
+
     let getOrInsertWith (d: Dictionary<_, _>) key fn =
         match tryGetValue key d with
         | Some value -> value
         | None ->
-            let value = fn ()
+            let value = fn d
             d[key] <- value
             value
 
-let inline useCache<'k, 'v when 'k: equality> () =
-    let cache = Dictionary<'k, 'v>()
+let inline useCacheWith (initialEntries) =
+    let cache = initialEntries |> Dictionary.ofSeq
     fun key buildValue -> Dictionary.getOrInsertWith cache key buildValue
+
+let inline useCache<'k, 'v when 'k: equality> () =
+    useCacheWith Seq.empty<'k * 'v>
 
 type HashSet<'a> = System.Collections.Generic.HashSet<'a>
 

@@ -51,7 +51,7 @@ let countAllPatternCombinations towels =
         | true -> 1L
         | _ ->
             getDesignCount design
-            <| fun () ->
+            <| fun _ ->
                 patterns
                 |> Seq.filter design.StartsWith
                 |> Seq.sumBy (fun pattern ->

@@ -75,7 +75,7 @@ let countKeys n keys =
             |> Seq.pairwise
             |> Seq.sumBy (fun pair ->
                 getPairCountPerLevel (n, pair)
-                <| fun () ->
+                <| fun _ ->
                     keyMap
                     |> Utils.Dictionary.get pair
                     |> List.map (fun keys -> loop (n - 1) keys)

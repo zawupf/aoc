@@ -81,7 +81,7 @@ let evaluate circuit =
 
     let rec eval wire =
         getWireValue wire
-        <| fun () ->
+        <| fun _ ->
             match wire with
             | X x -> if circuit.X &&& (1UL <<< x) = 0UL then 0UL else 1UL
             | Y y -> if circuit.Y &&& (1UL <<< y) = 0UL then 0UL else 1UL

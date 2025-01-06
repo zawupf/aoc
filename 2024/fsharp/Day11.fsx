@@ -20,7 +20,7 @@ let count blinks stone =
         | 0 -> 1L
         | _ ->
             getStoneBlinks (stone, blinks)
-            <| fun () ->
+            <| fun _ ->
                 match stone with
                 | 0L -> loop (blinks - 1) 1
                 | SplitEven(left, right) ->
