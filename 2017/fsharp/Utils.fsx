@@ -28,6 +28,19 @@ module Test =
             eprintfn "🚧 %s: Not implemented" title
         | _ -> reraise ()
 
+module Bool =
+    let inline toInt (value: bool) = if value then 1 else 0
+    let inline toByte (value: bool) = if value then 1uy else 0uy
+    let inline toChar (value: bool) = if value then '1' else '0'
+    let inline toLong (value: bool) = if value then 1L else 0L
+    let inline toInt64 (value: bool) = if value then 1L else 0L
+    let inline toUInt (value: bool) = if value then 1u else 0u
+    let inline toUInt64 (value: bool) = if value then 1UL else 0UL
+    let inline toFloat (value: bool) = if value then 1.0 else 0.0
+    let inline toDouble (value: bool) = if value then 1.0 else 0.0
+    let inline toDecimal (value: bool) = if value then 1M else 0M
+    let inline toString (value: bool) = if value then "true" else "false"
+
 let inline dump (obj: 'a) =
     printfn "%A" obj
     obj
