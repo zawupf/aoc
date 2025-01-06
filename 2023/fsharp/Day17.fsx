@@ -1,10 +1,6 @@
 #load "Utils.fsx"
 
-type Grid = {
-    HeatLoss: int array2d
-    Width: int
-    Height: int
-}
+type Grid = { HeatLoss: int array2d; Width: int; Height: int }
 
 type Cursor = {
     X: int
@@ -45,8 +41,7 @@ let stalkAround lines noStopLimit wobbleLimit =
     let heatLossCache =
         Array3D.create grid.Height grid.Width 2 System.Int32.MaxValue
 
-    let resultHeatLoss i =
-        heatLossCache[grid.Height - 1, grid.Width - 1, i]
+    let resultHeatLoss i = heatLossCache[grid.Height - 1, grid.Width - 1, i]
 
     let rec walk h cs i (c: Cursor option) =
         let c' = c |> Option.bind _.Next(grid)
@@ -74,20 +69,8 @@ let stalkAround lines noStopLimit wobbleLimit =
         | c :: cs -> loop (walk (if c.DX <> 0 then 0 else 1) cs 0 (Some c))
 
     loop [
-        {
-            X = 0
-            Y = 0
-            DX = 1
-            DY = 0
-            HeatLoss = 0
-        }
-        {
-            X = 0
-            Y = 0
-            DX = 0
-            DY = 1
-            HeatLoss = 0
-        }
+        { X = 0; Y = 0; DX = 1; DY = 0; HeatLoss = 0 }
+        { X = 0; Y = 0; DX = 0; DY = 1; HeatLoss = 0 }
     ]
 
 let part1 lines = stalkAround lines 0 3

@@ -11,11 +11,7 @@ module Direction =
         | 'R' -> Right
         | d -> failwithf "Invalid direction: %A" d
 
-type Node = {
-    Name: string
-    Left: string
-    Right: string
-}
+type Node = { Name: string; Left: string; Right: string }
 
 module Node =
     open Utils.FancyPatterns

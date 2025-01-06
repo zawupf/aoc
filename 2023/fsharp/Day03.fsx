@@ -24,12 +24,7 @@ module Symbol =
         | Some c when nonSymbols.Contains(c) |> not -> Symbol(c, pos) |> Some
         | _ -> None
 
-type Number = {
-    Value: int
-    Pos: Pos
-    Length: int
-    Symbols: Symbol[]
-}
+type Number = { Value: int; Pos: Pos; Length: int; Symbols: Symbol[] }
 
 module Number =
     let withSymbols lines number =

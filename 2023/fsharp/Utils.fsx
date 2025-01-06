@@ -1,37 +1,57 @@
 module Utils
 
-let notImplemented () =
-    raise (System.NotImplementedException())
+let notImplemented () = raise (System.NotImplementedException())
+
+let unreachable () =
+    raise (System.Exception "Panic: Unreachable code is reached!! 😱")
 
 module Test =
     let run title expected fn =
-        let watch = System.Diagnostics.Stopwatch()
-        watch.Start()
-        let result = fn ()
-        watch.Stop()
+        try
+            let watch = System.Diagnostics.Stopwatch()
+            watch.Start()
+            let result = fn ()
+            watch.Stop()
 
-        if result = expected then
-            printfn "%s: %A [%A]" title result watch
-        else
-            eprintfn
-                "FAILED - %s: %A (expected: %A) [%A]"
-                title
-                result
-                expected
-                watch
+            if result = expected then
+                printfn "✅ %s: %A [%A]" title result watch
+            else
+                eprintfn
+                    "❌ %s: %A (expected: %A) [%A]"
+                    title
+                    result
+                    expected
+                    watch
+        with
+        | :? System.NotImplementedException ->
+            eprintfn "🚧 %s: Not implemented" title
+        | _ -> reraise ()
+
+module Bool =
+    let inline toInt (value: bool) = if value then 1 else 0
+    let inline toByte (value: bool) = if value then 1uy else 0uy
+    let inline toChar (value: bool) = if value then '1' else '0'
+    let inline toLong (value: bool) = if value then 1L else 0L
+    let inline toInt64 (value: bool) = if value then 1L else 0L
+    let inline toUInt (value: bool) = if value then 1u else 0u
+    let inline toUInt64 (value: bool) = if value then 1UL else 0UL
+    let inline toFloat (value: bool) = if value then 1.0 else 0.0
+    let inline toDouble (value: bool) = if value then 1.0 else 0.0
+    let inline toDecimal (value: bool) = if value then 1M else 0M
+    let inline toString (value: bool) = if value then "true" else "false"
 
 let inline dump (obj: 'a) =
     printfn "%A" obj
     obj
 
 let inline f_dump fn args =
-    printf "%A -> " args
+    // printf "%A -> " args
     let watch = System.Diagnostics.Stopwatch()
     watch.Start()
     let result = fn args
     watch.Stop()
     printfn "%A [%A]" result watch
-    result
+    args
 
 let inline assert' fn =
     if not (fn ()) then
@@ -49,6 +69,11 @@ module FancyPatterns =
         else
             None
 
+    let (|Found|NotFound|) =
+        function
+        | true, value -> Found value
+        | false, _ -> NotFound
+
     let (|Char|_|) (str: string) =
         match str.Length with
         | 1 -> Some str.[0]
@@ -56,33 +81,150 @@ module FancyPatterns =
 
     let (|Byte|_|) (str: string) =
         match System.Byte.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|Int|_|) (str: string) =
         match System.Int32.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|UInt|_|) (str: string) =
         match System.UInt32.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|Int64|_|) (str: string) =
         match System.Int64.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|UInt64|_|) (str: string) =
         match System.UInt64.TryParse(str) with
-        | true, value -> Some value
-        | _ -> None
+        | Found value -> Some value
+        | NotFound -> None
 
     let (|Even|Odd|) number =
         match number % 2 with
         | 0 -> Even
         | _ -> Odd
+
+module Option =
+    let ofTry (ok, value) =
+        match ok with
+        | true -> Some value
+        | false -> None
+
+    let orDefault defaultValue =
+        function
+        | true, value -> value
+        | false, _ -> defaultValue
+
+type Dictionary<'key, 'value when 'key: equality> =
+    System.Collections.Generic.Dictionary<'key, 'value>
+
+module Dictionary =
+    // let ofSeq
+    //     (seq: Collections.seq<System.Collections.Generic.KeyValuePair<_, _>>)
+    //     =
+    //     Dictionary<_, _> seq
+    // let ofSeq (seq: Collections.seq<_>) = Dictionary<_, _> seq
+    // let ofSeq<'k, 'v when 'k: equality> (seq: ('k * 'v) seq) =
+    //     seq |> Seq.fold (fun d (k, v) -> add k v d) (Dictionary<'k, 'v>())
+    let ofSeq seq =
+        seq
+        |> Seq.fold
+            (fun (d: Dictionary<_, _>) (key, value) ->
+                d.Add(key, value) |> ignore
+                d)
+            (Dictionary<_, _>())
+
+    let copy (d: Dictionary<_, _>) = Dictionary<_, _> d
+
+    let isEmpty (d: Dictionary<_, _>) = d.Count = 0
+
+    let keys (d: Dictionary<_, _>) = d.Keys |> Seq.toArray
+
+    let values (d: Dictionary<_, _>) = d.Values |> Seq.toArray
+
+    let tryGetValue key (d: Dictionary<_, _>) =
+        match d.TryGetValue key with
+        | true, value -> Some value
+        | false, _ -> None
+
+    let get key (d: Dictionary<_, _>) = d[key]
+
+    let set key value (d: Dictionary<_, _>) =
+        d[key] <- value
+        d
+
+    let tryAdd key value (d: Dictionary<_, _>) =
+        d.TryAdd(key, value) |> ignore
+        d
+
+    let update key fn (d: Dictionary<_, _>) =
+        d[key] <- fn (d.TryGetValue key |> Option.ofTry)
+        d
+
+    let change key fn (d: Dictionary<_, _>) =
+        match d.TryGetValue key |> Option.ofTry |> fn with
+        | Some value -> d[key] <- value
+        | None -> d.Remove key |> ignore
+
+        d
+
+    let remove key (d: Dictionary<_, _>) =
+        d.Remove key |> ignore
+        d
+
+    let getOrInsertWith (d: Dictionary<_, _>) key fn =
+        match tryGetValue key d with
+        | Some value -> value
+        | None ->
+            let value = fn d
+            d[key] <- value
+            value
+
+let inline useCacheWith (initialEntries) =
+    let cache = initialEntries |> Dictionary.ofSeq
+    fun key buildValue -> Dictionary.getOrInsertWith cache key buildValue
+
+let inline useCache<'k, 'v when 'k: equality> () =
+    useCacheWith Seq.empty<'k * 'v>
+
+type HashSet<'a> = System.Collections.Generic.HashSet<'a>
+
+module HashSet =
+    let empty<'a> = HashSet<_>()
+
+    let ofSeq (seq: Collections.seq<_>) = HashSet<_> seq
+
+    let singleton (item: 'a) = HashSet<_> [ item ]
+
+    let copy (set: HashSet<_>) = new HashSet<_>(set)
+
+    let isEmpty (set: HashSet<_>) = set.Count = 0
+
+    let add item (set: HashSet<_>) =
+        set.Add item |> ignore
+        set
+
+    let remove item (set: HashSet<_>) =
+        set.Remove item |> ignore
+        set
+
+    let contains item (set: HashSet<_>) = set.Contains item
+
+    let tryContains item (set: HashSet<_>) =
+        if set.Contains item then Some set else None
+
+    let unionWith (other: HashSet<_>) (set: HashSet<_>) =
+        set.UnionWith other
+        set
+
+    let intersectWith (other: HashSet<_>) (set: HashSet<_>) =
+        set.IntersectWith other
+        set
 
 module String =
     let join separator (chunks: Collections.seq<_>) =
@@ -111,9 +253,11 @@ module String =
     let toByteArray (string: string) =
         string |> System.Text.Encoding.ASCII.GetBytes
 
+    let toSections = trim >> split "\n\n" >> Array.map trim
+
     let toLines = trim >> split '\n' >> Array.map trim
 
-    let ofChars chars = chars |> Seq.toArray |> string
+    let inline ofChars<'a> chars = System.String.Concat<'a> chars
 
     let substring i (string: string) = string.Substring(i)
 
@@ -145,7 +289,7 @@ let private _findInputFile name =
 
     _findFile (Directory.GetCurrentDirectory()) subpath
 
-let useCache getterFn =
+let useFileCache getterFn =
     let mutable cache = Map.empty
 
     fun key ->
@@ -158,14 +302,16 @@ let useCache getterFn =
 
 let private _readLines filename = File.ReadLines(filename) |> Seq.toArray
 
-let readInputLines = useCache (_findInputFile >> _readLines)
+let readInputLines = useFileCache (_findInputFile >> _readLines)
 
 let private _readAllText filename = File.ReadAllText(filename).Trim()
 
-let readInputText = useCache (_findInputFile >> _readAllText)
+let readInputText = useFileCache (_findInputFile >> _readAllText)
 
 let readInputExact =
-    useCache (_findInputFile >> (fun filename -> File.ReadAllText(filename)))
+    useFileCache (
+        _findInputFile >> (fun filename -> File.ReadAllText(filename))
+    )
 
 module Math =
     let permutations list =
@@ -185,8 +331,7 @@ module Math =
     let inline isZero value = value = LanguagePrimitives.GenericZero
 
     let inline greatestCommonDivisor a b =
-        let rec gcd x y =
-            if y |> isZero then x else gcd y (x % y)
+        let rec gcd x y = if y |> isZero then x else gcd y (x % y)
 
         match (abs a, abs b) with
         | a, b when a < b -> b, a
@@ -359,8 +504,7 @@ module BBox =
 
     let ofSeq seq = seq |> Seq.fold merge empty
 
-    let ofMap map =
-        map |> Map.toSeq |> Seq.map fst |> ofSeq
+    let ofMap map = map |> Map.toSeq |> Seq.map fst |> ofSeq
 
 
 let render toString map =

@@ -18,13 +18,9 @@ module RangeMap =
     }
 
     let tryMapValue v map =
-        if map.Source |> Range.contains v then
-            Some(v + map.Offset)
-        else
-            None
+        if map.Source |> Range.contains v then Some(v + map.Offset) else None
 
-    let mapValue v =
-        Array.tryPick (tryMapValue v) >> Option.defaultValue v
+    let mapValue v = Array.tryPick (tryMapValue v) >> Option.defaultValue v
 
     let tryMapRange (todo, done') map =
         let move = Range.add map.Offset
@@ -55,8 +51,7 @@ module RangeMap =
                 outsideRanges @ todo', (insideRange |> List.map move) @ done')
             ([], done')
 
-    let mapRanges rs maps =
-        maps |> Array.fold tryMapRange (rs, []) ||> (@)
+    let mapRanges rs maps = maps |> Array.fold tryMapRange (rs, []) ||> (@)
 
 
 open Utils.FancyPatterns

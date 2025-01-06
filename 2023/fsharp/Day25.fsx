@@ -40,11 +40,7 @@ let buildData lines =
         (Set.empty, Map.empty)
     |> (fun (connections, graph) -> connections |> Set.toArray, graph)
 
-type Path = {
-    Length: int
-    Visited: Set<Node>
-    Connections: Conn list
-}
+type Path = { Length: int; Visited: Set<Node>; Connections: Conn list }
 
 let walk graph start end' =
     let rec loop result =

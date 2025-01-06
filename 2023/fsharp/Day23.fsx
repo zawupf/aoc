@@ -11,17 +11,9 @@ module Node =
 type Edge = { Start: Node; End: Node; Length: int }
 
 module Edge =
-    let swapped edge = {
-        edge with
-            Start = edge.End
-            End = edge.Start
-    }
+    let swapped edge = { edge with Start = edge.End; End = edge.Start }
 
-type Graph = {
-    Start: Node
-    End: Node
-    Edges: Edge[]
-}
+type Graph = { Start: Node; End: Node; Edges: Edge[] }
 
 module Graph =
     open System.Collections.Generic
@@ -46,11 +38,7 @@ module Graph =
 
         let rec loop edges (paths: (Edge * Node) list) =
             match paths with
-            | [] -> {
-                Start = start
-                End = end'
-                Edges = edges |> List.toArray
-              }
+            | [] -> { Start = start; End = end'; Edges = edges |> List.toArray }
             | (edge, _) :: paths' when edge.End = end' ->
                 loop (edge :: edges) paths'
             | (edge, prev) :: paths' ->
@@ -87,11 +75,7 @@ module Graph =
                     | [] -> failwithf "Strange next nodes: %A" nextNodes
                     | [ node ] when forkCount <= 1 ->
                         let path =
-                            {
-                                edge with
-                                    End = node
-                                    Length = edge.Length + 1
-                            },
+                            { edge with End = node; Length = edge.Length + 1 },
                             edge.End
 
                         edges, (path :: paths')
@@ -118,14 +102,7 @@ module Graph =
 
                 loop edges' paths'
 
-        loop [] [
-            {
-                Start = start
-                End = start
-                Length = 0
-            },
-            start
-        ]
+        loop [] [ { Start = start; End = start; Length = 0 }, start ]
 
     let buildMap graph =
         graph.Edges
@@ -142,11 +119,7 @@ module Graph =
 
 
 
-type Path = {
-    Node: Node
-    Visited: Set<Node>
-    Length: int
-}
+type Path = { Node: Node; Visited: Set<Node>; Length: int }
 
 let findMaxPath g =
     let m = Graph.buildMap g
@@ -173,13 +146,7 @@ let findMaxPath g =
                          path :: paths)
                      paths)
 
-    loop 0 [
-        {
-            Node = g.Start
-            Visited = Set.ofList [ g.Start ]
-            Length = 0
-        }
-    ]
+    loop 0 [ { Node = g.Start; Visited = Set.ofList [ g.Start ]; Length = 0 } ]
 
 let part1 lines =
     let g = Graph.create lines

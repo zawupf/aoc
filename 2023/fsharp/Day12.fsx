@@ -126,16 +126,12 @@ let arrangementCountWithRepeat repeat line =
 
     countArrangements 0L [ springChunks, counts, 1L ]
 
-let part1 input =
-    input |> Array.sumBy (arrangementCountWithRepeat 1)
+let part1 input = input |> Array.sumBy (arrangementCountWithRepeat 1)
 
 let part2 input =
     input
     |> Array.indexed
-    |> Array.sumBy (fun (i, line) ->
-        Utils.f_dump
-            (fun (_, line) -> arrangementCountWithRepeat 5 line)
-            (i, line))
+    |> Array.sumBy (fun (_, line) -> arrangementCountWithRepeat 5 line)
 
 
 

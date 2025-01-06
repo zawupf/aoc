@@ -5,11 +5,7 @@ type Id = Id of int
 
 type Number = Number of int
 
-type Card = {
-    Id: Id
-    Winning: Set<Number>
-    Numbers: Set<Number>
-}
+type Card = { Id: Id; Winning: Set<Number>; Numbers: Set<Number> }
 
 module Card =
     open Utils.FancyPatterns
@@ -26,8 +22,7 @@ module Card =
           }
         | _ -> failwithf "Invalid card: %A" line
 
-    let winCount card =
-        Set.intersect card.Winning card.Numbers |> Set.count
+    let winCount card = Set.intersect card.Winning card.Numbers |> Set.count
 
 let part1 input = //
     let points =
