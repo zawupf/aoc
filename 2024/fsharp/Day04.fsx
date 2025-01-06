@@ -32,8 +32,7 @@ let count_MAS_cross rows x y =
     let diag1 = item (x + 1) (y + 1), item (x - 1) (y - 1)
     let diag2 = item (x + 1) (y - 1), item (x - 1) (y + 1)
 
-    let isMS a b =
-        a = 'M' && b = 'S' || a = 'S' && b = 'M'
+    let isMS a b = a = 'M' && b = 'S' || a = 'S' && b = 'M'
 
     match item x y, diag1 ||> isMS, diag2 ||> isMS with
     | 'A', true, true -> 1

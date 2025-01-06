@@ -86,8 +86,7 @@ let firstBlockingByte bytes =
 let part1 input =
     (input |> parseBytes |> init 1024).Grid |> minimumSteps |> string
 
-let part2 input =
-    input |> parseBytes |> firstBlockingByte
+let part2 input = input |> parseBytes |> firstBlockingByte
 
 let day = __SOURCE_FILE__[3..4]
 let input = Utils.readInputLines day

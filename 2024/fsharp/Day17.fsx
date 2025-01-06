@@ -18,12 +18,7 @@ type Operand =
 
 type Registers = { A: uint64; B: uint64; C: uint64 }
 
-type Computer = {
-    Program: uint8[]
-    PC: uint8
-    Reg: Registers
-    Out: uint8 list
-}
+type Computer = { Program: uint8[]; PC: uint8; Reg: Registers; Out: uint8 list }
 
 let parse input =
     match input |> Utils.String.toLines with
@@ -73,18 +68,9 @@ let execute computer =
     let u8_value = u64_value >> uint8
 
     match readInstruction computer with
-    | ADV, operand -> {
-        c with
-            Reg.A = reg.A >>> i32_value operand
-      }
-    | BXL, operand -> {
-        c with
-            Reg.B = reg.B ^^^ u64_value operand
-      }
-    | BST, operand -> {
-        c with
-            Reg.B = u64_value operand &&& 0b111UL
-      }
+    | ADV, operand -> { c with Reg.A = reg.A >>> i32_value operand }
+    | BXL, operand -> { c with Reg.B = reg.B ^^^ u64_value operand }
+    | BST, operand -> { c with Reg.B = u64_value operand &&& 0b111UL }
     | JNZ, operand -> {
         c with
             PC = if reg.A <> 0UL then u8_value operand else c.PC
@@ -94,14 +80,8 @@ let execute computer =
         c with
             Out = (u8_value operand &&& 0b111uy) :: computer.Out
       }
-    | BDV, operand -> {
-        c with
-            Reg.B = reg.A >>> i32_value operand
-      }
-    | CDV, operand -> {
-        c with
-            Reg.C = reg.A >>> i32_value operand
-      }
+    | BDV, operand -> { c with Reg.B = reg.A >>> i32_value operand }
+    | CDV, operand -> { c with Reg.C = reg.A >>> i32_value operand }
 
 let output computer =
     computer.Out |> List.rev |> List.map string |> String.concat ","

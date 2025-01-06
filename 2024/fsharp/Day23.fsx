@@ -106,8 +106,7 @@ let findPassword (map: NodeMap) =
     |> Utils.Dictionary.keys
     |> Array.maxBy (fun key -> key.Length)
 
-let part1 input =
-    input |> parseMap |> countGroupsOfThreeWithT
+let part1 input = input |> parseMap |> countGroupsOfThreeWithT
 
 let part2 input = input |> parseMap |> findPassword
 

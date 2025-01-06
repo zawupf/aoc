@@ -35,8 +35,7 @@ let scanRegion (grid: Grid) (Pos(x, y)) =
     let isValidName (Pos(x, y)) =
         isValidPos grid (Pos(x, y)) && grid.[y].[x] = name
 
-    let prependTo state pos =
-        if isValidName pos then pos :: state else state
+    let prependTo state pos = if isValidName pos then pos :: state else state
 
     let withNextOf pos state =
         let (Pos(x, y)) = pos

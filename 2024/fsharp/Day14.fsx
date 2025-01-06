@@ -5,10 +5,7 @@ type Grid = { Width: int; Height: int }
 type Position = { X: int; Y: int }
 type Velocity = { X: int; Y: int }
 
-type Robot = {
-    Position: Position
-    Velocity: Velocity
-}
+type Robot = { Position: Position; Velocity: Velocity }
 
 type State = { Grid: Grid; Robots: Robot[] }
 
@@ -61,8 +58,7 @@ let quadrantCount state =
 
     counts
 
-let safetyFactor state =
-    state |> quadrantCount |> Array.reduce (*)
+let safetyFactor state = state |> quadrantCount |> Array.reduce (*)
 
 let findTree state =
     let threshold = Array.length state.Robots / 2

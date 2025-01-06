@@ -2,14 +2,9 @@
 
 type Pos = int * int
 
-type Grid = {
-    width: int
-    height: int
-    antennas: (char * Pos[])[]
-}
+type Grid = { width: int; height: int; antennas: (char * Pos[])[] }
 
-let isInside grid (x, y) =
-    x >= 0 && x < grid.width && y >= 0 && y < grid.height
+let isInside grid (x, y) = x >= 0 && x < grid.width && y >= 0 && y < grid.height
 
 let deltas (x1, y1) (x2, y2) = x2 - x1, y2 - y1
 
@@ -67,17 +62,11 @@ let parse (lines: string[]) =
         |> Array.groupBy fst
         |> Array.map (fun (c, pos) -> c, pos |> Array.map snd)
 
-    {
-        width = width
-        height = height
-        antennas = antennas
-    }
+    { width = width; height = height; antennas = antennas }
 
-let part1 input =
-    input |> parse |> countAntinodes pureAntinodes
+let part1 input = input |> parse |> countAntinodes pureAntinodes
 
-let part2 input =
-    input |> parse |> countAntinodes harmonicAntinodes
+let part2 input = input |> parse |> countAntinodes harmonicAntinodes
 
 let day = __SOURCE_FILE__[3..4]
 let input = Utils.readInputLines day

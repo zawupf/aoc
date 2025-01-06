@@ -4,12 +4,7 @@ type Pos = int * int
 type Dist2EndMap = System.Collections.Generic.Dictionary<Pos, int>
 type Jump = Pos * Pos
 
-type Track = {
-    Start: Pos
-    End: Pos
-    Dist2End: Dist2EndMap
-    Jumps: Jump seq
-}
+type Track = { Start: Pos; End: Pos; Dist2End: Dist2EndMap; Jumps: Jump seq }
 
 let parse maxDuration lines =
     let grid = lines |> Array.map Utils.String.toCharArray
@@ -84,11 +79,9 @@ let countCheatsSaving pred track =
 
     track.Jumps |> Seq.map saving |> Seq.filter pred |> Seq.length
 
-let part1 input =
-    input |> parse 2 |> countCheatsSaving (fun s -> s >= 100)
+let part1 input = input |> parse 2 |> countCheatsSaving (fun s -> s >= 100)
 
-let part2 input =
-    input |> parse 20 |> countCheatsSaving (fun s -> s >= 100)
+let part2 input = input |> parse 20 |> countCheatsSaving (fun s -> s >= 100)
 
 let day = __SOURCE_FILE__[3..4]
 let input = Utils.readInputLines day

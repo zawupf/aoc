@@ -10,11 +10,7 @@ type Orientation =
     | South = 2
     | West = 3
 
-type State = {
-    Pos: Pos
-    Orientation: Orientation
-    Path: Path
-}
+type State = { Pos: Pos; Orientation: Orientation; Path: Path }
 
 type Score = int
 
@@ -66,12 +62,7 @@ let walk cancelCurrentPath joinPath (maze: Maze) =
     let field (x, y) = maze[y][x]
 
     let tryMove state =
-        let {
-                Pos = pos
-                Orientation = orientation
-                Path = path
-            } =
-            state
+        let { Pos = pos; Orientation = orientation; Path = path } = state
 
         let current = field pos
         let pos' = nextPos pos orientation
@@ -86,19 +77,10 @@ let walk cancelCurrentPath joinPath (maze: Maze) =
             | score ->
                 next.Scores.[int orientation] <- score
 
-                Some {
-                    state with
-                        Pos = pos'
-                        Path = joinPath pos' path
-                }
+                Some { state with Pos = pos'; Path = joinPath pos' path }
 
     let tryTurnAndMove turn state =
-        let {
-                Pos = pos
-                Orientation = orientation
-                Path = path
-            } =
-            state
+        let { Pos = pos; Orientation = orientation; Path = path } = state
 
         let orientation' = turn orientation
 
@@ -127,23 +109,14 @@ let walk cancelCurrentPath joinPath (maze: Maze) =
         | state :: stack ->
             match isEnd state.Pos with
             | true ->
-                let {
-                        Pos = pos
-                        Orientation = orientation
-                        Path = path
-                    } =
+                let { Pos = pos; Orientation = orientation; Path = path } =
                     state
 
                 match (field pos).Scores.[int orientation] with
                 | score when score < result.Score ->
                     loop { Score = score; Paths = [ path ] } stack
                 | score when score = result.Score ->
-                    loop
-                        {
-                            result with
-                                Paths = path :: result.Paths
-                        }
-                        stack
+                    loop { result with Paths = path :: result.Paths } stack
                 | _ -> loop result stack
             | false ->
                 let stack' =
@@ -161,11 +134,7 @@ let walk cancelCurrentPath joinPath (maze: Maze) =
     (start |> field).Scores.[int Orientation.East] <- 0
 
     loop { Score = Int32.MaxValue; Paths = [] } [
-        {
-            Pos = start
-            Orientation = Orientation.East
-            Path = [ start ]
-        }
+        { Pos = start; Orientation = Orientation.East; Path = [ start ] }
     ]
 
 let lowestScore maze =

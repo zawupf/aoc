@@ -49,8 +49,7 @@ let starts (grid: Grid) =
 
 let pathCount grid start = walk grid start |> Seq.length
 
-let endCount grid start =
-    walk grid start |> Seq.distinct |> Seq.length
+let endCount grid start = walk grid start |> Seq.distinct |> Seq.length
 
 let part1 input =
     let grid = input |> parseGrid

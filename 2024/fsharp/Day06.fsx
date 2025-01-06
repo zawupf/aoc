@@ -85,8 +85,7 @@ let visitedCount grid =
     |> Array.sumBy (fun row ->
         row |> Array.sumBy (fun c -> if c = 'X' then 1 else 0))
 
-let part1 input =
-    input |> parse |> walk |> fst |> fst |> visitedCount
+let part1 input = input |> parse |> walk |> fst |> fst |> visitedCount
 
 let part2 input =
     let originalGrid, startPos = parse input

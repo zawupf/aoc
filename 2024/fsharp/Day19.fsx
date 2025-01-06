@@ -1,19 +1,13 @@
 #load "Utils.fsx"
 open System
 
-type Towels = {
-    Patterns: string[]
-    Designs: string[]
-}
+type Towels = { Patterns: string[]; Designs: string[] }
 
 let parse (lines: string[]) =
     let patterns = lines[0] |> Utils.String.split ", "
     let designs = lines[2..]
 
-    {
-        Patterns = patterns
-        Designs = designs
-    }
+    { Patterns = patterns; Designs = designs }
 
 type Span = {
     String: string
@@ -67,8 +61,7 @@ let countAllPatternCombinations towels =
 
 let part1 input = input |> parse |> countPossibleDesigns
 
-let part2 input =
-    input |> parse |> countAllPatternCombinations
+let part2 input = input |> parse |> countAllPatternCombinations
 
 let day = __SOURCE_FILE__[3..4]
 let input = Utils.readInputLines day

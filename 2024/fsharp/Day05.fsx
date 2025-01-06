@@ -36,8 +36,7 @@ module Update =
         |> Array.sortBy snd
         |> Array.map fst
 
-    let middlePage (update: Update) =
-        update |> Array.item (update.Length >>> 1)
+    let middlePage (update: Update) = update |> Array.item (update.Length >>> 1)
 
 let parse input =
     match

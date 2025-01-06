@@ -17,11 +17,7 @@ type Field =
 type Pos = int * int
 type Grid = Field[][]
 
-type State = {
-    Grid: Grid
-    Moves: Move[]
-    Robot: Pos
-}
+type State = { Grid: Grid; Moves: Move[]; Robot: Pos }
 
 let parse input =
     match input |> Utils.String.toSections with
@@ -64,11 +60,7 @@ let parse input =
             |> Seq.concat
             |> Seq.pick id
 
-        {
-            Grid = grid
-            Moves = moves
-            Robot = robot
-        }
+        { Grid = grid; Moves = moves; Robot = robot }
     | _ -> failwith "Invalid input"
 
 let scaleUp state =
@@ -87,11 +79,7 @@ let scaleUp state =
 
     let robot = state.Robot |> fun (x, y) -> x * 2, y
 
-    {
-        state with
-            Grid = grid
-            Robot = robot
-    }
+    { state with Grid = grid; Robot = robot }
 
 let nextPos (x, y) move =
     match move with
@@ -152,10 +140,7 @@ let rec doMove (grid: Grid) (x, y) move =
     nx, ny
 
 let tryMove grid pos move =
-    if canMove grid pos move then
-        Some(doMove grid pos move)
-    else
-        None
+    if canMove grid pos move then Some(doMove grid pos move) else None
 
 let moveRobot state =
     let robot =
@@ -165,11 +150,7 @@ let moveRobot state =
                 tryMove state.Grid pos move |> Option.defaultValue pos)
             state.Robot
 
-    {
-        state with
-            Moves = Array.empty
-            Robot = robot
-    }
+    { state with Moves = Array.empty; Robot = robot }
 
 let gpsSum state =
     state.Grid
@@ -187,8 +168,7 @@ let gpsSum state =
 
 let part1 input = input |> parse |> moveRobot |> gpsSum
 
-let part2 input =
-    input |> parse |> scaleUp |> moveRobot |> gpsSum
+let part2 input = input |> parse |> scaleUp |> moveRobot |> gpsSum
 
 let day = __SOURCE_FILE__[3..4]
 let input = Utils.readInputText day

@@ -4,11 +4,7 @@ open Utils.FancyPatterns
 type Step = { dx: int64; dy: int64 }
 type Pos = { x: int64; y: int64 }
 
-type Machine = {
-    ButtonA: Step
-    ButtonB: Step
-    Prize: Pos
-}
+type Machine = { ButtonA: Step; ButtonB: Step; Prize: Pos }
 
 let parseMachine chunk =
     chunk

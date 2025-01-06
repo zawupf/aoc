@@ -28,18 +28,13 @@ let parse line =
             Used = int used - int '0'
             Free = int free - int '0'
           }
-        | id, [| used |] -> {
-            Id = id
-            Used = int used - int '0'
-            Free = 0
-          }
+        | id, [| used |] -> { Id = id; Used = int used - int '0'; Free = 0 }
         | _ -> failwith "Invalid input")
     |> Seq.toArray
     |> Blocks
 
 let fragment (blocks: Blocks) =
-    let findFreeBlockIndex i =
-        blocks.FindIndex(i, fun b -> b.Free <> 0)
+    let findFreeBlockIndex i = blocks.FindIndex(i, fun b -> b.Free <> 0)
 
     let mutable i = findFreeBlockIndex 0
     let mutable j = blocks.Count - 1
@@ -53,10 +48,7 @@ let fragment (blocks: Blocks) =
             i <- i + 1
             blocks.Insert(i, { bj with Free = bi.Free - bj.Used })
 
-            blocks[j] <- {
-                blocks[j] with
-                    Free = blocks[j].Free + bj.Length
-            }
+            blocks[j] <- { blocks[j] with Free = blocks[j].Free + bj.Length }
         elif bi.Free < bj.Used then
             blocks[i] <- { bi with Free = 0 }
             i <- i + 1
@@ -76,10 +68,7 @@ let fragment (blocks: Blocks) =
             i <- i + 1
             blocks.Insert(i, { bj with Free = 0 })
 
-            blocks[j] <- {
-                blocks[j] with
-                    Free = blocks[j].Free + bj.Length
-            }
+            blocks[j] <- { blocks[j] with Free = blocks[j].Free + bj.Length }
 
             i <- findFreeBlockIndex (i + 1)
 
@@ -104,10 +93,7 @@ let defragment (blocks: Blocks) =
             blocks.RemoveAt j
             blocks.Insert(i + 1, { bj with Free = bi.Free - bj.Used })
 
-            blocks[j] <- {
-                blocks[j] with
-                    Free = blocks[j].Free + bj.Length
-            }
+            blocks[j] <- { blocks[j] with Free = blocks[j].Free + bj.Length }
 
             start <- findFreeBlockIndex 1 start j
 
@@ -124,8 +110,7 @@ let checksum (blocks: Blocks) =
 
 let part1 input = input |> parse |> fragment |> checksum
 
-let part2 input =
-    input |> parse |> defragment |> checksum
+let part2 input = input |> parse |> defragment |> checksum
 
 let day = __SOURCE_FILE__[3..4]
 let input = Utils.readInputText day

@@ -51,10 +51,7 @@ let part1 input =
     input
     |> Array.map parseEquation
     |> Array.sumBy (fun equation ->
-        if canSolveWith [ Add; Multiply ] equation then
-            equation |> fst
-        else
-            0)
+        if canSolveWith [ Add; Multiply ] equation then equation |> fst else 0)
 
 let part2 input =
     input

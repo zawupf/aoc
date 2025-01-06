@@ -12,11 +12,7 @@ type Operation =
     | OR
     | XOR
 
-type Gate = {
-    Op: Operation
-    Inputs: Wire[]
-    Output: Wire
-}
+type Gate = { Op: Operation; Inputs: Wire[]; Output: Wire }
 
 type Gates = Map<Wire, Gate>
 
@@ -74,18 +70,10 @@ let parse input =
                 match line |> Utils.String.split " " with
                 | [| Wire in1; Operation op; Wire in2; _; Wire output |] ->
                     output,
-                    {
-                        Op = op
-                        Inputs = [| in1; in2 |]
-                        Output = output
-                    }
+                    { Op = op; Inputs = [| in1; in2 |]; Output = output }
                 | _ -> failwithf "Invalid gate: %s" line)
 
-        {
-            Gates = gates |> Map.ofArray
-            X = x
-            Y = y
-        }
+        { Gates = gates |> Map.ofArray; X = x; Y = y }
     | _ -> failwith "Invalid input"
 
 let evaluate circuit =
