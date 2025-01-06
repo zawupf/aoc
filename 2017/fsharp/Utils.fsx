@@ -154,6 +154,17 @@ module Dictionary =
         d[key] <- fn (d.TryGetValue key |> Option.ofTry)
         d
 
+    let change key fn (d: Dictionary<_, _>) =
+        match d.TryGetValue key |> Option.ofTry |> fn with
+        | Some value -> d[key] <- value
+        | None -> d.Remove key |> ignore
+
+        d
+
+    let remove key (d: Dictionary<_, _>) =
+        d.Remove key |> ignore
+        d
+
     let getOrInsertWith (d: Dictionary<_, _>) key fn =
         match tryGetValue key d with
         | Some value -> value
