@@ -23,12 +23,7 @@ module Node =
 
         match line with
         | Regex rx [ Int x; Int y; Int size; Int used; Int avail; Int usep ] ->
-            let node = {
-                X = x
-                Y = y
-                Size = size
-                Used = used
-            }
+            let node = { X = x; Y = y; Size = size; Used = used }
 
             assert (node.Id = (x, y))
             assert (node.Avail = avail)
@@ -36,8 +31,7 @@ module Node =
             node
         | _ -> failwith $"Invalid node: %s{line}"
 
-    let parseInput lines =
-        lines |> Seq.skip 2 |> Seq.map parse |> Seq.toList
+    let parseInput lines = lines |> Seq.skip 2 |> Seq.map parse |> Seq.toList
 
 let viablePairsCount nodes =
     let isViable n1 (n2: Node) =
@@ -62,8 +56,7 @@ let viablePairsCount nodes =
 
 let input = readInputLines "22"
 
-let job1 () =
-    input |> Node.parseInput |> viablePairsCount |> string
+let job1 () = input |> Node.parseInput |> viablePairsCount |> string
 
 let job2 () =
     // input |> String.join "" |> string

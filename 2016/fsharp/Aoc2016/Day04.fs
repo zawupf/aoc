@@ -2,11 +2,7 @@ module Day04
 
 open Utils
 
-type Room = {
-    Name: string
-    SectorID: int
-    Checksum: string
-}
+type Room = { Name: string; SectorID: int; Checksum: string }
 
 module Room =
     let parse input =

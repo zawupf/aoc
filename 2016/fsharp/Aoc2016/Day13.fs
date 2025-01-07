@@ -21,16 +21,10 @@ module Space =
         | Wall -> '#'
         | Open -> '.'
 
-type Area = {
-    MagicNumber: uint
-    Area: Dictionary<Pos, Space>
-}
+type Area = { MagicNumber: uint; Area: Dictionary<Pos, Space> }
 
 module Area =
-    let empty number = {
-        MagicNumber = number
-        Area = Dictionary<Pos, Space>()
-    }
+    let empty number = { MagicNumber = number; Area = Dictionary<Pos, Space>() }
 
     let private countBits (number: uint) =
         let rec loop bits number =
@@ -142,8 +136,6 @@ let maxPlaces maxSteps from' area =
 
 let input = readInputText "13" |> uint
 
-let job1 () =
-    Area.empty input |> minSteps (1u, 1u) (31u, 39u) |> string
+let job1 () = Area.empty input |> minSteps (1u, 1u) (31u, 39u) |> string
 
-let job2 () =
-    Area.empty input |> maxPlaces 50u (1u, 1u) |> string
+let job2 () = Area.empty input |> maxPlaces 50u (1u, 1u) |> string

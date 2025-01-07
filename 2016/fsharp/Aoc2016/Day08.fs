@@ -2,11 +2,7 @@ module Day08
 
 open Utils
 
-type Screen = {
-    Grid: char[][]
-    Width: int
-    Height: int
-}
+type Screen = { Grid: char[][]; Width: int; Height: int }
 
 module Screen =
     let empty width height = {
@@ -20,10 +16,7 @@ module Screen =
 
     let normalize row col screen = row % screen.Height, col % screen.Width
 
-    let copy screen = {
-        screen with
-            Grid = screen.Grid |> Array.map Array.copy
-    }
+    let copy screen = { screen with Grid = screen.Grid |> Array.map Array.copy }
 
     let get row col screen =
         let row, col = normalize row col screen

@@ -45,8 +45,6 @@ let keys (hashes: (int * string) seq) =
 
 let input = readInputText "14"
 
-let job1 () =
-    input |> hashes1 |> keys |> Seq.item 63 |> fst |> string
+let job1 () = input |> hashes1 |> keys |> Seq.item 63 |> fst |> string
 
-let job2 () =
-    input |> hashes2 |> keys |> Seq.item 63 |> fst |> string
+let job2 () = input |> hashes2 |> keys |> Seq.item 63 |> fst |> string

@@ -54,8 +54,6 @@ let isSslSupported ip =
 
 let input = readInputLines "07"
 
-let job1 () =
-    input |> Seq.filter isTlsSupported |> Seq.length |> string
+let job1 () = input |> Seq.filter isTlsSupported |> Seq.length |> string
 
-let job2 () =
-    input |> Seq.filter isSslSupported |> Seq.length |> string
+let job2 () = input |> Seq.filter isSslSupported |> Seq.length |> string

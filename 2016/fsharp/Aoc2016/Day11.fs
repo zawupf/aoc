@@ -107,8 +107,7 @@ module Bits =
                 hash + h)
             0x0UL
 
-    let isFinished floors =
-        floors &&& 0x0000_FFFF_FFFF_FFFFUL = 0UL
+    let isFinished floors = floors &&& 0x0000_FFFF_FFFF_FFFFUL = 0UL
 
 let adjacentFloors elevator =
     match elevator with
@@ -207,8 +206,6 @@ let floors2 = [|
     [], []
 |]
 
-let job1 () =
-    floors |> Bits.makeFloors mapping |> minStepCount |> string
+let job1 () = floors |> Bits.makeFloors mapping |> minStepCount |> string
 
-let job2 () =
-    floors2 |> Bits.makeFloors mapping2 |> minStepCount |> string
+let job2 () = floors2 |> Bits.makeFloors mapping2 |> minStepCount |> string

@@ -14,8 +14,7 @@ let computePassword id =
 let computePassword2 id =
     let handled = System.Collections.Generic.HashSet<char>()
 
-    let isValid pos =
-        pos >= '0' && pos <= '7' && (handled.Contains pos |> not)
+    let isValid pos = pos >= '0' && pos <= '7' && (handled.Contains pos |> not)
 
     Seq.unfold (fun i -> Some(Md5.ofString (id + string i), i + 1)) 0
     |> Seq.choose (fun md5 ->

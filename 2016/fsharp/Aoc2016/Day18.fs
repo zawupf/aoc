@@ -29,5 +29,4 @@ let input = readInputText "18"
 
 let job1 () = input |> countSafeTiles 40 |> string
 
-let job2 () =
-    input |> countSafeTiles 400000 |> string
+let job2 () = input |> countSafeTiles 400000 |> string

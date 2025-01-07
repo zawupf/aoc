@@ -30,8 +30,7 @@ let decompressedLength len data =
 let decompressedLength1 =
     decompressedLength (Seq.sumBy (fun c -> if c = ' ' then 0L else 1L))
 
-let rec decompressedLength2 data =
-    decompressedLength decompressedLength2 data
+let rec decompressedLength2 data = decompressedLength decompressedLength2 data
 
 let input = readInputText "09"
 

@@ -16,8 +16,7 @@ let input = [
 ]
 
 [<Fact>]
-let ``Day21 scramble works`` () =
-    Assert.Equal("decab", scramble "abcde" input)
+let ``Day21 scramble works`` () = Assert.Equal("decab", scramble "abcde" input)
 
 [<Fact>]
 let ``Day21 unscramble works`` () =

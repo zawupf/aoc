@@ -37,8 +37,7 @@ let findDropTime discs =
 
 let input = readInputLines "15"
 
-let job1 () =
-    input |> Array.map Disc.parse |> findDropTime |> string
+let job1 () = input |> Array.map Disc.parse |> findDropTime |> string
 
 let job2 () =
     [| yield! (input |> Array.map Disc.parse); Disc(0, 11) |]

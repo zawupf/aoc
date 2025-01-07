@@ -15,16 +15,9 @@ let (|Target|_|) (str: string) =
         | _ -> None
     | _ -> None
 
-type Bot = {
-    Id: int
-    Chips: int list
-    Targets: Target list
-}
+type Bot = { Id: int; Chips: int list; Targets: Target list }
 
-type Factory = {
-    Bots: Map<int, Bot>
-    Outputs: Map<int, int>
-}
+type Factory = { Bots: Map<int, Bot>; Outputs: Map<int, int> }
 
 module Bot =
     let empty = { Id = 0; Chips = []; Targets = [] }
@@ -35,11 +28,7 @@ module Bot =
         | None ->
             let bot = { empty with Id = id }
 
-            bot,
-            {
-                factory with
-                    Bots = factory.Bots |> Map.add id bot
-            }
+            bot, { factory with Bots = factory.Bots |> Map.add id bot }
 
     let set bot factory = {
         factory with
@@ -67,16 +56,10 @@ module Bot =
                 let bot = factory.Bots |> Map.find id
 
                 factory
-                |> set {
-                    bot with
-                        Chips = chip :: bot.Chips |> List.sort
-                }
+                |> set { bot with Chips = chip :: bot.Chips |> List.sort }
 
         match bot with
-        | {
-              Chips = [ lowChip; highChip ]
-              Targets = [ lowTarget; highTarget ]
-          } ->
+        | { Chips = [ lowChip; highChip ]; Targets = [ lowTarget; highTarget ] } ->
             assert (lowChip < highChip)
 
             factory
@@ -96,28 +79,18 @@ module Bot =
 
                 bot,
                 factory
-                |> set {
-                    bot with
-                        Chips = value :: bot.Chips |> List.sort
-                }
+                |> set { bot with Chips = value :: bot.Chips |> List.sort }
             | Regex pattern [ Int id; Target lowTarget; Target highTarget ] ->
                 let bot, factory = get id factory
 
                 bot,
-                factory
-                |> set {
-                    bot with
-                        Targets = [ lowTarget; highTarget ]
-                }
+                factory |> set { bot with Targets = [ lowTarget; highTarget ] }
             | _ -> failwith $"Invalid instruction: %s{instruction}"
 
         bot, factory
 
 module Factory =
-    let empty = {
-        Bots = Map.empty
-        Outputs = Map.empty
-    }
+    let empty = { Bots = Map.empty; Outputs = Map.empty }
 
     let init instructions =
         instructions
@@ -182,5 +155,4 @@ let job1 () =
     |> Factory.findBot (fun bot -> bot.Chips = [ 17; 61 ])
     |> string
 
-let job2 () =
-    input |> Factory.init |> Factory.getOutputProduct |> string
+let job2 () = input |> Factory.init |> Factory.getOutputProduct |> string
