@@ -12,3 +12,6 @@ node_modules/
 .fake
 
 BenchmarkDotNet.Artifacts/
+
+/.zig-cache/
+/zig-out/
