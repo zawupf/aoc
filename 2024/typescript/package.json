@@ -7,9 +7,9 @@
         "check": "tsc --noEmit"
     },
     "devDependencies": {
-        "@types/bun": "^1.1.14"
+        "@types/bun": "^1.2.21"
     },
     "peerDependencies": {
-        "typescript": "^5.7.2"
+        "typescript": "^5.9.2"
     }
 }
