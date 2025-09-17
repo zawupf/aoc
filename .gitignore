@@ -13,5 +13,5 @@ node_modules/
 
 BenchmarkDotNet.Artifacts/
 
-/.zig-cache/
-/zig-out/
+.zig-cache/
+zig-out/
