@@ -57,18 +57,22 @@ fn part2(input: []const u8) !u32 {
     return result;
 }
 
-const testInput =
+const testInputs = [_]struct { []const u8, u32, u32 }{.{
     \\7 6 4 2 1
     \\1 2 7 8 9
     \\9 7 6 2 1
     \\1 3 2 4 5
     \\8 6 4 4 1
     \\1 3 6 7 9
-;
+    ,
+    2,
+    4,
+}};
 
 test "day 02 part 1 sample 1" {
-    const result = try part1(testInput);
-    try std.testing.expectEqual(@as(u32, 2), result);
+    const input, const expected, _ = testInputs[0];
+    const result = try part1(input);
+    try std.testing.expectEqual(@as(u32, expected), result);
 }
 
 test "day 02 part 1" {
@@ -80,8 +84,9 @@ test "day 02 part 1" {
 }
 
 test "day 02 part 2 sample 1" {
-    const result = try part2(testInput);
-    try std.testing.expectEqual(@as(u32, 4), result);
+    const input, _, const expected = testInputs[0];
+    const result = try part2(input);
+    try std.testing.expectEqual(@as(u32, expected), result);
 }
 
 test "day 02 part 2" {

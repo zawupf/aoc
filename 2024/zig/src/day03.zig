@@ -100,15 +100,8 @@ fn part2(input: []const u8) !u32 {
     return sum;
 }
 
-const testInput1 =
-    \\xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
-;
-const testInput2 =
-    \\xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
-;
-
 test "day 03 part 1 sample 1" {
-    const result = try part1(testInput1);
+    const result = try part1("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))");
     try std.testing.expectEqual(@as(u32, 161), result);
 }
 
@@ -121,7 +114,7 @@ test "day 03 part 1" {
 }
 
 test "day 03 part 2 sample 2" {
-    const result = try part2(testInput2);
+    const result = try part2("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))");
     try std.testing.expectEqual(@as(u32, 48), result);
 }
 
