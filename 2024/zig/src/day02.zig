@@ -72,7 +72,7 @@ const testInputs = [_]struct { []const u8, u32, u32 }{.{
 test "day 02 part 1 sample 1" {
     const input, const expected, _ = testInputs[0];
     const result = try part1(input);
-    try std.testing.expectEqual(@as(u32, expected), result);
+    try std.testing.expectEqual(expected, result);
 }
 
 test "day 02 part 1" {
@@ -86,7 +86,7 @@ test "day 02 part 1" {
 test "day 02 part 2 sample 1" {
     const input, _, const expected = testInputs[0];
     const result = try part2(input);
-    try std.testing.expectEqual(@as(u32, expected), result);
+    try std.testing.expectEqual(expected, result);
 }
 
 test "day 02 part 2" {

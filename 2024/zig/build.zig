@@ -55,6 +55,11 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
     });
+    const mod_day04 = b.addModule("day04", .{
+        .root_source_file = b.path("src/day04.zig"),
+        .target = target,
+        .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
+    });
 
     // Here we define an executable. An executable needs to have a root module
     // which needs to expose a `main` function. While we could add a main function
@@ -97,6 +102,7 @@ pub fn build(b: *std.Build) void {
                 .{ .name = "day01", .module = mod_day01 },
                 .{ .name = "day02", .module = mod_day02 },
                 .{ .name = "day03", .module = mod_day03 },
+                .{ .name = "day04", .module = mod_day04 },
             },
         }),
     });
@@ -145,11 +151,15 @@ pub fn build(b: *std.Build) void {
     const mod_day03_tests = b.addTest(.{
         .root_module = mod_day03,
     });
+    const mod_day04_tests = b.addTest(.{
+        .root_module = mod_day04,
+    });
 
     // A run step that will run the test executable.
     const run_mod_day01_tests = b.addRunArtifact(mod_day01_tests);
     const run_mod_day02_tests = b.addRunArtifact(mod_day02_tests);
     const run_mod_day03_tests = b.addRunArtifact(mod_day03_tests);
+    const run_mod_day04_tests = b.addRunArtifact(mod_day04_tests);
 
     // Creates an executable that will run `test` blocks from the executable's
     // root module. Note that test executables only test one module at a time,
@@ -168,6 +178,7 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_mod_day01_tests.step);
     test_step.dependOn(&run_mod_day02_tests.step);
     test_step.dependOn(&run_mod_day03_tests.step);
+    test_step.dependOn(&run_mod_day04_tests.step);
     test_step.dependOn(&run_exe_tests.step);
 
     // Just like flags, top level steps are also listed in the `--help` menu.
