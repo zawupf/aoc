@@ -15,7 +15,7 @@ fn order(a: u32, b: u32) ?Order {
 }
 
 fn split(numbers: []const u8) struct { u32, []const u8 } {
-    var iter = std.mem.tokenizeScalar(u8, numbers, ' ');
+    var iter = aoc.tokenize(numbers, ' ');
     const head = std.fmt.parseInt(u32, iter.next().?, 10) catch unreachable;
     const tail = iter.rest();
     return .{ head, tail };
@@ -39,7 +39,7 @@ fn isSafe(head: u32, tail: []const u8, canSkip: bool, refOrder: ?Order) bool {
 
 fn part1(input: []const u8) !u32 {
     var result: u32 = 0;
-    var lines = std.mem.tokenizeScalar(u8, input, '\n');
+    var lines = aoc.splitLines(input);
     while (lines.next()) |line| {
         const head, const tail = split(line);
         result += if (isSafe(head, tail, false, null)) 1 else 0;
@@ -49,7 +49,7 @@ fn part1(input: []const u8) !u32 {
 
 fn part2(input: []const u8) !u32 {
     var result: u32 = 0;
-    var lines = std.mem.tokenizeScalar(u8, input, '\n');
+    var lines = aoc.splitLines(input);
     while (lines.next()) |line| {
         const head, const tail = split(line);
         result += if (isSafe(head, tail, true, null)) 1 else 0;

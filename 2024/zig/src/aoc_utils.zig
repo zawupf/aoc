@@ -9,6 +9,28 @@ pub fn readInput(comptime day: *const [2:0]u8, gpa: Allocator) ![]u8 {
     return std.fs.cwd().readFileAlloc(inputPath(day), gpa, .unlimited);
 }
 
+pub fn splitChunks(input: []const u8) std.mem.SplitIterator(u8, .sequence) {
+    const input_ = std.mem.trim(u8, input, "\n");
+    return std.mem.splitSequence(u8, input_, "\n\n");
+}
+
+pub fn splitLines(input: []const u8) std.mem.SplitIterator(u8, .scalar) {
+    const input_ = std.mem.trim(u8, input, "\n");
+    return std.mem.splitScalar(u8, input_, '\n');
+}
+
+pub fn split(input: []const u8, delimiter: u8) std.mem.SplitIterator(u8, .scalar) {
+    return std.mem.splitScalar(u8, input, delimiter);
+}
+
+pub fn tokenize(input: []const u8, delimiter: u8) std.mem.TokenIterator(u8, .scalar) {
+    return std.mem.tokenizeScalar(u8, input, delimiter);
+}
+
+pub fn trim(input: []const u8) []const u8 {
+    return std.mem.trim(u8, input, &std.ascii.whitespace);
+}
+
 pub const Direction = enum {
     north,
     east,

@@ -11,9 +11,9 @@ fn parse(gpa: std.mem.Allocator, input: []const u8) !struct { []u32, []u32 } {
         list2.deinit(gpa);
     }
 
-    var lines = std.mem.tokenizeScalar(u8, input, '\n');
+    var lines = aoc.splitLines(input);
     while (lines.next()) |line| {
-        var numbers = std.mem.tokenizeScalar(u8, line, ' ');
+        var numbers = aoc.tokenize(line, ' ');
         const a = try std.fmt.parseInt(u32, numbers.next().?, 10);
         const b = try std.fmt.parseInt(u32, numbers.next().?, 10);
         try list1.append(gpa, a);

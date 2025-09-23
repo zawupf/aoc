@@ -5,7 +5,7 @@ const day01 = @import("day01");
 pub fn main() !void {
     // Prints to stderr, ignoring potential errors.
     std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-    try day01.bufferedPrint();
+    // try day01.bufferedPrint();
 }
 
 test "simple test" {
