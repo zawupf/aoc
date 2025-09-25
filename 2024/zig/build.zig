@@ -1,4 +1,9 @@
 const std = @import("std");
+const Module = std.Build.Module;
+const Step = std.Build.Step;
+
+// add more days here as needed
+const days = &.{ "01", "02", "03", "04", "05" };
 
 // Although this function looks imperative, it does not perform the build
 // directly and instead it mutates the build graph (`b`) that will be then
@@ -32,39 +37,17 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/aoc_utils.zig"),
         .target = target,
     });
-    const mod_day01 = b.addModule("day01", .{
-        // The root source file is the "entry point" of this module. Users of
-        // this module will only be able to access public declarations contained
-        // in this file, which means that if you have declarations that you
-        // intend to expose to consumers that were defined in other files part
-        // of this module, you will have to make sure to re-export them from
-        // the root file.
-        .root_source_file = b.path("src/day01.zig"),
-        // Later on we'll use this module as the root module of a test executable
-        // which requires us to specify a target.
-        .target = target,
-        .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
-    });
-    const mod_day02 = b.addModule("day02", .{
-        .root_source_file = b.path("src/day02.zig"),
-        .target = target,
-        .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
-    });
-    const mod_day03 = b.addModule("day03", .{
-        .root_source_file = b.path("src/day03.zig"),
-        .target = target,
-        .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
-    });
-    const mod_day04 = b.addModule("day04", .{
-        .root_source_file = b.path("src/day04.zig"),
-        .target = target,
-        .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
-    });
-    const mod_day05 = b.addModule("day05", .{
-        .root_source_file = b.path("src/day05.zig"),
-        .target = target,
-        .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
-    });
+    var mod_days: [days.len]*Module = undefined;
+    inline for (days, 0..) |day, i| {
+        const name = "day" ++ day;
+        const path = "src/" ++ name ++ ".zig";
+        const mod = b.addModule(name, .{
+            .root_source_file = b.path(path),
+            .target = target,
+            .imports = &.{.{ .name = "aoc_utils", .module = mod_aoc_utils }},
+        });
+        mod_days[i] = mod;
+    }
 
     // Here we define an executable. An executable needs to have a root module
     // which needs to expose a `main` function. While we could add a main function
@@ -82,6 +65,12 @@ pub fn build(b: *std.Build) void {
     //
     // If neither case applies to you, feel free to delete the declaration you
     // don't need and to put everything under a single module.
+    var exe_imports: [days.len + 1]Module.Import = undefined;
+    exe_imports[0] = .{ .name = "aoc_utils", .module = mod_aoc_utils };
+    inline for (days, 0..) |day, i| {
+        const name = "day" ++ day;
+        exe_imports[i + 1] = .{ .name = name, .module = mod_days[i] };
+    }
     const exe = b.addExecutable(.{
         .name = "aoc-2024",
         .root_module = b.createModule(.{
@@ -97,19 +86,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             // List of modules available for import in source files part of the
             // root module.
-            .imports = &.{
-                // Here "zig" is the name you will use in your source code to
-                // import this module (e.g. `@import("zig")`). The name is
-                // repeated because you are allowed to rename your imports, which
-                // can be extremely useful in case of collisions (which can happen
-                // importing modules from different packages).
-                .{ .name = "aoc_utils", .module = mod_aoc_utils },
-                .{ .name = "day01", .module = mod_day01 },
-                .{ .name = "day02", .module = mod_day02 },
-                .{ .name = "day03", .module = mod_day03 },
-                .{ .name = "day04", .module = mod_day04 },
-                .{ .name = "day05", .module = mod_day05 },
-            },
+            .imports = &exe_imports,
         }),
     });
 
@@ -148,28 +125,18 @@ pub fn build(b: *std.Build) void {
     // Creates an executable that will run `test` blocks from the provided module.
     // Here `mod` needs to define a target, which is why earlier we made sure to
     // set the relative field.
-    const mod_day01_tests = b.addTest(.{
-        .root_module = mod_day01,
-    });
-    const mod_day02_tests = b.addTest(.{
-        .root_module = mod_day02,
-    });
-    const mod_day03_tests = b.addTest(.{
-        .root_module = mod_day03,
-    });
-    const mod_day04_tests = b.addTest(.{
-        .root_module = mod_day04,
-    });
-    const mod_day05_tests = b.addTest(.{
-        .root_module = mod_day05,
-    });
+    var mod_days_tests: [days.len]*Step.Compile = undefined;
+    for (mod_days, 0..) |mod, i| {
+        const mod_tests = b.addTest(.{ .root_module = mod });
+        mod_days_tests[i] = mod_tests;
+    }
 
     // A run step that will run the test executable.
-    const run_mod_day01_tests = b.addRunArtifact(mod_day01_tests);
-    const run_mod_day02_tests = b.addRunArtifact(mod_day02_tests);
-    const run_mod_day03_tests = b.addRunArtifact(mod_day03_tests);
-    const run_mod_day04_tests = b.addRunArtifact(mod_day04_tests);
-    const run_mod_day05_tests = b.addRunArtifact(mod_day05_tests);
+    var run_mod_days_tests: [days.len]*Step.Run = undefined;
+    for (mod_days_tests, 0..) |mod_tests, i| {
+        const run_mod_tests = b.addRunArtifact(mod_tests);
+        run_mod_days_tests[i] = run_mod_tests;
+    }
 
     // Creates an executable that will run `test` blocks from the executable's
     // root module. Note that test executables only test one module at a time,
@@ -185,11 +152,9 @@ pub fn build(b: *std.Build) void {
     // times and since the two run steps do not depend on one another, this will
     // make the two of them run in parallel.
     const test_step = b.step("test", "Run tests");
-    test_step.dependOn(&run_mod_day01_tests.step);
-    test_step.dependOn(&run_mod_day02_tests.step);
-    test_step.dependOn(&run_mod_day03_tests.step);
-    test_step.dependOn(&run_mod_day04_tests.step);
-    test_step.dependOn(&run_mod_day05_tests.step);
+    for (run_mod_days_tests) |run_mod_day01_tests| {
+        test_step.dependOn(&run_mod_day01_tests.step);
+    }
     // test_step.dependOn(&run_exe_tests.step);
 
     // Just like flags, top level steps are also listed in the `--help` menu.
