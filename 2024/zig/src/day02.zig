@@ -1,4 +1,3 @@
-//! By convention, root.zig is the root source file when making a library.
 const std = @import("std");
 
 const aoc = @import("aoc_utils");
@@ -37,7 +36,8 @@ fn isSafe(head: u32, tail: []const u8, canSkip: bool, refOrder: ?Order) bool {
         (canSkip and isSafe(head, rest, false, null));
 }
 
-fn part1(input: []const u8) !u32 {
+fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+    _ = gpa;
     var result: u32 = 0;
     var lines = aoc.splitLines(input);
     while (lines.next()) |line| {
@@ -47,7 +47,8 @@ fn part1(input: []const u8) !u32 {
     return result;
 }
 
-fn part2(input: []const u8) !u32 {
+fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+    _ = gpa;
     var result: u32 = 0;
     var lines = aoc.splitLines(input);
     while (lines.next()) |line| {
@@ -57,7 +58,10 @@ fn part2(input: []const u8) !u32 {
     return result;
 }
 
-const testInputs = [_]struct { []const u8, u32, u32 }{.{
+const Day = aoc.DayInfo("02", u32, u32, 490, 536, &.{.{
+    .expected1 = 2,
+    .expected2 = 4,
+    .input =
     \\7 6 4 2 1
     \\1 2 7 8 9
     \\9 7 6 2 1
@@ -65,34 +69,17 @@ const testInputs = [_]struct { []const u8, u32, u32 }{.{
     \\8 6 4 4 1
     \\1 3 6 7 9
     ,
-    2,
-    4,
-}};
+}});
 
-test "day 02 part 1 sample 1" {
-    const input, const expected, _ = testInputs[0];
-    const result = try part1(input);
-    try std.testing.expectEqual(expected, result);
+test "samples 1" {
+    try Day.testPart1Samples(part1);
 }
-
-test "day 02 part 1" {
-    const gpa = std.testing.allocator;
-    const input = try aoc.readInput("02", gpa);
-    defer gpa.free(input);
-    const result = try part1(input);
-    try std.testing.expectEqual(@as(u32, 490), result);
+test "samples 2" {
+    try Day.testPart2Samples(part2);
 }
-
-test "day 02 part 2 sample 1" {
-    const input, _, const expected = testInputs[0];
-    const result = try part2(input);
-    try std.testing.expectEqual(expected, result);
+test "part 1" {
+    try Day.testPart1(part1);
 }
-
-test "day 02 part 2" {
-    const gpa = std.testing.allocator;
-    const input = try aoc.readInput("02", gpa);
-    defer gpa.free(input);
-    const result = try part2(input);
-    try std.testing.expectEqual(@as(u32, 536), result);
+test "part 2" {
+    try Day.testPart2(part2);
 }

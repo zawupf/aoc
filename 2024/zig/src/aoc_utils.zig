@@ -190,3 +190,65 @@ pub const GridView = struct {
         return .{ .buf = input, .width = width, .height = height };
     }
 };
+
+pub fn DayInfo(
+    comptime day_: *const [2:0]u8,
+    comptime T1: type,
+    comptime T2: type,
+    comptime solution1_: ?T1,
+    comptime solution2_: ?T2,
+    comptime testData: []const struct { input: []const u8, expected1: ?T1, expected2: ?T2 },
+) type {
+    return struct {
+        pub const day = day_;
+        pub const Result1 = T1;
+        pub const Result2 = T2;
+        pub const solution1 = solution1_;
+        pub const solution2 = solution2_;
+        pub const tests = testData;
+
+        pub fn testPart1Samples(part1: fn ([]const u8, Allocator) anyerror!T1) !void {
+            const gpa = std.testing.allocator;
+            for (@This().tests, 1..) |tst, index| {
+                if (tst.expected1 == null) continue;
+
+                const result = try part1(tst.input, gpa);
+                _ = index;
+                // std.debug.print("Test day {s}, part 1, sample {}: {}\n", .{ @This().day, index, result });
+                try std.testing.expectEqual(tst.expected1, result);
+            }
+        }
+
+        pub fn testPart2Samples(part2: fn ([]const u8, Allocator) anyerror!T2) !void {
+            const gpa = std.testing.allocator;
+            for (@This().tests, 1..) |tst, index| {
+                if (tst.expected2 == null) continue;
+
+                const result = try part2(tst.input, gpa);
+                _ = index;
+                // std.debug.print("Test day {s}, part 2, sample {}: {}\n", .{ @This().day, index, result });
+                try std.testing.expectEqual(tst.expected2, result);
+            }
+        }
+
+        pub fn testPart1(part1: fn ([]const u8, Allocator) anyerror!T1) !void {
+            if (@This().solution1 == null) return;
+            const gpa = std.testing.allocator;
+            const input = try readInput(@This().day, gpa);
+            defer gpa.free(input);
+            const result = try part1(input, gpa);
+            // std.debug.print("Day {s}, part 1: {}\n", .{ @This().day, result });
+            try std.testing.expectEqual(@This().solution1, result);
+        }
+
+        pub fn testPart2(part2: fn ([]const u8, Allocator) anyerror!T2) !void {
+            if (@This().solution2 == null) return;
+            const gpa = std.testing.allocator;
+            const input = try readInput(@This().day, gpa);
+            defer gpa.free(input);
+            const result = try part2(input, gpa);
+            // std.debug.print("Day {s}, part 2: {}\n", .{ @This().day, result });
+            try std.testing.expectEqual(@This().solution2, result);
+        }
+    };
+}

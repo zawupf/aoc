@@ -1,4 +1,3 @@
-//! By convention, root.zig is the root source file when making a library.
 const std = @import("std");
 
 const aoc = @import("aoc_utils");
@@ -86,42 +85,48 @@ fn mulIter(input: []const u8, comptime kind: MulIterType) MulIterator(u32, kind)
     };
 }
 
-fn part1(input: []const u8) !u32 {
+fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+    _ = gpa;
     var sum: u32 = 0;
     var products = mulIter(input, .simple);
     while (products.next()) |v| sum += v;
     return sum;
 }
 
-fn part2(input: []const u8) !u32 {
+fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+    _ = gpa;
     var sum: u32 = 0;
     var products = mulIter(input, .advanced);
     while (products.next()) |v| sum += v;
     return sum;
 }
 
-test "day 03 part 1 sample 1" {
-    const result = try part1("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))");
-    try std.testing.expectEqual(@as(u32, 161), result);
-}
+const Day = aoc.DayInfo("03", u32, u32, 173529487, 99532691, &.{
+    .{
+        .expected1 = 161,
+        .expected2 = null,
+        .input =
+        \\xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
+        ,
+    },
+    .{
+        .expected1 = null,
+        .expected2 = 48,
+        .input =
+        \\xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
+        ,
+    },
+});
 
-test "day 03 part 1" {
-    const gpa = std.testing.allocator;
-    const input = try aoc.readInput("03", gpa);
-    defer gpa.free(input);
-    const result = try part1(input);
-    try std.testing.expectEqual(@as(u32, 173529487), result);
+test "samples 1" {
+    try Day.testPart1Samples(part1);
 }
-
-test "day 03 part 2 sample 2" {
-    const result = try part2("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))");
-    try std.testing.expectEqual(@as(u32, 48), result);
+test "samples 2" {
+    try Day.testPart2Samples(part2);
 }
-
-test "day 03 part 2" {
-    const gpa = std.testing.allocator;
-    const input = try aoc.readInput("03", gpa);
-    defer gpa.free(input);
-    const result = try part2(input);
-    try std.testing.expectEqual(@as(u32, 99532691), result);
+test "part 1" {
+    try Day.testPart1(part1);
+}
+test "part 2" {
+    try Day.testPart2(part2);
 }

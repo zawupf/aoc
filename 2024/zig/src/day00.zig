@@ -1,50 +1,30 @@
-//! By convention, root.zig is the root source file when making a library.
 const std = @import("std");
 
 const aoc = @import("aoc_utils");
 
-fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
     _ = gpa;
     _ = input;
     return 0;
 }
 
-fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
     _ = gpa;
     _ = input;
     return 0;
 }
 
-const testInputs = [_]struct { []const u8, u32, u32 }{.{
-    &.{},
-    0,
-    0,
-}};
+const Day = aoc.DayInfo("00", u32, u32, null, null, &.{});
 
-test "day 00 part 1 sample 1" {
-    const input, const expected, _ = testInputs[0];
-    const result = try part1(input, std.testing.allocator);
-    try std.testing.expectEqual(expected, result);
+test "samples 1" {
+    try Day.testPart1Samples(part1);
 }
-
-test "day 00 part 1" {
-    const gpa = std.testing.allocator;
-    const input = try aoc.readInput("00", gpa);
-    defer gpa.free(input);
-    const result = try part1(input, gpa);
-    try std.testing.expectEqual(@as(u32, 0), result);
+test "samples 2" {
+    try Day.testPart2Samples(part2);
 }
-
-test "day 00 part 2 sample 1" {
-    const input, _, const expected = testInputs[0];
-    const result = try part2(input, std.testing.allocator);
-    try std.testing.expectEqual(expected, result);
+test "part 1" {
+    try Day.testPart1(part1);
 }
-
-test "day 00 part 2" {
-    const gpa = std.testing.allocator;
-    const input = try aoc.readInput("00", gpa);
-    defer gpa.free(input);
-    const result = try part2(input, gpa);
-    try std.testing.expectEqual(@as(u32, 0), result);
+test "part 2" {
+    try Day.testPart2(part2);
 }
