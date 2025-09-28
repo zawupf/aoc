@@ -6,14 +6,14 @@ const aoc = @import("aoc_utils");
 fn part1(input: []const u8) !u32 {
     const grid = aoc.GridView.init(input);
     var result: u32 = 0;
-    var r: usize = 0;
-    while (r < grid.height) : (r += 1) {
-        var c: usize = 0;
-        while (c < grid.width) : (c += 1) {
-            if (grid.at(r, c) != 'X') continue;
+    var p = aoc.Pos{ .x = 0, .y = 0 };
+    while (p.y < grid.height) : (p.y += 1) {
+        p.x = 0;
+        while (p.x < grid.width) : (p.x += 1) {
+            if (grid.at(p) != 'X') continue;
             inline for (@typeInfo(aoc.Direction).@"enum".fields) |field| {
                 const dir = @field(aoc.Direction, field.name);
-                if (grid.subarray(3, r, c, dir, 1)) |word| {
+                if (grid.subarray(3, p, dir, 1)) |word| {
                     if (std.mem.eql(u8, &word, "MAS")) result += 1;
                 }
             }
@@ -25,16 +25,18 @@ fn part1(input: []const u8) !u32 {
 fn part2(input: []const u8) !u32 {
     const grid = aoc.GridView.init(input);
     var result: u32 = 0;
-    var r: usize = 1;
-    while (r < grid.height - 1) : (r += 1) {
-        var c: usize = 1;
-        while (c < grid.width - 1) : (c += 1) {
-            if (grid.at(r, c) != 'A') {
+    var p = aoc.Pos{ .x = 1, .y = 1 };
+    while (p.y < grid.height - 1) : (p.y += 1) {
+        p.x = 1;
+        while (p.x < grid.width - 1) : (p.x += 1) {
+            if (grid.at(p) != 'A') {
                 continue;
             }
             const corners = [_]u8{
-                grid.at(r - 1, c - 1), grid.at(r - 1, c + 1),
-                grid.at(r + 1, c - 1), grid.at(r + 1, c + 1),
+                grid.at(aoc.Direction.north_west.next(p)),
+                grid.at(aoc.Direction.north_east.next(p)),
+                grid.at(aoc.Direction.south_west.next(p)),
+                grid.at(aoc.Direction.south_east.next(p)),
             };
             if (std.mem.eql(u8, &corners, "MMSS") or
                 std.mem.eql(u8, &corners, "SSMM") or

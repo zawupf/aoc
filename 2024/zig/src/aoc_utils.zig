@@ -31,6 +31,47 @@ pub fn trim(input: []const u8) []const u8 {
     return std.mem.trim(u8, input, &std.ascii.whitespace);
 }
 
+pub const Pos = struct { x: usize, y: usize };
+
+pub const TurnDir = enum { clockwise, counter_clockwise };
+
+pub const Orientation = enum {
+    up,
+    right,
+    down,
+    left,
+
+    pub fn next(self: @This(), p: Pos) Pos {
+        return self.step(1, p);
+    }
+
+    pub fn step(self: @This(), comptime offset: usize, p: Pos) Pos {
+        return switch (self) {
+            .up => .{ .x = p.x, .y = p.y - offset },
+            .right => .{ .x = p.x + offset, .y = p.y },
+            .down => .{ .x = p.x, .y = p.y + offset },
+            .left => .{ .x = p.x - offset, .y = p.y },
+        };
+    }
+
+    pub fn turn(self: @This(), dir: TurnDir) @This() {
+        return switch (dir) {
+            .clockwise => switch (self) {
+                .up => .right,
+                .right => .down,
+                .down => .left,
+                .left => .up,
+            },
+            .counter_clockwise => switch (self) {
+                .up => .left,
+                .left => .down,
+                .down => .right,
+                .right => .up,
+            },
+        };
+    }
+};
+
 pub const Direction = enum {
     north,
     east,
@@ -41,16 +82,45 @@ pub const Direction = enum {
     south_west,
     north_west,
 
-    pub fn step(self: @This(), comptime offset: usize, r: usize, c: usize) struct { usize, usize } {
+    pub fn next(self: @This(), p: Pos) Pos {
+        return self.step(1, p);
+    }
+
+    pub fn step(self: @This(), comptime offset: usize, p: Pos) Pos {
         return switch (self) {
-            .north => .{ r - offset, c },
-            .east => .{ r, c + offset },
-            .south => .{ r + offset, c },
-            .west => .{ r, c - offset },
-            .north_east => .{ r - offset, c + offset },
-            .south_east => .{ r + offset, c + offset },
-            .south_west => .{ r + offset, c - offset },
-            .north_west => .{ r - offset, c - offset },
+            .north => .{ .x = p.x, .y = p.y - offset },
+            .east => .{ .x = p.x + offset, .y = p.y },
+            .south => .{ .x = p.x, .y = p.y + offset },
+            .west => .{ .x = p.x - offset, .y = p.y },
+            .north_east => .{ .x = p.x + offset, .y = p.y - offset },
+            .south_east => .{ .x = p.x + offset, .y = p.y + offset },
+            .south_west => .{ .x = p.x - offset, .y = p.y + offset },
+            .north_west => .{ .x = p.x - offset, .y = p.y - offset },
+        };
+    }
+
+    pub fn turn(self: @This(), dir: TurnDir) @This() {
+        return switch (dir) {
+            .clockwise => switch (self) {
+                .north => .north_east,
+                .north_east => .east,
+                .east => .south_east,
+                .south_east => .south,
+                .south => .south_west,
+                .south_west => .west,
+                .west => .north_west,
+                .north_west => .north,
+            },
+            .counter_clockwise => switch (self) {
+                .north => .north_west,
+                .north_west => .west,
+                .west => .south_west,
+                .south_west => .south,
+                .south => .south_east,
+                .south_east => .east,
+                .east => .north_east,
+                .north_east => .north,
+            },
         };
     }
 };
@@ -60,42 +130,44 @@ pub const GridView = struct {
     width: usize, // columns (not including the trailing '\n')
     height: usize, // number of rows
 
-    pub inline fn at(self: @This(), r: usize, c: usize) u8 {
-        return self.buf[r * (self.width + 1) + c];
+    pub inline fn at(self: @This(), p: Pos) u8 {
+        return self.buf[p.y * (self.width + 1) + p.x];
     }
 
-    pub inline fn row(self: @This(), r: usize) [:'\n']const u8 {
-        const off = r * (self.width + 1);
+    pub inline fn row(self: @This(), y: usize) [:'\n']const u8 {
+        const off = y * (self.width + 1);
         return self.buf[off .. off + self.width :'\n'];
     }
 
-    pub fn subarray(self: @This(), comptime len: usize, rStart: usize, cStart: usize, comptime dir: Direction, comptime offset: usize) ?[len]u8 {
+    pub fn subarray(self: @This(), comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]u8 {
         if (len == 0) return null;
 
         // check ranges
         const len_ = len + offset;
+        const sx = pStart.x;
+        const sy = pStart.y;
         switch (dir) {
-            .north, .north_east, .north_west => if (rStart >= self.height or rStart < len_ - 1) return null,
-            .south, .south_east, .south_west => if (rStart + len_ > self.height) return null,
+            .north, .north_east, .north_west => if (sy >= self.height or sy < len_ - 1) return null,
+            .south, .south_east, .south_west => if (sy + len_ > self.height) return null,
             else => {},
         }
         switch (dir) {
-            .west, .north_west, .south_west => if (cStart >= self.width or cStart < len_ - 1) return null,
-            .east, .north_east, .south_east => if (cStart + len_ > self.width) return null,
+            .west, .north_west, .south_west => if (sx >= self.width or sx < len_ - 1) return null,
+            .east, .north_east, .south_east => if (sx + len_ > self.width) return null,
             else => {},
         }
 
-        var i: usize, var r: usize, var c: usize = .{ 0, rStart, cStart };
-        r, c = dir.step(offset, r, c);
+        var i: usize, var p: Pos = .{ 0, pStart };
+        p = dir.step(offset, p);
 
         var buffer: [len]u8 = undefined;
         while (true) {
-            buffer[i] = self.at(r, c);
+            buffer[i] = self.at(p);
 
             i += 1;
             if (i == len) break;
 
-            r, c = dir.step(1, r, c);
+            p = dir.next(p);
         }
         return buffer;
     }
