@@ -20,9 +20,9 @@ const Pages = struct {
 
     fn isValid(self: @This(), rules: []const OrderingRule) bool {
         for (rules) |rule| {
-            const before = std.mem.indexOfScalar(u8, self.items, rule.before);
+            const before = std.mem.findScalar(u8, self.items, rule.before);
             if (before == null) continue;
-            const after = std.mem.indexOfScalar(u8, self.items, rule.after);
+            const after = std.mem.findScalar(u8, self.items, rule.after);
             if (after == null) continue;
             if (before.? >= after.?) return false;
         }

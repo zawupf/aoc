@@ -3,8 +3,9 @@ const std = @import("std");
 const aoc = @import("aoc_utils");
 
 fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
-    _ = gpa;
-    const grid = aoc.GridView.init(input);
+    const gridBuffer = try gpa.dupe(u8, input);
+    defer gpa.free(gridBuffer);
+    const grid = aoc.Grid.init(gridBuffer);
     var result: u32 = 0;
     var p = aoc.Pos{ .x = 0, .y = 0 };
     while (p.y < grid.height) : (p.y += 1) {
@@ -23,8 +24,9 @@ fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
 }
 
 fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
-    _ = gpa;
-    const grid = aoc.GridView.init(input);
+    const gridBuffer = try gpa.dupe(u8, input);
+    defer gpa.free(gridBuffer);
+    const grid = aoc.Grid.init(gridBuffer);
     var result: u32 = 0;
     var p = aoc.Pos{ .x = 1, .y = 1 };
     while (p.y < grid.height - 1) : (p.y += 1) {

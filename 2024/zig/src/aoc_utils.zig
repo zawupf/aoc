@@ -125,18 +125,32 @@ pub const Direction = enum {
     }
 };
 
-pub const GridView = struct {
-    buf: []const u8,
+pub const Grid = struct {
+    buf: []u8,
     width: usize, // columns (not including the trailing '\n')
     height: usize, // number of rows
 
-    pub inline fn at(self: @This(), p: Pos) u8 {
+    pub fn isValid(self: @This(), p: Pos) bool {
+        return p.x < self.width and p.y < self.height;
+    }
+
+    pub fn at(self: @This(), p: Pos) u8 {
         return self.buf[p.y * (self.width + 1) + p.x];
     }
 
-    pub inline fn row(self: @This(), y: usize) [:'\n']const u8 {
+    pub fn setAt(self: *@This(), p: Pos, value: u8) void {
+        self.buf[p.y * (self.width + 1) + p.x] = value;
+    }
+
+    pub fn row(self: @This(), y: usize) [:'\n']const u8 {
         const off = y * (self.width + 1);
         return self.buf[off .. off + self.width :'\n'];
+    }
+
+    pub fn findScalar(self: @This(), value: u8) ?Pos {
+        const stride = self.width + 1;
+        const idx = std.mem.findScalar(u8, self.buf, value) orelse return null;
+        return .{ .x = idx % stride, .y = idx / stride };
     }
 
     pub fn subarray(self: @This(), comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]u8 {
@@ -172,8 +186,8 @@ pub const GridView = struct {
         return buffer;
     }
 
-    pub fn init(input: []const u8) GridView {
-        const first_nl = std.mem.indexOfScalar(u8, input, '\n') orelse @panic("no newline found in input");
+    pub fn init(input: []u8) Grid {
+        const first_nl = std.mem.findScalar(u8, input, '\n') orelse @panic("no newline found in input");
         const width = first_nl;
         const stride = width + 1;
         if (input.len % stride != 0 and (input.len + 1) % stride != 0) @panic("input length is not a multiple of row stride (W+1)");

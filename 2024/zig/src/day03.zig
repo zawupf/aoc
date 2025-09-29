@@ -19,15 +19,15 @@ fn MulIterator(comptime T: type, comptime kind: MulIterType) type {
         pub fn next(self: *Self) ?T {
             const index = self.index orelse return null;
 
-            const mulIndex = std.mem.indexOfPos(u8, self.buffer, index, prefix) orelse {
+            const mulIndex = std.mem.findPos(u8, self.buffer, index, prefix) orelse {
                 self.index = null;
                 return null;
             };
             const start = switch (kind) {
                 .simple => mulIndex,
                 .advanced => blk: {
-                    const doIndex = std.mem.indexOfPos(u8, self.buffer, index, do) orelse mulIndex;
-                    const dontIndex = std.mem.indexOfPos(u8, self.buffer, index, dont) orelse mulIndex;
+                    const doIndex = std.mem.findPos(u8, self.buffer, index, do) orelse mulIndex;
+                    const dontIndex = std.mem.findPos(u8, self.buffer, index, dont) orelse mulIndex;
                     const minIndex = @min(mulIndex, doIndex, dontIndex);
                     if (minIndex == mulIndex) break :blk mulIndex;
                     self.enabled = minIndex == doIndex;
@@ -37,17 +37,17 @@ fn MulIterator(comptime T: type, comptime kind: MulIterType) type {
             };
 
             const contentIndex = start + prefix.len;
-            const end = std.mem.indexOfPos(u8, self.buffer, contentIndex, suffix) orelse {
+            const end = std.mem.findPos(u8, self.buffer, contentIndex, suffix) orelse {
                 self.index = null;
                 return null;
             };
 
             const nextToken = switch (kind) {
-                .simple => std.mem.indexOfPos(u8, self.buffer, contentIndex, prefix),
+                .simple => std.mem.findPos(u8, self.buffer, contentIndex, prefix),
                 .advanced => @as(?usize, @min(
-                    std.mem.indexOfPos(u8, self.buffer, contentIndex, prefix) orelse end,
-                    std.mem.indexOfPos(u8, self.buffer, contentIndex, do) orelse end,
-                    std.mem.indexOfPos(u8, self.buffer, contentIndex, dont) orelse end,
+                    std.mem.findPos(u8, self.buffer, contentIndex, prefix) orelse end,
+                    std.mem.findPos(u8, self.buffer, contentIndex, do) orelse end,
+                    std.mem.findPos(u8, self.buffer, contentIndex, dont) orelse end,
                 )),
             };
             if (nextToken) |n| if (n < end) {
@@ -60,7 +60,7 @@ fn MulIterator(comptime T: type, comptime kind: MulIterType) type {
             const content = self.buffer[contentIndex..end];
             if (content.len < 3 or content.len > 7) return self.next();
 
-            const mid = std.mem.indexOfAnyPos(u8, content, 1, delimiter) orelse return self.next();
+            const mid = std.mem.findAnyPos(u8, content, 1, delimiter) orelse return self.next();
 
             const left = content[0..mid];
             if (left.len < 1 or left.len > 3) return self.next();
