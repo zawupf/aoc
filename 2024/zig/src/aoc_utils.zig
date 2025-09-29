@@ -131,7 +131,7 @@ pub fn Grid(T: type) type {
         width: usize, // columns (not including the trailing '\n')
         height: usize, // number of rows
 
-        pub fn isValid(self: @This(), p: Pos) bool {
+        pub fn inBound(self: @This(), p: Pos) bool {
             return p.x < self.width and p.y < self.height;
         }
 
