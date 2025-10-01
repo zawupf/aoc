@@ -14,7 +14,13 @@ fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
     return 0;
 }
 
-const Day = aoc.DayInfo("00", u32, u32, null, null, &.{});
+const Day = aoc.DayInfo("00", u32, u32, null, null, &.{.{
+    .expected1 = null,
+    .expected2 = null,
+    .input =
+    \\
+    ,
+}});
 
 test "samples 1" {
     try Day.testPart1Samples(part1);
