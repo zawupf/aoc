@@ -23,12 +23,29 @@ pub fn split(input: []const u8, delimiter: u8) std.mem.SplitIterator(u8, .scalar
     return std.mem.splitScalar(u8, input, delimiter);
 }
 
+pub fn splitAny(input: []const u8, delimiters: []const u8) std.mem.SplitIterator(u8, .any) {
+    return std.mem.splitAny(u8, input, delimiters);
+}
+
 pub fn tokenize(input: []const u8, delimiter: u8) std.mem.TokenIterator(u8, .scalar) {
     return std.mem.tokenizeScalar(u8, input, delimiter);
 }
 
+pub fn tokenizeAny(input: []const u8, delimiters: []const u8) std.mem.TokenIterator(u8, .any) {
+    return std.mem.tokenizeAny(u8, input, delimiters);
+}
+
 pub fn trim(input: []const u8) []const u8 {
     return std.mem.trim(u8, input, &std.ascii.whitespace);
+}
+
+pub fn parseInts(comptime T: type, iter: anytype, buf: []T) ![]T {
+    var array = std.ArrayList(T).initBuffer(buf);
+    while (iter.next()) |text| {
+        const value = try std.fmt.parseInt(T, text, 10);
+        try array.appendBounded(value);
+    }
+    return array.items;
 }
 
 pub const Pos = struct { x: usize, y: usize };

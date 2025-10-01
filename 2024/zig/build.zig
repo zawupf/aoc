@@ -3,7 +3,7 @@ const Module = std.Build.Module;
 const Step = std.Build.Step;
 
 // add more days here as needed
-const days = &.{ "01", "02", "03", "04", "05", "06" };
+const days = &.{ "01", "02", "03", "04", "05", "06", "07" };
 
 // Although this function looks imperative, it does not perform the build
 // directly and instead it mutates the build graph (`b`) that will be then
