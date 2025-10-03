@@ -3,6 +3,9 @@ const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
+const Grid = aoc.Grid(Field, usize);
+const Pos = Grid.Pos;
+
 const Field = enum(u8) {
     empty = 0,
     up = 0b0001,
@@ -20,11 +23,11 @@ const State = enum {
 };
 
 const Guard = struct {
-    pos: aoc.Pos,
+    pos: Pos,
     dir: aoc.Orientation,
     state: State,
 
-    fn peekNextPos(self: Guard, grid: aoc.Grid(Field)) ?aoc.Pos {
+    fn peekNextPos(self: Guard, grid: Grid) ?Pos {
         switch (self.dir) {
             .up => if (self.pos.y == 0) return null,
             .right => if (self.pos.x + 1 == grid.width) return null,
@@ -43,7 +46,7 @@ const Guard = struct {
         return guard.peekNextPos(grid);
     }
 
-    fn move(self: *Guard, grid: *aoc.Grid(Field)) void {
+    fn move(self: *Guard, grid: *Grid) void {
         self.state = switch (self.dir) {
             .up => if (self.pos.y == 0) .escaped else .moving,
             .right => if (self.pos.x + 1 == grid.width) .escaped else .moving,
@@ -67,12 +70,12 @@ const Guard = struct {
         }
     }
 
-    fn turn(self: *Guard, grid: *aoc.Grid(Field)) !void {
+    fn turn(self: *Guard, grid: *Grid) !void {
         self.dir = self.dir.turn(.clockwise);
         try self.mark(grid);
     }
 
-    fn mark(self: Guard, grid: *aoc.Grid(Field)) !void {
+    fn mark(self: Guard, grid: *Grid) !void {
         const field = grid.at(self.pos);
         const f: Field = switch (self.dir) {
             .up => .up,
@@ -85,8 +88,8 @@ const Guard = struct {
     }
 };
 
-fn initState(input: []const u8, gpa: Allocator) !struct { Guard, aoc.Grid(Field) } {
-    var grid = aoc.Grid(Field).init(try gpa.dupe(u8, input));
+fn initState(input: []const u8, gpa: Allocator) !struct { Guard, Grid } {
+    var grid = Grid.init(try gpa.dupe(u8, input));
     errdefer gpa.free(grid.buf);
 
     for (grid.buf) |*c| switch (@intFromEnum(c.*)) {
@@ -105,10 +108,10 @@ fn initState(input: []const u8, gpa: Allocator) !struct { Guard, aoc.Grid(Field)
     return .{ guard, grid };
 }
 
-fn copyState(guard: Guard, grid: aoc.Grid(Field), gpa: Allocator) !struct { Guard, aoc.Grid(Field) } {
+fn copyState(guard: Guard, grid: Grid, gpa: Allocator) !struct { Guard, Grid } {
     return .{
         guard,
-        aoc.Grid(Field){
+        Grid{
             .buf = try gpa.dupe(Field, grid.buf),
             .width = grid.width,
             .height = grid.height,

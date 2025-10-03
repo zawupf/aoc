@@ -58,11 +58,11 @@ pub const Orientation = enum {
     down,
     left,
 
-    pub fn next(self: @This(), p: Pos) Pos {
+    pub fn next(self: @This(), p: Pt2(usize)) Pt2(usize) {
         return self.step(1, p);
     }
 
-    pub fn step(self: @This(), comptime offset: usize, p: Pos) Pos {
+    pub fn step(self: @This(), comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
         return switch (self) {
             .up => .{ .x = p.x, .y = p.y - offset },
             .right => .{ .x = p.x + offset, .y = p.y },
@@ -99,11 +99,11 @@ pub const Direction = enum {
     south_west,
     north_west,
 
-    pub fn next(self: @This(), p: Pos) Pos {
+    pub fn next(self: @This(), p: Pt2(usize)) Pt2(usize) {
         return self.step(1, p);
     }
 
-    pub fn step(self: @This(), comptime offset: usize, p: Pos) Pos {
+    pub fn step(self: @This(), comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
         return switch (self) {
             .north => .{ .x = p.x, .y = p.y - offset },
             .east => .{ .x = p.x + offset, .y = p.y },
@@ -142,14 +142,16 @@ pub const Direction = enum {
     }
 };
 
-pub fn Grid(T: type) type {
+pub fn Grid(T: type, P: type) type {
     return struct {
         buf: []T,
         width: usize, // columns (not including the trailing '\n')
         height: usize, // number of rows
 
+        pub const Pos = Pt2(P);
+
         pub fn inBound(self: @This(), p: Pos) bool {
-            return p.x < self.width and p.y < self.height;
+            return p.x >= 0 and p.x < self.width and p.y >= 0 and p.y < self.height;
         }
 
         pub fn at(self: @This(), p: Pos) T {
@@ -166,9 +168,18 @@ pub fn Grid(T: type) type {
         }
 
         pub fn findScalar(self: @This(), value: T) ?Pos {
-            const stride = self.width + 1;
             const idx = std.mem.findScalar(T, self.buf, value) orelse return null;
-            return .{ .x = idx % stride, .y = idx / stride };
+            return self.indexToPos(idx);
+        }
+
+        pub fn indexToPos(self: @This(), index: usize) Pos {
+            const stride = self.width + 1;
+            return .{ .x = @intCast(index % stride), .y = @intCast(index / stride) };
+        }
+
+        pub fn posToIndex(self: @This(), p: Pos) usize {
+            const stride: P = @intCast(self.width + 1);
+            return @intCast(p.y * stride + p.x);
         }
 
         pub fn subarray(self: @This(), comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]T {
@@ -219,7 +230,7 @@ pub fn Grid(T: type) type {
                 }
             }
 
-            return .{ .buf = @ptrCast(input), .width = width, .height = height };
+            return .{ .buf = @ptrCast(input), .width = @intCast(width), .height = @intCast(height) };
         }
     };
 }

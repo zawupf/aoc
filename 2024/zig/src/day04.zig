@@ -2,12 +2,15 @@ const std = @import("std");
 
 const aoc = @import("aoc_utils");
 
+const Grid = aoc.Grid(u8, usize);
+const Pos = Grid.Pos;
+
 fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     const gridBuffer = try gpa.dupe(u8, input);
     defer gpa.free(gridBuffer);
-    const grid = aoc.Grid(u8).init(gridBuffer);
+    const grid = Grid.init(gridBuffer);
     var result: u32 = 0;
-    var p = aoc.Pos{ .x = 0, .y = 0 };
+    var p = Pos{ .x = 0, .y = 0 };
     while (p.y < grid.height) : (p.y += 1) {
         p.x = 0;
         while (p.x < grid.width) : (p.x += 1) {
@@ -26,9 +29,9 @@ fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
 fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     const gridBuffer = try gpa.dupe(u8, input);
     defer gpa.free(gridBuffer);
-    const grid = aoc.Grid(u8).init(gridBuffer);
+    const grid = Grid.init(gridBuffer);
     var result: u32 = 0;
-    var p = aoc.Pos{ .x = 1, .y = 1 };
+    var p = Pos{ .x = 1, .y = 1 };
     while (p.y < grid.height - 1) : (p.y += 1) {
         p.x = 1;
         while (p.x < grid.width - 1) : (p.x += 1) {
