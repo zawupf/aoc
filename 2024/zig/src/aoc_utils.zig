@@ -48,7 +48,36 @@ pub fn parseInts(comptime T: type, iter: anytype, buf: []T) ![]T {
     return array.items;
 }
 
-pub const Pos = struct { x: usize, y: usize };
+pub fn Pt2(T: type) type {
+    return struct {
+        x: T,
+        y: T,
+
+        pub fn add(self: @This(), other: @This()) @This() {
+            return .{ .x = self.x + other.x, .y = self.y + other.y };
+        }
+
+        pub fn sub(self: @This(), other: @This()) @This() {
+            return .{ .x = self.x - other.x, .y = self.y - other.y };
+        }
+
+        pub fn incBy(self: *@This(), other: @This()) void {
+            self.x += other.x;
+            self.y += other.y;
+        }
+
+        pub fn decBy(self: *@This(), other: @This()) void {
+            self.x -= other.x;
+            self.y -= other.y;
+        }
+
+        pub fn manhattan(self: @This(), other: @This()) T {
+            const dx = if (self.x > other.x) self.x - other.x else other.x - self.x;
+            const dy = if (self.y > other.y) self.y - other.y else other.y - self.y;
+            return dx + dy;
+        }
+    };
+}
 
 pub const TurnDir = enum { clockwise, counter_clockwise };
 
