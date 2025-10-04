@@ -36,7 +36,7 @@ fn isSafe(head: u32, tail: []const u8, canSkip: bool, refOrder: ?Order) bool {
         (canSkip and isSafe(head, rest, false, null));
 }
 
-fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     _ = gpa;
     var result: u32 = 0;
     var lines = aoc.splitLines(input);
@@ -47,7 +47,7 @@ fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return result;
 }
 
-fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     _ = gpa;
     var result: u32 = 0;
     var lines = aoc.splitLines(input);
@@ -58,7 +58,7 @@ fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return result;
 }
 
-const Day = aoc.DayInfo("02", u32, u32, 490, 536, &.{.{
+pub const Day = aoc.DayInfo("02", u32, u32, 490, 536, @This(), &.{.{
     .expected1 = 2,
     .expected2 = 4,
     .input =
@@ -72,14 +72,14 @@ const Day = aoc.DayInfo("02", u32, u32, 490, 536, &.{.{
 }});
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

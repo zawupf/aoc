@@ -46,15 +46,15 @@ fn solve(ops: []const Op, input: []const u8, gpa: std.mem.Allocator) !u64 {
     return result;
 }
 
-fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
+pub fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
     return try solve(&.{ .add, .mul }, input, gpa);
 }
 
-fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
+pub fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
     return try solve(&.{ .add, .mul, .concat }, input, gpa);
 }
 
-const Day = aoc.DayInfo("07", u64, u64, 1260333054159, 162042343638683, &.{.{
+pub const Day = aoc.DayInfo("07", u64, u64, 1260333054159, 162042343638683, @This(), &.{.{
     .expected1 = 3749,
     .expected2 = 11387,
     .input =
@@ -71,14 +71,14 @@ const Day = aoc.DayInfo("07", u64, u64, 1260333054159, 162042343638683, &.{.{
 }});
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

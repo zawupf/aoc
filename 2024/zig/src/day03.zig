@@ -85,7 +85,7 @@ fn mulIter(input: []const u8, comptime kind: MulIterType) MulIterator(u32, kind)
     };
 }
 
-fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     _ = gpa;
     var sum: u32 = 0;
     var products = mulIter(input, .simple);
@@ -93,7 +93,7 @@ fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return sum;
 }
 
-fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     _ = gpa;
     var sum: u32 = 0;
     var products = mulIter(input, .advanced);
@@ -101,7 +101,7 @@ fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return sum;
 }
 
-const Day = aoc.DayInfo("03", u32, u32, 173529487, 99532691, &.{
+pub const Day = aoc.DayInfo("03", u32, u32, 173529487, 99532691, @This(), &.{
     .{
         .expected1 = 161,
         .expected2 = null,
@@ -119,14 +119,14 @@ const Day = aoc.DayInfo("03", u32, u32, 173529487, 99532691, &.{
 });
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

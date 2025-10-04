@@ -5,7 +5,7 @@ const aoc = @import("aoc_utils");
 const Grid = aoc.Grid(u8, usize);
 const Pos = Grid.Pos;
 
-fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     const gridBuffer = try gpa.dupe(u8, input);
     defer gpa.free(gridBuffer);
     const grid = Grid.init(gridBuffer);
@@ -26,7 +26,7 @@ fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return result;
 }
 
-fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     const gridBuffer = try gpa.dupe(u8, input);
     defer gpa.free(gridBuffer);
     const grid = Grid.init(gridBuffer);
@@ -53,7 +53,7 @@ fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return result;
 }
 
-const Day = aoc.DayInfo("04", u32, u32, 2517, 1960, &.{
+pub const Day = aoc.DayInfo("04", u32, u32, 2517, 1960, @This(), &.{
     .{
         .expected1 = 12,
         .expected2 = null,
@@ -138,14 +138,14 @@ const Day = aoc.DayInfo("04", u32, u32, 2517, 1960, &.{
 });
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

@@ -37,7 +37,7 @@ fn initState(input: []const u8, gpa: std.mem.Allocator) !State {
     return .{ .grid = grid, .antennas = antennas };
 }
 
-fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
+pub fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
     var state = try initState(input, gpa);
     defer state.deinit(gpa);
 
@@ -66,7 +66,7 @@ fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
     return antidotes.size;
 }
 
-fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
+pub fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
     var state = try initState(input, gpa);
     defer state.deinit(gpa);
 
@@ -95,7 +95,7 @@ fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
     return antidotes.size;
 }
 
-const Day = aoc.DayInfo("08", u32, u32, 318, 1126, &.{.{
+pub const Day = aoc.DayInfo("08", u32, u32, 318, 1126, @This(), &.{.{
     .expected1 = 14,
     .expected2 = 34,
     .input =
@@ -115,14 +115,14 @@ const Day = aoc.DayInfo("08", u32, u32, 318, 1126, &.{.{
 }});
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

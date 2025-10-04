@@ -119,7 +119,7 @@ fn copyState(guard: Guard, grid: Grid, gpa: Allocator) !struct { Guard, Grid } {
     };
 }
 
-fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
+pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     var guard, var grid = try initState(input, gpa);
     defer gpa.free(grid.buf);
 
@@ -134,7 +134,7 @@ fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     return count;
 }
 
-fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
+pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     var guard, var grid = try initState(input, gpa);
     defer gpa.free(grid.buf);
 
@@ -155,7 +155,7 @@ fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     return count;
 }
 
-const Day = aoc.DayInfo("06", u32, u32, 5177, 1686, &.{.{
+pub const Day = aoc.DayInfo("06", u32, u32, 5177, 1686, @This(), &.{.{
     .expected1 = 41,
     .expected2 = 6,
     .input =
@@ -173,14 +173,14 @@ const Day = aoc.DayInfo("06", u32, u32, 5177, 1686, &.{.{
 }});
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

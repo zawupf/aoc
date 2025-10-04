@@ -95,7 +95,7 @@ const UpdateData = struct {
     }
 };
 
-fn part1(input: []const u8, gpa: Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: Allocator) !u32 {
     const data = try UpdateData.init(input, gpa);
     defer data.deinit(gpa);
 
@@ -108,7 +108,7 @@ fn part1(input: []const u8, gpa: Allocator) !u32 {
     return result;
 }
 
-fn part2(input: []const u8, gpa: Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: Allocator) !u32 {
     const data = try UpdateData.init(input, gpa);
     defer data.deinit(gpa);
 
@@ -122,7 +122,7 @@ fn part2(input: []const u8, gpa: Allocator) !u32 {
     return result;
 }
 
-const Day = aoc.DayInfo("05", u32, u32, 6612, 4944, &.{.{
+pub const Day = aoc.DayInfo("05", u32, u32, 6612, 4944, @This(), &.{.{
     .expected1 = 143,
     .expected2 = 123,
     .input =
@@ -158,14 +158,14 @@ const Day = aoc.DayInfo("05", u32, u32, 6612, 4944, &.{.{
 }});
 
 test "samples 1" {
-    try Day.testPart1Samples(part1);
+    try Day.testPart1Samples();
 }
 test "samples 2" {
-    try Day.testPart2Samples(part2);
+    try Day.testPart2Samples();
 }
 test "part 1" {
-    try Day.testPart1(part1);
+    try Day.testPart1();
 }
 test "part 2" {
-    try Day.testPart2(part2);
+    try Day.testPart2();
 }

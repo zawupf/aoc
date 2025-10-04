@@ -53,25 +53,27 @@ pub fn Pt2(T: type) type {
         x: T,
         y: T,
 
-        pub fn add(self: @This(), other: @This()) @This() {
+        const Self = @This();
+
+        pub fn add(self: Self, other: Self) Self {
             return .{ .x = self.x + other.x, .y = self.y + other.y };
         }
 
-        pub fn sub(self: @This(), other: @This()) @This() {
+        pub fn sub(self: Self, other: Self) Self {
             return .{ .x = self.x - other.x, .y = self.y - other.y };
         }
 
-        pub fn incBy(self: *@This(), other: @This()) void {
+        pub fn incBy(self: *Self, other: Self) void {
             self.x += other.x;
             self.y += other.y;
         }
 
-        pub fn decBy(self: *@This(), other: @This()) void {
+        pub fn decBy(self: *Self, other: Self) void {
             self.x -= other.x;
             self.y -= other.y;
         }
 
-        pub fn manhattan(self: @This(), other: @This()) T {
+        pub fn manhattan(self: Self, other: Self) T {
             const dx = if (self.x > other.x) self.x - other.x else other.x - self.x;
             const dy = if (self.y > other.y) self.y - other.y else other.y - self.y;
             return dx + dy;
@@ -87,11 +89,13 @@ pub const Orientation = enum {
     down,
     left,
 
-    pub fn next(self: @This(), p: Pt2(usize)) Pt2(usize) {
+    const Self = @This();
+
+    pub fn next(self: Self, p: Pt2(usize)) Pt2(usize) {
         return self.step(1, p);
     }
 
-    pub fn step(self: @This(), comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
+    pub fn step(self: Self, comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
         return switch (self) {
             .up => .{ .x = p.x, .y = p.y - offset },
             .right => .{ .x = p.x + offset, .y = p.y },
@@ -100,7 +104,7 @@ pub const Orientation = enum {
         };
     }
 
-    pub fn turn(self: @This(), dir: TurnDir) @This() {
+    pub fn turn(self: Self, dir: TurnDir) Self {
         return switch (dir) {
             .clockwise => switch (self) {
                 .up => .right,
@@ -128,11 +132,13 @@ pub const Direction = enum {
     south_west,
     north_west,
 
-    pub fn next(self: @This(), p: Pt2(usize)) Pt2(usize) {
+    const Self = @This();
+
+    pub fn next(self: Self, p: Pt2(usize)) Pt2(usize) {
         return self.step(1, p);
     }
 
-    pub fn step(self: @This(), comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
+    pub fn step(self: Self, comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
         return switch (self) {
             .north => .{ .x = p.x, .y = p.y - offset },
             .east => .{ .x = p.x + offset, .y = p.y },
@@ -145,7 +151,7 @@ pub const Direction = enum {
         };
     }
 
-    pub fn turn(self: @This(), dir: TurnDir) @This() {
+    pub fn turn(self: Self, dir: TurnDir) Self {
         return switch (dir) {
             .clockwise => switch (self) {
                 .north => .north_east,
@@ -177,41 +183,42 @@ pub fn Grid(T: type, P: type) type {
         width: usize, // columns (not including the trailing '\n')
         height: usize, // number of rows
 
+        const Self = @This();
         pub const Pos = Pt2(P);
 
-        pub fn inBound(self: @This(), p: Pos) bool {
+        pub fn inBound(self: Self, p: Pos) bool {
             return p.x >= 0 and p.x < self.width and p.y >= 0 and p.y < self.height;
         }
 
-        pub fn at(self: @This(), p: Pos) T {
+        pub fn at(self: Self, p: Pos) T {
             return self.buf[p.y * (self.width + 1) + p.x];
         }
 
-        pub fn setAt(self: *@This(), p: Pos, value: T) void {
+        pub fn setAt(self: *Self, p: Pos, value: T) void {
             self.buf[p.y * (self.width + 1) + p.x] = value;
         }
 
-        pub fn row(self: @This(), y: usize) [:'\n']const T {
+        pub fn row(self: Self, y: usize) [:'\n']const T {
             const off = y * (self.width + 1);
             return self.buf[off .. off + self.width :'\n'];
         }
 
-        pub fn findScalar(self: @This(), value: T) ?Pos {
+        pub fn findScalar(self: Self, value: T) ?Pos {
             const idx = std.mem.findScalar(T, self.buf, value) orelse return null;
             return self.indexToPos(idx);
         }
 
-        pub fn indexToPos(self: @This(), index: usize) Pos {
+        pub fn indexToPos(self: Self, index: usize) Pos {
             const stride = self.width + 1;
             return .{ .x = @intCast(index % stride), .y = @intCast(index / stride) };
         }
 
-        pub fn posToIndex(self: @This(), p: Pos) usize {
+        pub fn posToIndex(self: Self, p: Pos) usize {
             const stride: P = @intCast(self.width + 1);
             return @intCast(p.y * stride + p.x);
         }
 
-        pub fn subarray(self: @This(), comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]T {
+        pub fn subarray(self: Self, comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]T {
             if (len == 0) return null;
 
             // check ranges
@@ -244,7 +251,7 @@ pub fn Grid(T: type, P: type) type {
             return buffer;
         }
 
-        pub fn init(input: []u8) @This() {
+        pub fn init(input: []u8) Self {
             const first_nl = std.mem.findScalar(u8, input, '\n') orelse @panic("no newline found in input");
             const width = first_nl;
             const stride = width + 1;
@@ -270,6 +277,7 @@ pub fn DayInfo(
     comptime T2: type,
     comptime solution1_: ?T1,
     comptime solution2_: ?T2,
+    comptime module_: type,
     comptime testData: []const struct { input: []const u8, expected1: ?T1, expected2: ?T2 },
 ) type {
     return struct {
@@ -279,49 +287,77 @@ pub fn DayInfo(
         pub const solution1 = solution1_;
         pub const solution2 = solution2_;
         pub const tests = testData;
+        pub const module = module_;
 
-        pub fn testPart1Samples(part1: fn ([]const u8, Allocator) anyerror!T1) !void {
+        pub fn testPart1Samples() !void {
+            try testSamples(0);
+        }
+
+        pub fn testPart2Samples() !void {
+            try testSamples(1);
+        }
+
+        fn testSamples(comptime partIdx: u1) !void {
             const gpa = std.testing.allocator;
-            for (@This().tests, 1..) |tst, index| {
-                if (tst.expected1 == null) continue;
-
-                const result = try part1(tst.input, gpa);
+            const func = if (partIdx == 0) module.part1 else module.part2;
+            for (tests, 1..) |tst, index| {
+                const expected = if (partIdx == 0) tst.expected1 else tst.expected2;
+                if (expected == null) continue;
+                const result = try func(tst.input, gpa);
                 _ = index;
-                // std.debug.print("Test day {s}, part 1, sample {}: {}\n", .{ @This().day, index, result });
-                try std.testing.expectEqual(tst.expected1, result);
+                // std.debug.print("Test day {s}, part {d}, sample {}: {}\n", .{ day, (@as(u8, partIdx)) + 1, index, result });
+                try std.testing.expectEqual(expected, result);
             }
         }
 
-        pub fn testPart2Samples(part2: fn ([]const u8, Allocator) anyerror!T2) !void {
-            const gpa = std.testing.allocator;
-            for (@This().tests, 1..) |tst, index| {
-                if (tst.expected2 == null) continue;
+        pub fn testPart1() !void {
+            try testPart(0);
+        }
 
-                const result = try part2(tst.input, gpa);
-                _ = index;
-                // std.debug.print("Test day {s}, part 2, sample {}: {}\n", .{ @This().day, index, result });
-                try std.testing.expectEqual(tst.expected2, result);
+        pub fn testPart2() !void {
+            try testPart(1);
+        }
+
+        fn testPart(comptime partIdx: u1) !void {
+            const solution = if (partIdx == 0) solution1 else solution2;
+            if (solution == null) return;
+
+            const gpa = std.testing.allocator;
+            const input = try readInput(day, gpa);
+            defer gpa.free(input);
+
+            const func = if (partIdx == 0) module.part1 else module.part2;
+            const result = try func(input, gpa);
+            // std.debug.print("Day {s}, part {d}: {}\n", .{ day, (@as(u8, partIdx)) + 1, result });
+            try std.testing.expectEqual(solution, result);
+        }
+
+        pub fn runPart1(gpa: std.mem.Allocator) !void {
+            try runPart(0, gpa);
+        }
+
+        pub fn runPart2(gpa: std.mem.Allocator) !void {
+            try runPart(1, gpa);
+        }
+
+        fn runPart(comptime partIdx: u1, gpa: std.mem.Allocator) !void {
+            std.debug.print("Day {s}, part {d}: ", .{ day, (@as(u8, partIdx)) + 1 });
+            const func = if (partIdx == 0) module.part1 else module.part2;
+            const solution = if (partIdx == 0) solution1 else solution2;
+
+            if (solution == null) {
+                std.debug.print("Skipped\n", .{});
+                return;
             }
-        }
 
-        pub fn testPart1(part1: fn ([]const u8, Allocator) anyerror!T1) !void {
-            if (@This().solution1 == null) return;
-            const gpa = std.testing.allocator;
-            const input = try readInput(@This().day, gpa);
+            const input = try readInput(day, gpa);
             defer gpa.free(input);
-            const result = try part1(input, gpa);
-            // std.debug.print("Day {s}, part 1: {}\n", .{ @This().day, result });
-            try std.testing.expectEqual(@This().solution1, result);
-        }
 
-        pub fn testPart2(part2: fn ([]const u8, Allocator) anyerror!T2) !void {
-            if (@This().solution2 == null) return;
-            const gpa = std.testing.allocator;
-            const input = try readInput(@This().day, gpa);
-            defer gpa.free(input);
-            const result = try part2(input, gpa);
-            // std.debug.print("Day {s}, part 2: {}\n", .{ @This().day, result });
-            try std.testing.expectEqual(@This().solution2, result);
+            var timer = try std.time.Timer.start();
+            const result = try func(input, gpa);
+            const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
+
+            std.debug.print("{}  ({} ms)\n", .{ result, elapsed_ms });
         }
     };
 }
