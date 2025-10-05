@@ -28,7 +28,7 @@ const day09 = @import("day09");
 // const day25 = @import("day25");
 
 fn run(day: type, gpa: std.mem.Allocator) !void {
-    std.debug.print("\n", .{});
+    // std.debug.print("\n", .{});
     try day.Day.runPart1(gpa);
     try day.Day.runPart2(gpa);
 }
@@ -40,6 +40,8 @@ pub fn main() !void {
         const deinit_status = gpa.deinit();
         if (deinit_status == .leak) @panic("Memory leak detected");
     }
+
+    var timer = try std.time.Timer.start();
 
     try run(day01, allocator);
     try run(day02, allocator);
@@ -66,6 +68,9 @@ pub fn main() !void {
     // try run(day23, allocator);
     // try run(day24, allocator);
     // try run(day25, allocator);
+
+    const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
+    std.debug.print("🏁 All days completed in {d} ms\n", .{elapsed_ms});
 }
 
 test "simple test" {

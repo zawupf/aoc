@@ -341,12 +341,15 @@ pub fn DayInfo(
         }
 
         fn runPart(comptime partIdx: u1, gpa: std.mem.Allocator) !void {
-            std.debug.print("Day {s}, part {d}: ", .{ day, (@as(u8, partIdx)) + 1 });
+            const description = "Day {s} (part {d}): ";
+            const partNum = (@as(u8, partIdx)) + 1;
+
+            std.debug.print(description, .{ day, partNum });
             const func = if (partIdx == 0) module.part1 else module.part2;
             const solution = if (partIdx == 0) solution1 else solution2;
 
             if (solution == null) {
-                std.debug.print("Skipped\n", .{});
+                std.debug.print("\r🚧 " ++ description ++ "Skipped\n", .{ day, partNum });
                 return;
             }
 
@@ -357,7 +360,11 @@ pub fn DayInfo(
             const result = try func(input, gpa);
             const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
 
-            std.debug.print("{}  ({} ms)\n", .{ result, elapsed_ms });
+            const prefix = if (result == solution) "✅" else "❌";
+            std.debug.print(
+                "\r{s} " ++ description ++ "{any}  [ {d} ms ]\n",
+                .{ prefix, day, partNum, result, elapsed_ms },
+            );
         }
     };
 }
