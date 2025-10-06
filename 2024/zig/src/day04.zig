@@ -6,9 +6,9 @@ const Grid = aoc.Grid(u8, usize);
 const Pos = Grid.Pos;
 
 pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
-    const gridBuffer = try gpa.dupe(u8, input);
-    defer gpa.free(gridBuffer);
-    const grid = Grid.init(gridBuffer);
+    const grid = try Grid.init(input, gpa);
+    defer grid.deinit(gpa);
+
     var result: u32 = 0;
     var p = Pos{ .x = 0, .y = 0 };
     while (p.y < grid.height) : (p.y += 1) {
@@ -27,9 +27,9 @@ pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
 }
 
 pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
-    const gridBuffer = try gpa.dupe(u8, input);
-    defer gpa.free(gridBuffer);
-    const grid = Grid.init(gridBuffer);
+    const grid = try Grid.init(input, gpa);
+    defer grid.deinit(gpa);
+
     var result: u32 = 0;
     var p = Pos{ .x = 1, .y = 1 };
     while (p.y < grid.height - 1) : (p.y += 1) {

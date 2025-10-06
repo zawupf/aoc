@@ -14,7 +14,7 @@ const State = struct {
     antennas: AntennaMap,
 
     pub fn deinit(self: *State, gpa: std.mem.Allocator) void {
-        gpa.free(self.grid.buf);
+        self.grid.deinit(gpa);
         var lists = self.antennas.valueIterator();
         while (lists.next()) |list| list.deinit(gpa);
         self.antennas.deinit(gpa);
@@ -22,11 +22,11 @@ const State = struct {
 };
 
 fn initState(input: []const u8, gpa: std.mem.Allocator) !State {
-    const gridBuffer = try gpa.dupe(u8, input);
-    const grid = Grid.init(gridBuffer);
+    const grid = try Grid.init(input, gpa);
+    errdefer grid.deinit(gpa);
     var antennas = AntennaMap.empty;
     for (grid.buf, 0..) |field, i| {
-        if (field != '.' and field != '\n') {
+        if (field != '.') {
             const entry = try antennas.getOrPut(gpa, field);
             if (!entry.found_existing) {
                 entry.value_ptr.* = AntennaPositions.empty;

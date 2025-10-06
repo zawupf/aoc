@@ -191,16 +191,16 @@ pub fn Grid(T: type, P: type) type {
         }
 
         pub fn at(self: Self, p: Pos) T {
-            return self.buf[p.y * (self.width + 1) + p.x];
+            return self.buf[p.y * self.width + p.x];
         }
 
         pub fn setAt(self: *Self, p: Pos, value: T) void {
-            self.buf[p.y * (self.width + 1) + p.x] = value;
+            self.buf[p.y * self.width + p.x] = value;
         }
 
-        pub fn row(self: Self, y: usize) [:'\n']const T {
-            const off = y * (self.width + 1);
-            return self.buf[off .. off + self.width :'\n'];
+        pub fn row(self: Self, y: usize) []const T {
+            const offset = y * self.width;
+            return self.buf[offset .. offset + self.width];
         }
 
         pub fn findScalar(self: Self, value: T) ?Pos {
@@ -209,13 +209,11 @@ pub fn Grid(T: type, P: type) type {
         }
 
         pub fn indexToPos(self: Self, index: usize) Pos {
-            const stride = self.width + 1;
-            return .{ .x = @intCast(index % stride), .y = @intCast(index / stride) };
+            return .{ .x = @intCast(index % self.width), .y = @intCast(index / self.width) };
         }
 
         pub fn posToIndex(self: Self, p: Pos) usize {
-            const stride: P = @intCast(self.width + 1);
-            return @intCast(p.y * stride + p.x);
+            return @intCast(p.y * self.width + p.x);
         }
 
         pub fn subarray(self: Self, comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]T {
@@ -251,22 +249,26 @@ pub fn Grid(T: type, P: type) type {
             return buffer;
         }
 
-        pub fn init(input: []u8) Self {
-            const first_nl = std.mem.findScalar(u8, input, '\n') orelse @panic("no newline found in input");
-            const width = first_nl;
-            const stride = width + 1;
-            if (input.len % stride != 0 and (input.len + 1) % stride != 0) @panic("input length is not a multiple of row stride (W+1)");
-            const height = input.len / stride + if (input.len % stride == 0) @as(usize, 0) else @as(usize, 1);
+        pub fn init(input: []const u8, gpa: Allocator) !Self {
+            const width = std.mem.findScalar(u8, input, '\n') orelse input.len;
+            const len = input.len - std.mem.count(u8, input, "\n");
+            const height = len / width;
+            std.debug.assert(len % width == 0);
 
-            const builtin = @import("builtin");
-            if (builtin.mode == .Debug or builtin.mode == .ReleaseSafe) {
-                var i: usize = stride - 1;
-                while (i < input.len) : (i += stride) {
-                    if (input[i] != '\n') @panic("line not terminated by newline");
-                }
+            var buf = try gpa.alloc(T, len);
+            errdefer gpa.free(buf);
+
+            var i: usize = 0;
+            var iter = std.mem.tokenizeScalar(u8, input, '\n');
+            while (iter.next()) |line| : (i += width) {
+                @memcpy(buf[i .. i + width], @as([]const T, @ptrCast(line)));
             }
 
-            return .{ .buf = @ptrCast(input), .width = @intCast(width), .height = @intCast(height) };
+            return .{ .buf = buf, .width = width, .height = height };
+        }
+
+        pub fn deinit(self: *const Self, gpa: Allocator) void {
+            gpa.free(self.buf);
         }
     };
 }
@@ -332,15 +334,15 @@ pub fn DayInfo(
             try std.testing.expectEqual(solution, result);
         }
 
-        pub fn runPart1(gpa: std.mem.Allocator) !void {
+        pub fn runPart1(gpa: Allocator) !void {
             try runPart(0, gpa);
         }
 
-        pub fn runPart2(gpa: std.mem.Allocator) !void {
+        pub fn runPart2(gpa: Allocator) !void {
             try runPart(1, gpa);
         }
 
-        fn runPart(comptime partIdx: u1, gpa: std.mem.Allocator) !void {
+        fn runPart(comptime partIdx: u1, gpa: Allocator) !void {
             const description = "Day {s} (part {d}): ";
             const partNum = (@as(u8, partIdx)) + 1;
 

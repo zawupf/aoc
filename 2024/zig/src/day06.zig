@@ -89,11 +89,11 @@ const Guard = struct {
 };
 
 fn initState(input: []const u8, gpa: Allocator) !struct { Guard, Grid } {
-    var grid = Grid.init(try gpa.dupe(u8, input));
-    errdefer gpa.free(grid.buf);
+    var grid = try Grid.init(input, gpa);
+    errdefer grid.deinit(gpa);
 
     for (grid.buf) |*c| switch (@intFromEnum(c.*)) {
-        '.', '\n' => c.* = .empty,
+        '.' => c.* = .empty,
         '#' => c.* = .blocked,
         '^' => c.* = .up,
         else => unreachable,
@@ -121,7 +121,7 @@ fn copyState(guard: Guard, grid: Grid, gpa: Allocator) !struct { Guard, Grid } {
 
 pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     var guard, var grid = try initState(input, gpa);
-    defer gpa.free(grid.buf);
+    defer grid.deinit(gpa);
 
     while (guard.state == .moving) : (guard.move(&grid)) {}
 
@@ -136,7 +136,7 @@ pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
 
 pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     var guard, var grid = try initState(input, gpa);
-    defer gpa.free(grid.buf);
+    defer grid.deinit(gpa);
 
     var count: u32 = 0;
     while (guard.state == .moving) : (guard.move(&grid))
