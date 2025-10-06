@@ -1,4 +1,5 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
@@ -85,7 +86,7 @@ fn mulIter(input: []const u8, comptime kind: MulIterType) MulIterator(u32, kind)
     };
 }
 
-pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: Allocator) !u32 {
     _ = gpa;
     var sum: u32 = 0;
     var products = mulIter(input, .simple);
@@ -93,7 +94,7 @@ pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return sum;
 }
 
-pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: Allocator) !u32 {
     _ = gpa;
     var sum: u32 = 0;
     var products = mulIter(input, .advanced);

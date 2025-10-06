@@ -1,10 +1,11 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
 const Op = enum { add, mul, concat };
 
-fn canSolve(expected: u64, values: []const u64, ops: []const Op, gpa: std.mem.Allocator) !bool {
+fn canSolve(expected: u64, values: []const u64, ops: []const Op, gpa: Allocator) !bool {
     var stack = std.ArrayList(struct { u64, []const u64 }).empty;
     defer stack.deinit(gpa);
     try stack.append(gpa, .{ values[0], values[1..] });
@@ -33,7 +34,7 @@ fn canSolve(expected: u64, values: []const u64, ops: []const Op, gpa: std.mem.Al
     return false;
 }
 
-fn solve(ops: []const Op, input: []const u8, gpa: std.mem.Allocator) !u64 {
+fn solve(ops: []const Op, input: []const u8, gpa: Allocator) !u64 {
     var result: u64 = 0;
     var buffer: [32]u64 = undefined;
     var lines = aoc.splitLines(input);
@@ -46,11 +47,11 @@ fn solve(ops: []const Op, input: []const u8, gpa: std.mem.Allocator) !u64 {
     return result;
 }
 
-pub fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
+pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     return try solve(&.{ .add, .mul }, input, gpa);
 }
 
-pub fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
+pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     return try solve(&.{ .add, .mul, .concat }, input, gpa);
 }
 

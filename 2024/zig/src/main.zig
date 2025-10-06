@@ -1,4 +1,5 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const day01 = @import("day01");
 const day02 = @import("day02");
@@ -27,7 +28,7 @@ const day09 = @import("day09");
 // const day24 = @import("day24");
 // const day25 = @import("day25");
 
-fn run(day: type, gpa: std.mem.Allocator) !void {
+fn run(day: type, gpa: Allocator) !void {
     // std.debug.print("\n", .{});
     try day.Day.runPart1(gpa);
     try day.Day.runPart2(gpa);

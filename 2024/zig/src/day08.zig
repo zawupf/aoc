@@ -1,4 +1,5 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
@@ -13,7 +14,7 @@ const State = struct {
     grid: Grid,
     antennas: AntennaMap,
 
-    pub fn deinit(self: *State, gpa: std.mem.Allocator) void {
+    pub fn deinit(self: *State, gpa: Allocator) void {
         self.grid.deinit(gpa);
         var lists = self.antennas.valueIterator();
         while (lists.next()) |list| list.deinit(gpa);
@@ -21,7 +22,7 @@ const State = struct {
     }
 };
 
-fn initState(input: []const u8, gpa: std.mem.Allocator) !State {
+fn initState(input: []const u8, gpa: Allocator) !State {
     const grid = try Grid.init(input, gpa);
     errdefer grid.deinit(gpa);
     var antennas = AntennaMap.empty;
@@ -37,7 +38,7 @@ fn initState(input: []const u8, gpa: std.mem.Allocator) !State {
     return .{ .grid = grid, .antennas = antennas };
 }
 
-pub fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
+pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     var state = try initState(input, gpa);
     defer state.deinit(gpa);
 
@@ -66,7 +67,7 @@ pub fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
     return antidotes.size;
 }
 
-pub fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
+pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     var state = try initState(input, gpa);
     defer state.deinit(gpa);
 

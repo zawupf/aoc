@@ -1,4 +1,5 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
@@ -36,7 +37,7 @@ fn isSafe(head: u32, tail: []const u8, canSkip: bool, refOrder: ?Order) bool {
         (canSkip and isSafe(head, rest, false, null));
 }
 
-pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: Allocator) !u32 {
     _ = gpa;
     var result: u32 = 0;
     var lines = aoc.splitLines(input);
@@ -47,7 +48,7 @@ pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return result;
 }
 
-pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: Allocator) !u32 {
     _ = gpa;
     var result: u32 = 0;
     var lines = aoc.splitLines(input);

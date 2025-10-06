@@ -1,4 +1,5 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
@@ -10,7 +11,7 @@ const Disk = struct {
 
     blocks: std.ArrayList(Block),
 
-    pub fn init(input: []const u8, gpa: std.mem.Allocator) !Disk {
+    pub fn init(input: []const u8, gpa: Allocator) !Disk {
         var blocks = try std.ArrayList(Block).initCapacity(gpa, input.len + input.len / 2);
         errdefer blocks.deinit(gpa);
 
@@ -32,7 +33,7 @@ const Disk = struct {
         return .{ .blocks = blocks };
     }
 
-    pub fn deinit(self: *Disk, gpa: std.mem.Allocator) void {
+    pub fn deinit(self: *Disk, gpa: Allocator) void {
         self.blocks.deinit(gpa);
     }
 
@@ -161,14 +162,14 @@ const Disk = struct {
     }
 };
 
-pub fn part1(input: []const u8, gpa: std.mem.Allocator) !Day.Result1 {
+pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     var disk = try Disk.init(input, gpa);
     defer disk.deinit(gpa);
     disk.floodFillEmptyBlocks();
     return disk.checksum();
 }
 
-pub fn part2(input: []const u8, gpa: std.mem.Allocator) !Day.Result2 {
+pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     var disk = try Disk.init(input, gpa);
     defer disk.deinit(gpa);
     disk.moveWholeFiles();

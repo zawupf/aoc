@@ -1,8 +1,9 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 const aoc = @import("aoc_utils");
 
-fn parse(gpa: std.mem.Allocator, input: []const u8) !struct { []u32, []u32 } {
+fn parse(gpa: Allocator, input: []const u8) !struct { []u32, []u32 } {
     var list1: std.ArrayList(u32) = .empty;
     var list2: std.ArrayList(u32) = .empty;
     errdefer {
@@ -26,7 +27,7 @@ fn parse(gpa: std.mem.Allocator, input: []const u8) !struct { []u32, []u32 } {
     return .{ l1, l2 };
 }
 
-pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part1(input: []const u8, gpa: Allocator) !u32 {
     const list1, const list2 = try parse(gpa, input);
     defer {
         gpa.free(list1);
@@ -45,7 +46,7 @@ pub fn part1(input: []const u8, gpa: std.mem.Allocator) !u32 {
     return result;
 }
 
-pub fn part2(input: []const u8, gpa: std.mem.Allocator) !u32 {
+pub fn part2(input: []const u8, gpa: Allocator) !u32 {
     const list1, const list2 = try parse(gpa, input);
     defer {
         gpa.free(list1);
