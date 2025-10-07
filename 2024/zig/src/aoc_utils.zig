@@ -91,16 +91,29 @@ pub const Orientation = enum {
 
     const Self = @This();
 
-    pub fn next(self: Self, p: Pt2(usize)) Pt2(usize) {
+    pub fn next(self: Self, p: anytype) @TypeOf(p) {
         return self.step(1, p);
     }
 
-    pub fn step(self: Self, comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
+    pub fn nextOrNull(self: Self, p: Pt2(usize), grid: anytype) ?@TypeOf(grid).Pos {
+        return self.stepOrNull(1, p, grid);
+    }
+
+    pub fn step(self: Self, comptime offset: usize, p: anytype) @TypeOf(p) {
         return switch (self) {
             .up => .{ .x = p.x, .y = p.y - offset },
             .right => .{ .x = p.x + offset, .y = p.y },
             .down => .{ .x = p.x, .y = p.y + offset },
             .left => .{ .x = p.x - offset, .y = p.y },
+        };
+    }
+
+    pub fn stepOrNull(self: Self, comptime offset: usize, p: Pt2(usize), grid: anytype) ?@TypeOf(grid).Pos {
+        return switch (self) {
+            .up => if (p.y >= offset) .{ .x = p.x, .y = p.y - offset } else null,
+            .right => if (p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y } else null,
+            .down => if (p.y + offset < grid.height) .{ .x = p.x, .y = p.y + offset } else null,
+            .left => if (p.x >= offset) .{ .x = p.x - offset, .y = p.y } else null,
         };
     }
 
@@ -138,6 +151,10 @@ pub const Direction = enum {
         return self.step(1, p);
     }
 
+    pub fn nextOrNull(self: Self, p: Pt2(usize)) ?Pt2(usize) {
+        return self.stepOrNull(1, p);
+    }
+
     pub fn step(self: Self, comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
         return switch (self) {
             .north => .{ .x = p.x, .y = p.y - offset },
@@ -148,6 +165,19 @@ pub const Direction = enum {
             .south_east => .{ .x = p.x + offset, .y = p.y + offset },
             .south_west => .{ .x = p.x - offset, .y = p.y + offset },
             .north_west => .{ .x = p.x - offset, .y = p.y - offset },
+        };
+    }
+
+    pub fn stepOrNull(self: Self, comptime offset: usize, p: Pt2(usize)) ?Pt2(usize) {
+        return switch (self) {
+            .north => if (p.y >= offset) .{ .x = p.x, .y = p.y - offset } else null,
+            .east => if (p.x + offset < self.width) .{ .x = p.x + offset, .y = p.y } else null,
+            .south => if (p.y + offset < self.height) .{ .x = p.x, .y = p.y + offset } else null,
+            .west => if (p.x >= offset) .{ .x = p.x - offset, .y = p.y } else null,
+            .north_east => if (p.y >= offset and p.x + offset < self.width) .{ .x = p.x + offset, .y = p.y - offset } else null,
+            .south_east => if (p.y + offset < self.height and p.x + offset < self.width) .{ .x = p.x + offset, .y = p.y + offset } else null,
+            .south_west => if (p.y + offset < self.height and p.x >= offset) .{ .x = p.x - offset, .y = p.y + offset } else null,
+            .north_west => if (p.y >= offset and p.x >= offset) .{ .x = p.x - offset, .y = p.y - offset } else null,
         };
     }
 
@@ -190,6 +220,10 @@ pub fn Grid(T: type, P: type) type {
             return p.x >= 0 and p.x < self.width and p.y >= 0 and p.y < self.height;
         }
 
+        pub fn ptr(self: *Self, p: Pos) *T {
+            return &self.buf[p.y * self.width + p.x];
+        }
+
         pub fn at(self: Self, p: Pos) T {
             return self.buf[p.y * self.width + p.x];
         }
@@ -209,14 +243,23 @@ pub fn Grid(T: type, P: type) type {
         }
 
         pub fn indexToPos(self: Self, index: usize) Pos {
-            return .{ .x = @intCast(index % self.width), .y = @intCast(index / self.width) };
+            return .{
+                .x = @intCast(index % self.width),
+                .y = @intCast(index / self.width),
+            };
         }
 
         pub fn posToIndex(self: Self, p: Pos) usize {
             return @intCast(p.y * self.width + p.x);
         }
 
-        pub fn subarray(self: Self, comptime len: usize, pStart: Pos, comptime dir: Direction, comptime offset: usize) ?[len]T {
+        pub fn subarray(
+            self: Self,
+            comptime len: usize,
+            pStart: Pos,
+            comptime dir: Direction,
+            comptime offset: usize,
+        ) ?[len]T {
             if (len == 0) return null;
 
             // check ranges
@@ -250,6 +293,14 @@ pub fn Grid(T: type, P: type) type {
         }
 
         pub fn init(input: []const u8, gpa: Allocator) !Self {
+            return try Self._init(input, null, gpa);
+        }
+
+        pub fn initMapped(input: []const u8, comptime mapping: fn (u8) T, gpa: Allocator) !Self {
+            return try Self._init(input, mapping, gpa);
+        }
+
+        pub fn _init(input: []const u8, comptime mapping: ?fn (u8) T, gpa: Allocator) !Self {
             const width = std.mem.findScalar(u8, input, '\n') orelse input.len;
             const len = input.len - std.mem.count(u8, input, "\n");
             const height = len / width;
@@ -259,9 +310,17 @@ pub fn Grid(T: type, P: type) type {
             errdefer gpa.free(buf);
 
             var i: usize = 0;
-            var iter = std.mem.tokenizeScalar(u8, input, '\n');
-            while (iter.next()) |line| : (i += width) {
-                @memcpy(buf[i .. i + width], @as([]const T, @ptrCast(line)));
+            if (mapping) |fun| {
+                for (input) |value| {
+                    if (value == '\n') continue;
+                    buf[i] = fun(value);
+                    i += 1;
+                }
+            } else {
+                var iter = std.mem.tokenizeScalar(u8, input, '\n');
+                while (iter.next()) |line| : (i += width) {
+                    @memcpy(buf[i .. i + width], @as([]const T, @ptrCast(line)));
+                }
             }
 
             return .{ .buf = buf, .width = width, .height = height };
@@ -360,12 +419,25 @@ pub fn DayInfo(
 
             var timer = try std.time.Timer.start();
             const result = try func(input, gpa);
-            const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
+
+            var elapsed: f64, var unit: []const u8 = .{ @floatFromInt(timer.read()), "ns" };
+            if (elapsed >= 1000.0) {
+                elapsed /= 1000.0;
+                unit = "µs";
+            }
+            if (elapsed >= 1000.0) {
+                elapsed /= 1000.0;
+                unit = "ms";
+            }
+            if (elapsed >= 1000.0) {
+                elapsed /= 1000.0;
+                unit = "s";
+            }
 
             const prefix = if (result == solution) "✅" else "❌";
             std.debug.print(
-                "\r{s} " ++ description ++ "{any}  [ {d} ms ]\n",
-                .{ prefix, day, partNum, result, elapsed_ms },
+                "\r{s} " ++ description ++ "{any}  [ {d:.1} {s} ]\n",
+                .{ prefix, day, partNum, result, elapsed, unit },
             );
         }
     };
