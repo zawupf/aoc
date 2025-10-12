@@ -151,8 +151,8 @@ pub const Direction = enum {
         return self.step(1, p);
     }
 
-    pub fn nextOrNull(self: Self, p: Pt2(usize)) ?Pt2(usize) {
-        return self.stepOrNull(1, p);
+    pub fn nextOrNull(self: Self, p: Pt2(usize), grid: anytype) ?Pt2(usize) {
+        return self.stepOrNull(1, p, grid);
     }
 
     pub fn step(self: Self, comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
@@ -168,15 +168,15 @@ pub const Direction = enum {
         };
     }
 
-    pub fn stepOrNull(self: Self, comptime offset: usize, p: Pt2(usize)) ?Pt2(usize) {
+    pub fn stepOrNull(self: Self, comptime offset: usize, p: Pt2(usize), grid: anytype) ?Pt2(usize) {
         return switch (self) {
             .north => if (p.y >= offset) .{ .x = p.x, .y = p.y - offset } else null,
-            .east => if (p.x + offset < self.width) .{ .x = p.x + offset, .y = p.y } else null,
-            .south => if (p.y + offset < self.height) .{ .x = p.x, .y = p.y + offset } else null,
+            .east => if (p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y } else null,
+            .south => if (p.y + offset < grid.height) .{ .x = p.x, .y = p.y + offset } else null,
             .west => if (p.x >= offset) .{ .x = p.x - offset, .y = p.y } else null,
-            .north_east => if (p.y >= offset and p.x + offset < self.width) .{ .x = p.x + offset, .y = p.y - offset } else null,
-            .south_east => if (p.y + offset < self.height and p.x + offset < self.width) .{ .x = p.x + offset, .y = p.y + offset } else null,
-            .south_west => if (p.y + offset < self.height and p.x >= offset) .{ .x = p.x - offset, .y = p.y + offset } else null,
+            .north_east => if (p.y >= offset and p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y - offset } else null,
+            .south_east => if (p.y + offset < grid.height and p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y + offset } else null,
+            .south_west => if (p.y + offset < grid.height and p.x >= offset) .{ .x = p.x - offset, .y = p.y + offset } else null,
             .north_west => if (p.y >= offset and p.x >= offset) .{ .x = p.x - offset, .y = p.y - offset } else null,
         };
     }
