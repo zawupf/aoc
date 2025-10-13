@@ -13,8 +13,8 @@ const day09 = @import("day09");
 const day10 = @import("day10");
 const day11 = @import("day11");
 const day12 = @import("day12");
+const day13 = @import("day13");
 
-// const day13 = @import("day13");
 // const day14 = @import("day14");
 // const day15 = @import("day15");
 // const day16 = @import("day16");
@@ -56,7 +56,7 @@ pub fn main() !void {
     try run(day10, allocator);
     try run(day11, allocator);
     try run(day12, allocator);
-    // try run(day13, allocator);
+    try run(day13, allocator);
     // try run(day14, allocator);
     // try run(day15, allocator);
     // try run(day16, allocator);
