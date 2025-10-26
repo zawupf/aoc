@@ -210,8 +210,8 @@ pub const Direction = enum {
 pub fn Grid(T: type, P: type) type {
     return struct {
         buf: []T,
-        width: usize, // columns (not including the trailing '\n')
-        height: usize, // number of rows
+        width: P, // columns (not including the trailing '\n')
+        height: P, // number of rows
 
         const Self = @This();
         pub const Pos = Pt2(P);
@@ -221,18 +221,21 @@ pub fn Grid(T: type, P: type) type {
         }
 
         pub fn ptr(self: *Self, p: Pos) *T {
-            return &self.buf[p.y * self.width + p.x];
+            const x: usize, const y: usize = .{ p.x, p.y };
+            return &self.buf[y * self.width + x];
         }
 
         pub fn at(self: Self, p: Pos) T {
-            return self.buf[p.y * self.width + p.x];
+            const x: usize, const y: usize = .{ p.x, p.y };
+            return self.buf[y * self.width + x];
         }
 
         pub fn setAt(self: *Self, p: Pos, value: T) void {
-            self.buf[p.y * self.width + p.x] = value;
+            const x: usize, const y: usize = .{ p.x, p.y };
+            self.buf[y * self.width + x] = value;
         }
 
-        pub fn row(self: Self, y: usize) []const T {
+        pub fn row(self: Self, y: P) []const T {
             const offset = y * self.width;
             return self.buf[offset .. offset + self.width];
         }
@@ -243,14 +246,16 @@ pub fn Grid(T: type, P: type) type {
         }
 
         pub fn indexToPos(self: Self, index: usize) Pos {
+            const width: usize = @intCast(self.width);
             return .{
-                .x = @intCast(index % self.width),
-                .y = @intCast(index / self.width),
+                .x = @intCast(index % width),
+                .y = @intCast(index / width),
             };
         }
 
         pub fn posToIndex(self: Self, p: Pos) usize {
-            return @intCast(p.y * self.width + p.x);
+            const x: usize, const y: usize = .{ p.x, p.y };
+            return y * self.width + x;
         }
 
         pub fn subarray(
@@ -323,7 +328,7 @@ pub fn Grid(T: type, P: type) type {
                 }
             }
 
-            return .{ .buf = buf, .width = width, .height = height };
+            return .{ .buf = buf, .width = @intCast(width), .height = @intCast(height) };
         }
 
         pub fn deinit(self: *const Self, gpa: Allocator) void {
