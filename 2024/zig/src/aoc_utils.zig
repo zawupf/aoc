@@ -369,10 +369,16 @@ pub fn DayInfo(
             for (tests, 1..) |tst, index| {
                 const expected = if (partIdx == 0) tst.expected1 else tst.expected2;
                 if (expected == null) continue;
+
                 const result = try func(tst.input, gpa);
                 _ = index;
                 // std.debug.print("Test day {s}, part {d}, sample {}: {}\n", .{ day, (@as(u8, partIdx)) + 1, index, result });
-                try std.testing.expectEqual(expected, result);
+
+                const resultType = @typeInfo(@TypeOf(result));
+                switch (resultType) {
+                    .pointer => try std.testing.expectEqualStrings(expected.?, result),
+                    else => try std.testing.expectEqual(expected, result),
+                }
             }
         }
 
@@ -395,7 +401,12 @@ pub fn DayInfo(
             const func = if (partIdx == 0) module.part1 else module.part2;
             const result = try func(input, gpa);
             // std.debug.print("Day {s}, part {d}: {}\n", .{ day, (@as(u8, partIdx)) + 1, result });
-            try std.testing.expectEqual(solution, result);
+
+            const resultType = @typeInfo(@TypeOf(result));
+            switch (resultType) {
+                .pointer => try std.testing.expectEqualStrings(solution.?, result),
+                else => try std.testing.expectEqual(solution, result),
+            }
         }
 
         pub fn runPart1(gpa: Allocator) !void {
@@ -439,9 +450,14 @@ pub fn DayInfo(
                 unit = "s";
             }
 
-            const prefix = if (result == solution) "✅" else "❌";
+            const resultType = @typeInfo(@TypeOf(result));
+            const fmt, const ok = switch (resultType) {
+                .pointer => .{ "{s}", std.mem.eql(resultType.pointer.child, result, solution.?) },
+                else => .{ "{}", result == solution.? },
+            };
+            const prefix = if (ok) "✅" else "❌";
             std.debug.print(
-                "\r{s} " ++ description ++ "{any}  [ {d:.1} {s} ]\n",
+                "\r{s} " ++ description ++ fmt ++ "  [ {d:.1} {s} ]\n",
                 .{ prefix, day, partNum, result, elapsed, unit },
             );
         }
