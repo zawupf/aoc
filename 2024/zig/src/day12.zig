@@ -43,7 +43,7 @@ fn solve(comptime countingStrategy: SelectionCriteria, input: []const u8, gpa: A
         while (stack.pop()) |pos| {
             var edges = std.EnumSet(Ori).initEmpty();
             for (dirs) |dir| {
-                const p = dir.nextOrNull(pos, grid);
+                const p = dir.nextOrNull(grid, pos);
                 if (isEdge(p, grid, field)) {
                     if (countingStrategy == .edges) itemCount += 1 else edges.insert(dir);
                     continue;
@@ -64,10 +64,10 @@ fn solve(comptime countingStrategy: SelectionCriteria, input: []const u8, gpa: A
                 if (edges.supersetOf(down_right)) itemCount += 1;
 
                 const areas = edges.complement();
-                if (areas.supersetOf(up_left) and !isArea(Diag.north_west.nextOrNull(pos, grid), grid, field)) itemCount += 1;
-                if (areas.supersetOf(up_right) and !isArea(Diag.north_east.nextOrNull(pos, grid), grid, field)) itemCount += 1;
-                if (areas.supersetOf(down_left) and !isArea(Diag.south_west.nextOrNull(pos, grid), grid, field)) itemCount += 1;
-                if (areas.supersetOf(down_right) and !isArea(Diag.south_east.nextOrNull(pos, grid), grid, field)) itemCount += 1;
+                if (areas.supersetOf(up_left) and !isArea(Diag.north_west.nextOrNull(grid, pos), grid, field)) itemCount += 1;
+                if (areas.supersetOf(up_right) and !isArea(Diag.north_east.nextOrNull(grid, pos), grid, field)) itemCount += 1;
+                if (areas.supersetOf(down_left) and !isArea(Diag.south_west.nextOrNull(grid, pos), grid, field)) itemCount += 1;
+                if (areas.supersetOf(down_right) and !isArea(Diag.south_east.nextOrNull(grid, pos), grid, field)) itemCount += 1;
             }
         }
 

@@ -40,7 +40,7 @@ pub fn solve(comptime score: Score, input: []const u8, gpa: Allocator) !u32 {
         while (stack.pop()) |p| {
             const nextValue = grid.at(p).value + 1;
             for (directions) |direction| {
-                if (direction.nextOrNull(p, grid)) |p_| {
+                if (direction.nextOrNull(grid, p)) |p_| {
                     const field_ = grid.ptr(p_);
                     const keepGoing = switch (score) {
                         .countEnds => field_.value == nextValue and field_.visitCount == 0,
