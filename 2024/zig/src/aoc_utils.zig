@@ -27,12 +27,20 @@ pub fn splitAny(input: []const u8, delimiters: []const u8) std.mem.SplitIterator
     return std.mem.splitAny(u8, input, delimiters);
 }
 
+pub fn splitSeq(input: []const u8, delimiter: []const u8) std.mem.SplitIterator(u8, .sequence) {
+    return std.mem.splitSequence(u8, input, delimiter);
+}
+
 pub fn tokenize(input: []const u8, delimiter: u8) std.mem.TokenIterator(u8, .scalar) {
     return std.mem.tokenizeScalar(u8, input, delimiter);
 }
 
 pub fn tokenizeAny(input: []const u8, delimiters: []const u8) std.mem.TokenIterator(u8, .any) {
     return std.mem.tokenizeAny(u8, input, delimiters);
+}
+
+pub fn tokenizeSeq(input: []const u8, delimiter: []const u8) std.mem.TokenIterator(u8, .sequence) {
+    return std.mem.tokenizeSequence(u8, input, delimiter);
 }
 
 pub fn trim(input: []const u8) []const u8 {
