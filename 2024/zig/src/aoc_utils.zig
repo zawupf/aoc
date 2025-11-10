@@ -100,14 +100,14 @@ pub const Orientation = enum {
     const Self = @This();
 
     pub fn next(self: Self, p: anytype) @TypeOf(p) {
-        return self.step(1, p);
+        return self.step(p, 1);
     }
 
     pub fn nextOrNull(self: Self, grid: anytype, p: @TypeOf(grid).Pos) ?@TypeOf(grid).Pos {
-        return self.stepOrNull(1, grid, p);
+        return self.stepOrNull(grid, p, 1);
     }
 
-    pub fn step(self: Self, comptime offset: usize, p: anytype) @TypeOf(p) {
+    pub fn step(self: Self, p: anytype, comptime offset: @TypeOf(p.x)) @TypeOf(p) {
         return switch (self) {
             .up => .{ .x = p.x, .y = p.y - offset },
             .right => .{ .x = p.x + offset, .y = p.y },
@@ -116,13 +116,17 @@ pub const Orientation = enum {
         };
     }
 
-    pub fn stepOrNull(self: Self, comptime offset: usize, grid: anytype, p: @TypeOf(grid).Pos) ?@TypeOf(grid).Pos {
-        const o: @TypeOf(grid).PosType = @intCast(offset);
+    pub fn stepOrNull(
+        self: Self,
+        grid: anytype,
+        p: @TypeOf(grid).Pos,
+        comptime offset: @TypeOf(grid).PosType,
+    ) ?@TypeOf(grid).Pos {
         return switch (self) {
-            .up => if (p.y >= o) .{ .x = p.x, .y = p.y - o } else null,
-            .right => if (p.x + o < grid.width) .{ .x = p.x + o, .y = p.y } else null,
-            .down => if (p.y + o < grid.height) .{ .x = p.x, .y = p.y + o } else null,
-            .left => if (p.x >= o) .{ .x = p.x - o, .y = p.y } else null,
+            .up => if (p.y >= offset) .{ .x = p.x, .y = p.y - offset } else null,
+            .right => if (p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y } else null,
+            .down => if (p.y + offset < grid.height) .{ .x = p.x, .y = p.y + offset } else null,
+            .left => if (p.x >= offset) .{ .x = p.x - offset, .y = p.y } else null,
         };
     }
 
@@ -157,14 +161,14 @@ pub const Direction = enum {
     const Self = @This();
 
     pub fn next(self: Self, p: Pt2(usize)) Pt2(usize) {
-        return self.step(1, p);
+        return self.step(p, 1);
     }
 
     pub fn nextOrNull(self: Self, grid: anytype, p: @TypeOf(grid).Pos) ?@TypeOf(grid).Pos {
-        return self.stepOrNull(1, grid, p);
+        return self.stepOrNull(grid, p, 1);
     }
 
-    pub fn step(self: Self, comptime offset: usize, p: Pt2(usize)) Pt2(usize) {
+    pub fn step(self: Self, p: anytype, comptime offset: @TypeOf(p.x)) @TypeOf(p) {
         return switch (self) {
             .north => .{ .x = p.x, .y = p.y - offset },
             .east => .{ .x = p.x + offset, .y = p.y },
@@ -177,17 +181,21 @@ pub const Direction = enum {
         };
     }
 
-    pub fn stepOrNull(self: Self, comptime offset: usize, grid: anytype, p: @TypeOf(grid).Pos) ?@TypeOf(grid).Pos {
-        const o: @TypeOf(grid).PosType = @intCast(offset);
+    pub fn stepOrNull(
+        self: Self,
+        grid: anytype,
+        p: @TypeOf(grid).Pos,
+        comptime offset: @TypeOf(grid).PosType,
+    ) ?@TypeOf(grid).Pos {
         return switch (self) {
-            .north => if (p.y >= o) .{ .x = p.x, .y = p.y - o } else null,
-            .east => if (p.x + o < grid.width) .{ .x = p.x + o, .y = p.y } else null,
-            .south => if (p.y + o < grid.height) .{ .x = p.x, .y = p.y + o } else null,
-            .west => if (p.x >= o) .{ .x = p.x - o, .y = p.y } else null,
-            .north_east => if (p.y >= o and p.x + o < grid.width) .{ .x = p.x + o, .y = p.y - o } else null,
-            .south_east => if (p.y + o < grid.height and p.x + o < grid.width) .{ .x = p.x + o, .y = p.y + o } else null,
-            .south_west => if (p.y + o < grid.height and p.x >= o) .{ .x = p.x - o, .y = p.y + o } else null,
-            .north_west => if (p.y >= o and p.x >= o) .{ .x = p.x - o, .y = p.y - o } else null,
+            .north => if (p.y >= offset) .{ .x = p.x, .y = p.y - offset } else null,
+            .east => if (p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y } else null,
+            .south => if (p.y + offset < grid.height) .{ .x = p.x, .y = p.y + offset } else null,
+            .west => if (p.x >= offset) .{ .x = p.x - offset, .y = p.y } else null,
+            .north_east => if (p.y >= offset and p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y - offset } else null,
+            .south_east => if (p.y + offset < grid.height and p.x + offset < grid.width) .{ .x = p.x + offset, .y = p.y + offset } else null,
+            .south_west => if (p.y + offset < grid.height and p.x >= offset) .{ .x = p.x - offset, .y = p.y + offset } else null,
+            .north_west => if (p.y >= offset and p.x >= offset) .{ .x = p.x - offset, .y = p.y - offset } else null,
         };
     }
 
@@ -294,7 +302,7 @@ pub fn Grid(T: type, P: type) type {
             }
 
             var i: usize, var p: Pos = .{ 0, pStart };
-            p = dir.step(offset, p);
+            p = dir.step(p, offset);
 
             var buffer: [len]T = undefined;
             while (true) {
