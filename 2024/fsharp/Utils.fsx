@@ -355,7 +355,7 @@ module Math =
         let m = n |> double |> sqrt |> int
 
         let realDivisors =
-            { 2..m }
+            seq { 2..m }
             |> Seq.fold
                 (fun divisors d ->
                     match n % d with
