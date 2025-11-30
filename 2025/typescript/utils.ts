@@ -333,7 +333,11 @@ export function sortNumbers(numbers: number[]): number[] {
 }
 
 export function zip<T, U>(a: T[], b: U[]): [T, U][] {
-    return a.map((value, index) => [value, b[index]])
+    assert(
+        a.length === b.length,
+        'Arrays must have the same length to be zipped',
+    )
+    return a.map((value, index) => [value, b[index]!])
 }
 
 export function unzip<T, U>(pairs: [T, U][]): [T[], U[]] {
@@ -348,17 +352,21 @@ export function unzip<T, U>(pairs: [T, U][]): [T[], U[]] {
 }
 
 export function transpose<T>(matrix: T[][]): T[][] {
-    return matrix[0].map((_, i) => matrix.map(row => row[i]))
+    assert(
+        matrix.length > 0,
+        'Matrix must have at least one row to be transposed',
+    )
+    return matrix[0]!.map((_, i) => matrix.map(row => row[i]!))
 }
 
-export function greatesCommonDivisor(a: number, b: number): number {
-    return b === 0 ? a : greatesCommonDivisor(b, a % b)
+export function greatestCommonDivisor(a: number, b: number): number {
+    return b === 0 ? a : greatestCommonDivisor(b, a % b)
 }
 
-export const gcd = greatesCommonDivisor
+export const gcd = greatestCommonDivisor
 
 export function leastCommonMultiple(a: number, b: number): number {
-    return (a * b) / greatesCommonDivisor(a, b)
+    return (a * b) / greatestCommonDivisor(a, b)
 }
 
 export const lcm = leastCommonMultiple
