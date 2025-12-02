@@ -1,62 +1,53 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const part1: Part = input => () => {
-    const ranges: [number, number][] = input.split(',').map(range => {
-        const [start, end] = range.split('-').map(Number) as [number, number]
-        return [start, end]
+export const part1: Part = input => () => solve('part1', input)
+
+export const part2: Part = input => () => solve('part2', input)
+
+const countDigits = (n: number): number => Math.floor(Math.log10(n)) + 1
+
+type PartId = 'part1' | 'part2'
+const solve = (part: PartId, input: string) => {
+    const ranges: [number, number][] = input.split(',').flatMap(range => {
+        const [a, b] = range.split('-').map(Number) as [number, number]
+        const [da, db] = [countDigits(a), countDigits(b)]
+        utils.assert(a <= b, `Invalid range: ${range}`)
+        return Array(db - da + 1)
+            .fill(0)
+            .map(
+                (_, i) =>
+                    [
+                        i === 0 ? a : 10 ** (da + i - 1),
+                        i === db - da ? b : 10 ** (da + i) - 1,
+                    ] as [number, number],
+            )
     })
 
     let sum = 0
+    const ids = new Set<number>()
     for (const [start, end] of ranges) {
-        for (let n = start; n <= end; n++) {
-            const s = n.toString()
-            const l = s.length
-            if (l % 2 !== 0) {
-                n = 10 ** l - 1
-                continue
-            }
+        ids.clear()
+        const digitCount = countDigits(start)
+        const maxSliceCount = part === 'part1' ? 2 : digitCount
 
-            const m = l / 2
-            const left = s.slice(0, m)
-            const right = s.slice(m)
+        for (let sliceCount = 2; sliceCount <= maxSliceCount; sliceCount++) {
+            if (digitCount % sliceCount !== 0) continue
 
-            if (left === right) {
-                sum += n
-                n += 10 ** m - 1
-            }
-        }
-    }
+            const sliceSize = digitCount / sliceCount
+            const [a, b] = [
+                Math.floor(start / 10 ** (sliceSize * (sliceCount - 1))),
+                Math.floor(end / 10 ** (sliceSize * (sliceCount - 1))),
+            ]
 
-    return sum
-}
+            const f = 10 ** sliceSize
+            for (let i = a; i <= b; i += 1) {
+                let [n, j] = [0, sliceCount]
+                while (j--) n = n * f + i
 
-export const part2: Part = input => () => {
-    const ranges: [number, number][] = input.split(',').map(range => {
-        const [start, end] = range.split('-').map(Number) as [number, number]
-        return [start, end]
-    })
-
-    let sum = 0
-    for (const [start, end] of ranges) {
-        for (let n = start; n <= end; n++) {
-            const s = n.toString()
-            const l = s.length
-
-            for (let d = 2; d <= l; d++) {
-                if (l % d !== 0) {
-                    continue
-                }
-
-                const m = l / d
-                const slices: string[] = []
-                for (let i = 0; i < l; i += m) {
-                    slices.push(s.slice(i, i + m))
-                }
-
-                if (slices.every(slice => slice === slices[0])) {
+                if (n >= start && n <= end && !ids.has(n)) {
                     sum += n
-                    break
+                    ids.add(n)
                 }
             }
         }
