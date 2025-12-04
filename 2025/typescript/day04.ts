@@ -3,44 +3,41 @@ import * as utils from './utils'
 
 export const part1: Part = input => () => {
     const grid = input.map(line => line!.split(''))
-    return findPossibleRolls(grid).size
+    return findRemovableRolls(grid).length
 }
 
 export const part2: Part = input => () => {
     const grid = input.map(line => line!.split(''))
 
     let count = 0
-    let possibleRolls = findPossibleRolls(grid)
-    while (possibleRolls.size > 0) {
-        count += possibleRolls.size
+    let rolls = findRemovableRolls(grid)
+    while (rolls.length > 0) {
+        count += rolls.length
 
-        const nextCandidates: Set<string> = new Set()
-        for (const pos of possibleRolls) {
-            const [x, y] = toCoords(pos)
+        const nextCandidates: Map<string, [number, number]> = new Map()
+        for (const pos of rolls) {
+            const [x, y] = pos
             grid[y]![x] = '.'
-            for (const [nx, ny] of adjacentPositions(x, y, grid)) {
-                nextCandidates.add(`${nx},${ny}`)
+            for (const pos of adjacentPositions(x, y, grid)) {
+                const [nx, ny] = pos
+                if (grid[ny]![nx] !== '@') continue
+                nextCandidates.set(`${nx},${ny}`, pos)
             }
         }
 
-        possibleRolls = findPossibleRolls(grid, nextCandidates)
+        rolls = findRemovableRolls(grid, Array.from(nextCandidates.values()))
     }
 
     return count
 }
 
-function toCoords(pos: string): [number, number] {
-    const [xStr, yStr] = pos.split(',') as [string, string]
-    return [Number(xStr), Number(yStr)]
-}
-
-function findPossibleRolls(
+function findRemovableRolls(
     grid: string[][],
-    process?: Set<string>,
-): Set<string> {
+    process?: [number, number][],
+): [number, number][] {
     const width = grid[0]!.length
     const height = grid.length
-    const rolls: Set<string> = new Set()
+    const rolls: Map<string, [number, number]> = new Map()
     const canRemove = (x: number, y: number) => {
         if (grid[y]![x] !== '@') return false
         let adjacentRollsCount = 0
@@ -50,17 +47,18 @@ function findPossibleRolls(
         }
         return true
     }
-    const addIfRemovable = (x: number, y: number) => {
-        if (canRemove(x, y)) rolls.add(`${x},${y}`)
+    const addIfRemovable = (pos: [number, number]) => {
+        const [x, y] = pos
+        if (canRemove(x, y)) rolls.set(`${x},${y}`, pos)
     }
 
     if (process) {
-        for (const pos of process) addIfRemovable(...toCoords(pos))
+        for (const pos of process) addIfRemovable(pos)
     } else {
         for (let y = 0; y < height; y++)
-            for (let x = 0; x < width; x++) addIfRemovable(x, y)
+            for (let x = 0; x < width; x++) addIfRemovable([x, y])
     }
-    return rolls
+    return Array.from(rolls.values())
 }
 
 function* adjacentPositions(
