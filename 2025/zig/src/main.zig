@@ -2,8 +2,8 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 
 const day01 = @import("day01");
+const day02 = @import("day02");
 
-// const day02 = @import("day02");
 // const day03 = @import("day03");
 // const day04 = @import("day04");
 // const day05 = @import("day05");
@@ -45,7 +45,7 @@ pub fn main() !void {
     var timer = try std.time.Timer.start();
 
     try run(day01, allocator);
-    // try run(day02, allocator);
+    try run(day02, allocator);
     // try run(day03, allocator);
     // try run(day04, allocator);
     // try run(day05, allocator);
