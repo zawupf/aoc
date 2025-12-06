@@ -69,10 +69,13 @@ function findInputFile(day: string): string {
     return path.normalize(path.join(__dirname, `../_inputs/Day${day}.txt`))
 }
 
-export async function readInputText(day: string): Promise<string> {
+export async function readInputText(
+    day: string,
+    options?: { trim?: boolean },
+): Promise<string> {
     const inputFile = findInputFile(day)
     const content = await Bun.file(inputFile).text()
-    return content.trim()
+    return options?.trim === false ? content : content.trim()
 }
 
 export async function readInputLines(day: string): Promise<string[]> {
@@ -232,6 +235,10 @@ export function assert(condition: boolean, message: string): void | never {
     }
 }
 
+export function panic(message: string): never {
+    throw new AssertionError(message)
+}
+
 export function dump<T>(value: T, fn?: any): T {
     console.log(fn instanceof Function ? fn(value) : value)
     return value
@@ -335,7 +342,7 @@ export function sortNumbers(numbers: number[]): number[] {
 export function zip<T, U>(a: T[], b: U[]): [T, U][] {
     assert(
         a.length === b.length,
-        'Arrays must have the same length to be zipped',
+        `Arrays must have the same length to be zipped (got ${a.length} and ${b.length})`,
     )
     return a.map((value, index) => [value, b[index]!])
 }
