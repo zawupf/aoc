@@ -1,39 +1,40 @@
 import { type DayModule, type SolutionFactory } from './types'
 import * as utils from './utils'
 
-export const part1: Part = input => () => {
-    const [ops, numbersLines] = parseChunks(input)
-
-    const numbers: number[][] = utils.transpose(
-        numbersLines.map(line => line.trim().split(/\s+/).map(utils.parseInt)),
+export const part1: Part = input => () =>
+    calculateAll(
+        ...parseChunks(input, lines =>
+            utils.transpose(
+                lines.map(line => line.trim().split(/\s+/).map(utils.parseInt)),
+            ),
+        ),
     )
 
-    return calculateAll(ops, numbers)
-}
-
-export const part2: Part = input => () => {
-    const [ops, numbersLines] = parseChunks(input)
-
-    const numbers: number[][] = utils
-        .transpose(numbersLines.map(line => line.split('')))
-        .map(line => line.join(''))
-        .join('\n')
-        .split(/\n\s*\n/)
-        .map(section =>
-            section
-                .trim()
-                .split(/\s*\n\s*/)
-                .map(utils.parseInt),
-        )
-
-    return calculateAll(ops, numbers)
-}
+export const part2: Part = input => () =>
+    calculateAll(
+        ...parseChunks(input, lines =>
+            utils
+                .transpose(lines.map(line => line.split('')))
+                .map(line => line.join(''))
+                .join('\n')
+                .split(/\n\s*\n/)
+                .map(section =>
+                    section
+                        .trim()
+                        .split(/\s*\n\s*/)
+                        .map(utils.parseInt),
+                ),
+        ),
+    )
 
 type Op = '+' | '*'
 
-const parseChunks = (input: string): [Op[], string[]] => {
+const parseChunks = (
+    input: string,
+    parseNumbers: (lines: string[]) => number[][],
+): [Op[], number[][]] => {
     const lines = input.split('\n').filter(line => line.trim().length > 0)
-    const numbersLines = lines.slice(0, -1)
+    const numbers = parseNumbers(lines.slice(0, -1))
     const ops = lines[lines.length - 1]!.trim()
         .split(/\s+/)
         .map(op => op.trim()) as Op[]
@@ -41,7 +42,7 @@ const parseChunks = (input: string): [Op[], string[]] => {
         ops.every(op => op === '+' || op === '*'),
         'Invalid operation found',
     )
-    return [ops, numbersLines]
+    return [ops, numbers]
 }
 
 const calculateAll = (ops: Op[], numbers: number[][]): number =>
