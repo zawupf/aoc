@@ -77,6 +77,15 @@ const UnionFind = struct {
         self.component_count -= 1;
         return true;
     }
+
+    fn sizes(self: *UnionFind, gpa: Allocator) ![]usize {
+        var counts = try gpa.alloc(usize, self.parent.len);
+        @memset(counts, 0);
+        for (0..counts.len) |i| {
+            counts[self.find(i)] += 1;
+        }
+        return counts;
+    }
 };
 
 fn solve(comptime partId: PartId, input: []const u8, gpa: Allocator) !Result(partId) {
@@ -151,15 +160,25 @@ fn solve(comptime partId: PartId, input: []const u8, gpa: Allocator) !Result(par
     return switch (partId) {
         .part1 => blk: {
             // Count component sizes
-            var sizes = try gpa.alloc(usize, positions.len);
+            const sizes = try uf.sizes(gpa);
             defer gpa.free(sizes);
-            @memset(sizes, 0);
-            for (0..positions.len) |i| {
-                sizes[uf.find(i)] += 1;
+
+            var max1: usize = 0;
+            var max2: usize = 0;
+            var max3: usize = 0;
+            for (sizes) |sz| {
+                if (sz >= max1) {
+                    max3 = max2;
+                    max2 = max1;
+                    max1 = sz;
+                } else if (sz >= max2) {
+                    max3 = max2;
+                    max2 = sz;
+                } else if (sz > max3) {
+                    max3 = sz;
+                }
             }
-            std.mem.sortUnstable(usize, sizes, {}, std.sort.desc(usize));
-            var result: usize = 1;
-            for (sizes[0..3]) |size| result *= size;
+            const result: usize = max1 * max2 * max3;
             break :blk @intCast(result);
         },
         .part2 => blk: {
