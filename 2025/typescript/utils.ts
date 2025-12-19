@@ -377,3 +377,85 @@ export function leastCommonMultiple(a: number, b: number): number {
 }
 
 export const lcm = leastCommonMultiple
+
+export class PriorityQueue<T> {
+    private heap: T[] = []
+    private compare: (a: T, b: T) => number
+
+    static from<U>(
+        items: U[],
+        compare: (a: U, b: U) => number,
+    ): PriorityQueue<U> {
+        return new PriorityQueue<U>(compare, items)
+    }
+
+    constructor(compare: (a: T, b: T) => number, items?: T[]) {
+        this.compare = compare
+        if (items && items.length) {
+            this.heap = items.slice()
+            const len = this.heap.length
+            for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
+                this.bubbleDown(i)
+            }
+        }
+    }
+
+    push(item: T): void {
+        this.heap.push(item)
+        this.bubbleUp(this.heap.length - 1)
+    }
+
+    pop(): T | undefined {
+        if (this.heap.length === 0) return undefined
+        if (this.heap.length === 1) return this.heap.pop()
+
+        const min = this.heap[0]!
+        this.heap[0] = this.heap.pop()!
+        this.bubbleDown(0)
+        return min
+    }
+
+    size(): number {
+        return this.heap.length
+    }
+
+    private swap(i: number, j: number): void {
+        ;[this.heap[i], this.heap[j]] = [this.heap[j]!, this.heap[i]!]
+    }
+
+    private lessThan(i: number, j: number): boolean {
+        return this.compare(this.heap[i]!, this.heap[j]!) < 0
+    }
+
+    private bubbleUp(index: number): void {
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2)
+            if (!this.lessThan(index, parentIndex)) break
+            this.swap(index, parentIndex)
+            index = parentIndex
+        }
+    }
+
+    private bubbleDown(index: number): void {
+        const len = this.heap.length
+        while (true) {
+            const leftChild = 2 * index + 1
+            const rightChild = leftChild + 1
+            let smallest = index
+
+            if (leftChild < len && this.lessThan(leftChild, smallest)) {
+                smallest = leftChild
+            }
+            if (rightChild < len && this.lessThan(rightChild, smallest)) {
+                smallest = rightChild
+            }
+
+            if (smallest === index) {
+                break
+            }
+
+            this.swap(index, smallest)
+            index = smallest
+        }
+    }
+}

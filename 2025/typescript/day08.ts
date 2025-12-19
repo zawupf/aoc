@@ -24,7 +24,7 @@ function solve(
         line => ({ pos: line.split(',').map(Number) as Pos } as Junction),
     )
 
-    const distances: [number, Junction, Junction][] = []
+    const edges: [number, Junction, Junction][] = []
     for (let i1 = 0; i1 < junctions.length; i1++) {
         const j1 = junctions[i1]!
         for (let i2 = i1 + 1; i2 < junctions.length; i2++) {
@@ -33,10 +33,10 @@ function solve(
                 (j1.pos[0] - j2.pos[0]) ** 2 +
                 (j1.pos[1] - j2.pos[1]) ** 2 +
                 (j1.pos[2] - j2.pos[2]) ** 2
-            distances.push([dist, j1, j2])
+            edges.push([dist, j1, j2])
         }
     }
-    distances.sort((a, b) => a[0] - b[0])
+    const distances = utils.PriorityQueue.from(edges, (a, b) => a[0] - b[0])
 
     const circuits: Set<Junction>[] = []
     const done = () => {
@@ -53,9 +53,10 @@ function solve(
         }
     }
 
-    let i = 0
+    let lastJunctionPair: [number, Junction, Junction] | undefined
     while (!done()) {
-        const [_, j1, j2] = distances[i++]!
+        lastJunctionPair = distances.pop()!
+        const [_, j1, j2] = lastJunctionPair
         const c1 = j1.circuit
         const c2 = j2.circuit
 
@@ -90,7 +91,7 @@ function solve(
                     1,
                 )
         case 'part2':
-            const [, j1, j2] = distances[i - 1]!
+            const [, j1, j2] = lastJunctionPair!
             return j1.pos[0] * j2.pos[0]
         default:
             utils.unreachable(`Unknown part id: ${partId}`)
