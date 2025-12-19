@@ -459,3 +459,52 @@ export class PriorityQueue<T> {
         }
     }
 }
+
+export class UnionFind {
+    private parent: number[]
+    private rank: number[]
+    componentCount: number
+
+    constructor(n: number) {
+        this.parent = new Array(n).fill(0).map((_, i) => i)
+        this.rank = new Array(n).fill(0)
+        this.componentCount = n
+    }
+
+    find(x: number): number {
+        if (this.parent[x] !== x) {
+            this.parent[x] = this.find(this.parent[x]!)
+        }
+        return this.parent[x]
+    }
+
+    unite(x: number, y: number): boolean {
+        let rx = this.find(x)
+        let ry = this.find(y)
+        if (rx === ry) return false
+
+        if (this.rank[rx]! < this.rank[ry]!) {
+            this.parent[rx] = ry
+        } else if (this.rank[rx]! > this.rank[ry]!) {
+            this.parent[ry] = rx
+        } else {
+            this.parent[ry] = rx
+            this.rank[rx]! += 1
+        }
+        this.componentCount -= 1
+        return true
+    }
+
+    sizes(): number[] {
+        const sizeMap: Record<number, number> = {}
+        for (let i = 0; i < this.parent.length; i++) {
+            const root = this.find(i)
+            if (root in sizeMap) {
+                sizeMap[root]! += 1
+            } else {
+                sizeMap[root] = 1
+            }
+        }
+        return Object.values(sizeMap)
+    }
+}

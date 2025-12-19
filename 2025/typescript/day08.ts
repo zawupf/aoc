@@ -6,7 +6,6 @@ export const part1: Part = input => () => solve('part1', input, 1000)
 export const part2: Part = input => () => solve('part2', input)
 
 type Pos = [number, number, number]
-type Junction = { pos: Pos; circuit?: Set<Junction> }
 
 type PartId = 'part1' | 'part2'
 function solve(
@@ -20,79 +19,54 @@ function solve(
     input: string[],
     connectionsCount?: number,
 ): number {
-    const junctions = input.map(
-        line => ({ pos: line.split(',').map(Number) as Pos } as Junction),
+    const positions: Pos[] = input.map(
+        line => line.split(',').map(Number) as Pos,
     )
 
-    const edges: [number, Junction, Junction][] = []
-    for (let i1 = 0; i1 < junctions.length; i1++) {
-        const j1 = junctions[i1]!
-        for (let i2 = i1 + 1; i2 < junctions.length; i2++) {
-            const j2 = junctions[i2]!
-            const dist =
-                (j1.pos[0] - j2.pos[0]) ** 2 +
-                (j1.pos[1] - j2.pos[1]) ** 2 +
-                (j1.pos[2] - j2.pos[2]) ** 2
-            edges.push([dist, j1, j2])
+    const n = positions.length
+    const edges: [number, number, number][] = []
+    for (let i1 = 0; i1 < n; i1++) {
+        const p1 = positions[i1]!
+        for (let i2 = i1 + 1; i2 < n; i2++) {
+            const p2 = positions[i2]!
+            const dx = p1[0] - p2[0]
+            const dy = p1[1] - p2[1]
+            const dz = p1[2] - p2[2]
+            const dist = dx * dx + dy * dy + dz * dz
+            edges.push([dist, i1, i2])
         }
     }
     const distances = utils.PriorityQueue.from(edges, (a, b) => a[0] - b[0])
 
-    const circuits: Set<Junction>[] = []
-    const done = () => {
-        switch (partId) {
-            case 'part1':
-                return connectionsCount!-- === 0
-            case 'part2':
-                return (
-                    circuits.length === 1 &&
-                    circuits[0]!.size === junctions.length
-                )
-            default:
-                utils.unreachable(`Unknown part id: ${partId}`)
-        }
-    }
+    const uf = new utils.UnionFind(n)
+    let stepsLeft = partId === 'part1' ? connectionsCount! : 0
+    let lastEdge: [number, number, number] | undefined
 
-    let lastJunctionPair: [number, Junction, Junction] | undefined
-    while (!done()) {
-        lastJunctionPair = distances.pop()!
-        const [_, j1, j2] = lastJunctionPair
-        const c1 = j1.circuit
-        const c2 = j2.circuit
+    while (true) {
+        if (
+            (partId === 'part1' && stepsLeft === 0) ||
+            (partId === 'part2' && uf.componentCount === 1)
+        )
+            break
 
-        if (c1 && c2) {
-            if (c1 === c2) continue
-            c2.forEach(j => {
-                c1.add(j)
-                j.circuit = c1
-            })
-            circuits.splice(circuits.indexOf(c2), 1)
-        } else if (c1) {
-            c1.add(j2)
-            j2.circuit = c1
-        } else if (c2) {
-            c2.add(j1)
-            j1.circuit = c2
-        } else {
-            const c3 = new Set([j1, j2])
-            j1.circuit = c3
-            j2.circuit = c3
-            circuits.push(c3)
-        }
+        const currentEdge = distances.pop()
+        if (!currentEdge) break
+        lastEdge = currentEdge
+        const [, i, j] = currentEdge
+        if (partId === 'part1') stepsLeft -= 1
+        uf.unite(i, j)
     }
 
     switch (partId) {
-        case 'part1':
-            return circuits
-                .sort((a, b) => b.size - a.size)
-                .slice(0, 3)
-                .reduce(
-                    utils.multiplyBy(c => c.size),
-                    1,
-                )
-        case 'part2':
-            const [, j1, j2] = lastJunctionPair!
-            return j1.pos[0] * j2.pos[0]
+        case 'part1': {
+            const sizes = uf.sizes()
+            const pq = utils.PriorityQueue.from(sizes, (a, b) => b - a)
+            return pq.pop()! * pq.pop()! * pq.pop()!
+        }
+        case 'part2': {
+            const [, i, j] = lastEdge!
+            return positions[i]![0] * positions[j]![0]
+        }
         default:
             utils.unreachable(`Unknown part id: ${partId}`)
     }
