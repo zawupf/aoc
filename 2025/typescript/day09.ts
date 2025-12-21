@@ -53,27 +53,24 @@ export const part1: Part = input => () => {
 
 export const part2: Part = input => () => {
     const _corners = input.map(line => line.split(',').map(Number) as Tile)
-    const { corners, area } = shrinkCorners(_corners)
-    // dump(corners)
+    const { corners, area, grid } = shrinkCorners(_corners)
 
-    // const edges_ = edges(corners)
-    // dump(Array.from(edges_).map(s => s.split(',').map(Number) as Tile))
+    markOuterTiles(corners, grid)
 
-    const outer = outerTiles(corners)
-    // dump(Array.from(outer).map(s => s.split(',').map(Number) as Tile))
+    const isOuter = ([x, y]: Tile): boolean => grid[y]![x]! === 1
 
-    const isOuter = (tile: Tile): boolean => outer.has(tile.join(','))
-
-    const boxes: [TilePair, number][] = []
+    const boxes_: [TilePair, number][] = []
     for (let i = 0; i < corners.length; i++) {
         for (let j = i + 1; j < corners.length; j++) {
             const box: TilePair = [corners[i]!, corners[j]!]
-            boxes.push([box, area(box)])
+            boxes_.push([box, area(box)])
         }
     }
-    boxes.sort(([, a], [, b]) => b - a)
+    const boxes = utils.PriorityQueue.from(boxes_, (a, b) => b[1] - a[1])
 
-    for (const [box, boxArea] of boxes) {
+    let box_: [TilePair, number] | undefined
+    while ((box_ = boxes.pop())) {
+        const [box, boxArea] = box_
         const [[x_min, y_min], [x_max, y_max]] = boundingBox(box)
 
         let skip = false
@@ -117,7 +114,9 @@ export const part2: Part = input => () => {
             if (skip) break
         }
 
-        if (!skip) return boxArea
+        if (!skip) {
+            return boxArea
+        }
     }
 
     utils.unreachable('No fitting box found')
@@ -142,11 +141,18 @@ function shrinkCorners(corners: Tile[]) {
         ([x, y]) => [xs.indexOf(x), ys.indexOf(y)] as Tile,
     )
 
-    return { corners: corners_, area: area_ } as const
+    const grid_: number[][] = []
+    for (let y = 0; y < ys.length; y++) {
+        grid_[y] = new Array<number>(xs.length).fill(0)
+    }
+    for (const [x, y] of corners_) {
+        grid_[y]![x]! = -1
+    }
+
+    return { corners: corners_, area: area_, grid: grid_ } as const
 }
 
-function edges(corners: Tile[]): Set<string> {
-    const tiles = new Set<string>()
+function markEdges(corners: Tile[], grid: number[][]): void {
     for (let i = 0; i < corners.length; i++) {
         let [x, y] = corners[i]!
         const [x_end, y_end] = corners[(i + 1) % corners.length]!
@@ -154,29 +160,39 @@ function edges(corners: Tile[]): Set<string> {
         const dy = Math.sign(y_end - y)
         utils.assert(dx === 0 || dy === 0, 'Only orthogonal edges supported')
         while (x !== x_end || y !== y_end) {
-            tiles.add([x, y].join(','))
+            grid[y]![x]! -= 1
             x += dx
             y += dy
         }
     }
-    return tiles
 }
 
-function outerTiles(corners: Tile[]): Set<string> {
-    const [[x_min, y_min], [x_max, y_max]] = boundingBox(corners, 1)
-    const edges_ = edges(corners)
+function markOuterTiles(corners: Tile[], grid: number[][]): void {
+    const [[x_min, y_min], [x_max, y_max]] = boundingBox(corners)
+    utils.assert(
+        x_min === 0 && y_min === 0,
+        'Expected bounding box min to be 0,0 after shrinking',
+    )
+    markEdges(corners, grid)
 
-    const tiles = new Set<string>()
-    const stack: Tile[] = [[x_min, y_min]]
+    const width = x_max - x_min + 1
+    const height = y_max - y_min + 1
+
+    const stack = [
+        ...Array.from({ length: width }, (_, x) => [x, y_min] as Tile),
+        ...Array.from({ length: width }, (_, x) => [x, y_max] as Tile),
+        ...Array.from({ length: height }, (_, y) => [x_min, y] as Tile),
+        ...Array.from({ length: height }, (_, y) => [x_max, y] as Tile),
+    ]
     let current: Tile | undefined
     while ((current = stack.pop())) {
-        const key = current.join(',')
-        if (tiles.has(key) || edges_.has(key)) {
+        const [x, y] = current
+        if (grid[y]![x]!) {
             continue
         }
 
-        tiles.add(key)
-        const [x, y] = current
+        grid[y]![x]! = 1
+
         const adjacents = (
             [
                 [x + 1, y],
@@ -185,11 +201,15 @@ function outerTiles(corners: Tile[]): Set<string> {
                 [x, y - 1],
             ] as Tile[]
         ).filter(
-            ([x, y]) => x >= x_min && x <= x_max && y >= y_min && y <= y_max,
+            ([x, y]) =>
+                x >= 0 &&
+                x < width &&
+                y >= 0 &&
+                y < height &&
+                grid[y]![x]! === 0,
         )
         stack.push(...adjacents)
     }
-    return tiles
 }
 
 export const day = import.meta.file.match(/day(\d+)/)![1]!
