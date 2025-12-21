@@ -10,12 +10,24 @@ function area([[a0, a1], [b0, b1]]: TilePair): number {
     return width * height
 }
 
-function dump(tiles: Tile[]): void {
-    const minX = Math.min(...tiles.map(([x]) => x)) - 1
-    const maxX = Math.max(...tiles.map(([x]) => x)) + 1
-    const minY = Math.min(...tiles.map(([, y]) => y)) - 1
-    const maxY = Math.max(...tiles.map(([, y]) => y)) + 1
+function boundingBox(tiles: Tile[], offset: number = 0): [Tile, Tile] {
+    const [minX, maxX, minY, maxY] = tiles.reduce(
+        ([minX, maxX, minY, maxY], [x, y]) => [
+            Math.min(minX, x),
+            Math.max(maxX, x),
+            Math.min(minY, y),
+            Math.max(maxY, y),
+        ],
+        [Infinity, -Infinity, Infinity, -Infinity],
+    )
+    return [
+        [minX - offset, minY - offset],
+        [maxX + offset, maxY + offset],
+    ]
+}
 
+function dump(tiles: Tile[]): void {
+    const [[minX, minY], [maxX, maxY]] = boundingBox(tiles)
     for (let y = minY; y <= maxY; y++) {
         let line = ''
         for (let x = minX; x <= maxX; x++) {
@@ -23,27 +35,137 @@ function dump(tiles: Tile[]): void {
         }
         console.log(line)
     }
+    console.log('---')
 }
 
 export const part1: Part = input => () => {
-    const tiles = input.map(line => line.split(',').map(Number) as Tile)
+    const corners = input.map(line => line.split(',').map(Number) as Tile)
 
-    const tilePairs: TilePair[] = []
-    for (let i = 0; i < tiles.length; i++) {
-        for (let j = i + 1; j < tiles.length; j++) {
-            tilePairs.push([tiles[i]!, tiles[j]!])
+    const boxes: TilePair[] = []
+    for (let i = 0; i < corners.length; i++) {
+        for (let j = i + 1; j < corners.length; j++) {
+            boxes.push([corners[i]!, corners[j]!])
         }
     }
 
-    return tilePairs.map(area).reduce((a, b) => Math.max(a, b), -Infinity)
+    return boxes.map(area).reduce((a, b) => Math.max(a, b), -Infinity)
 }
 
-export const part2: Part = input => () => utils.notImplemented()
+export const part2: Part = input => () => {
+    const _corners = input.map(line => line.split(',').map(Number) as Tile)
+    const { corners, area } = shrinkCorners(_corners)
+    // dump(corners)
+
+    // const edges_ = edges(corners)
+    // dump(Array.from(edges_).map(s => s.split(',').map(Number) as Tile))
+
+    const outer = outerTiles(corners)
+    // dump(Array.from(outer).map(s => s.split(',').map(Number) as Tile))
+
+    const boxes: [TilePair, number][] = []
+    for (let i = 0; i < corners.length; i++) {
+        for (let j = i + 1; j < corners.length; j++) {
+            const box: TilePair = [corners[i]!, corners[j]!]
+            boxes.push([box, area(box)])
+        }
+    }
+    boxes.sort(([, a], [, b]) => b - a)
+
+    for (const [box, boxArea] of boxes) {
+        const [[x_min, y_min], [x_max, y_max]] = boundingBox(box)
+        let fits = true
+        for (let x = x_min; x <= x_max; x++) {
+            for (let y = y_min; y <= y_max; y++) {
+                if (outer.has([x, y].join(','))) {
+                    fits = false
+                    break
+                }
+            }
+            if (!fits) {
+                break
+            }
+        }
+        if (fits) {
+            return boxArea
+        }
+    }
+
+    return boxes[0]![1]
+}
+
+function shrinkCorners(corners: Tile[]) {
+    const xs = Array.from(new Set(corners.map(([x, _]) => x))).sort(
+        (a, b) => a - b,
+    )
+    const ys = Array.from(new Set(corners.map(([_, y]) => y))).sort(
+        (a, b) => a - b,
+    )
+
+    const expand = ([x_, y_]: Tile): Tile => [
+        xs[x_ as number]!,
+        ys[y_ as number]!,
+    ]
+
+    const area_ = (p: TilePair): number => area(p.map(expand) as TilePair)
+
+    const corners_ = corners.map(
+        ([x, y]) => [xs.indexOf(x), ys.indexOf(y)] as Tile,
+    )
+
+    return { corners: corners_, area: area_ } as const
+}
+
+function edges(corners: Tile[]): Set<string> {
+    const tiles = new Set<string>()
+    for (let i = 0; i < corners.length; i++) {
+        let [x, y] = corners[i]!
+        const [x_end, y_end] = corners[(i + 1) % corners.length]!
+        const dx = Math.sign(x_end - x)
+        const dy = Math.sign(y_end - y)
+        utils.assert(dx === 0 || dy === 0, 'Only orthogonal edges supported')
+        while (x !== x_end || y !== y_end) {
+            tiles.add([x, y].join(','))
+            x += dx
+            y += dy
+        }
+    }
+    return tiles
+}
+
+function outerTiles(corners: Tile[]): Set<string> {
+    const [[x_min, y_min], [x_max, y_max]] = boundingBox(corners, 1)
+    const edges_ = edges(corners)
+
+    const tiles = new Set<string>()
+    const stack: Tile[] = [[x_min, y_min]]
+    let current: Tile | undefined
+    while ((current = stack.pop())) {
+        const key = current.join(',')
+        if (tiles.has(key) || edges_.has(key)) {
+            continue
+        }
+
+        tiles.add(key)
+        const [x, y] = current
+        const adjacents = (
+            [
+                [x + 1, y],
+                [x - 1, y],
+                [x, y + 1],
+                [x, y - 1],
+            ] as Tile[]
+        ).filter(
+            ([x, y]) => x >= x_min && x <= x_max && y >= y_min && y <= y_max,
+        )
+        stack.push(...adjacents)
+    }
+    return tiles
+}
 
 export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 4763509452
-part2.solution = NaN
+part2.solution = 1516897893
 
 export const main = import.meta.main
 if (main) {
