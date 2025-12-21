@@ -62,6 +62,8 @@ export const part2: Part = input => () => {
     const outer = outerTiles(corners)
     // dump(Array.from(outer).map(s => s.split(',').map(Number) as Tile))
 
+    const isOuter = (tile: Tile): boolean => outer.has(tile.join(','))
+
     const boxes: [TilePair, number][] = []
     for (let i = 0; i < corners.length; i++) {
         for (let j = i + 1; j < corners.length; j++) {
@@ -73,24 +75,52 @@ export const part2: Part = input => () => {
 
     for (const [box, boxArea] of boxes) {
         const [[x_min, y_min], [x_max, y_max]] = boundingBox(box)
-        let fits = true
-        for (let x = x_min; x <= x_max; x++) {
-            for (let y = y_min; y <= y_max; y++) {
-                if (outer.has([x, y].join(','))) {
-                    fits = false
-                    break
-                }
-            }
-            if (!fits) {
-                break
-            }
+
+        let skip = false
+
+        // test bbox corners first
+        for (const corner of [
+            [x_min, y_min],
+            [x_min, y_max],
+            [x_max, y_min],
+            [x_max, y_max],
+        ]) {
+            if ((skip = isOuter(corner as Tile))) break
         }
-        if (fits) {
-            return boxArea
+        if (skip) continue
+
+        // test bbox outline next
+        for (let y = y_min + 1; y < y_max; y++) {
+            if ((skip = isOuter([x_min, y]))) break
         }
+        if (skip) continue
+
+        for (let y = y_min + 1; y < y_max; y++) {
+            if ((skip = isOuter([x_max, y]))) break
+        }
+        if (skip) continue
+
+        for (let x = x_min + 1; x < x_max; x++) {
+            if ((skip = isOuter([x, y_min]))) break
+        }
+        if (skip) continue
+
+        for (let x = x_min + 1; x < x_max; x++) {
+            if ((skip = isOuter([x, y_max]))) break
+        }
+        if (skip) continue
+
+        for (let x = x_min + 1; x < x_max; x++) {
+            for (let y = y_min + 1; y < y_max; y++) {
+                if ((skip = isOuter([x, y]))) break
+            }
+            if (skip) break
+        }
+
+        if (!skip) return boxArea
     }
 
-    return boxes[0]![1]
+    utils.unreachable('No fitting box found')
 }
 
 function shrinkCorners(corners: Tile[]) {
