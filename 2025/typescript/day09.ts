@@ -178,12 +178,24 @@ function markOuterTiles(corners: Tile[], grid: number[][]): void {
     const width = x_max - x_min + 1
     const height = y_max - y_min + 1
 
-    const stack = [
-        ...Array.from({ length: width }, (_, x) => [x, y_min] as Tile),
-        ...Array.from({ length: width }, (_, x) => [x, y_max] as Tile),
-        ...Array.from({ length: height }, (_, y) => [x_min, y] as Tile),
-        ...Array.from({ length: height }, (_, y) => [x_max, y] as Tile),
-    ]
+    const stack: Tile[] = []
+    for (let x = 0; x < width; x++) {
+        for (let y of [y_min, y_max]) {
+            if (grid[y]![x]! !== 0) {
+                if (grid[y]!?.[x - 1] === 0) stack.push([x - 1, y] as Tile)
+                if (grid[y]!?.[x + 1] === 0) stack.push([x + 1, y] as Tile)
+            }
+        }
+    }
+    for (let y = 0; y < height; y++) {
+        for (let x of [x_min, x_max]) {
+            if (grid[y]![x]! !== 0) {
+                if (grid[y - 1]?.[x] === 0) stack.push([x, y - 1] as Tile)
+                if (grid[y + 1]?.[x] === 0) stack.push([x, y + 1] as Tile)
+            }
+        }
+    }
+
     let current: Tile | undefined
     while ((current = stack.pop())) {
         const [x, y] = current
