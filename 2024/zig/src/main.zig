@@ -28,10 +28,10 @@ const day20 = @import("day20");
 // const day24 = @import("day24");
 // const day25 = @import("day25");
 
-fn run(day: type, gpa: Allocator) !void {
+fn run(day: type, gpa: Allocator, io: std.Io) !void {
     // std.debug.print("\n", .{});
-    try day.Day.runPart1(gpa);
-    try day.Day.runPart2(gpa);
+    try day.Day.runPart1(gpa, io);
+    try day.Day.runPart2(gpa, io);
 }
 
 pub fn main() !void {
@@ -42,33 +42,37 @@ pub fn main() !void {
         if (deinit_status == .leak) @panic("Memory leak detected");
     }
 
+    var threadedIo = std.Io.Threaded.init(allocator, .{});
+    defer threadedIo.deinit();
+    const io = threadedIo.io();
+
     var timer = try std.time.Timer.start();
 
-    try run(day01, allocator);
-    try run(day02, allocator);
-    try run(day03, allocator);
-    try run(day04, allocator);
-    try run(day05, allocator);
-    try run(day06, allocator);
-    try run(day07, allocator);
-    try run(day08, allocator);
-    try run(day09, allocator);
-    try run(day10, allocator);
-    try run(day11, allocator);
-    try run(day12, allocator);
-    try run(day13, allocator);
-    try run(day14, allocator);
-    try run(day15, allocator);
-    try run(day16, allocator);
-    try run(day17, allocator);
-    try run(day18, allocator);
-    try run(day19, allocator);
-    try run(day20, allocator);
-    // try run(day21, allocator);
-    // try run(day22, allocator);
-    // try run(day23, allocator);
-    // try run(day24, allocator);
-    // try run(day25, allocator);
+    try run(day01, allocator, io);
+    try run(day02, allocator, io);
+    try run(day03, allocator, io);
+    try run(day04, allocator, io);
+    try run(day05, allocator, io);
+    try run(day06, allocator, io);
+    try run(day07, allocator, io);
+    try run(day08, allocator, io);
+    try run(day09, allocator, io);
+    try run(day10, allocator, io);
+    try run(day11, allocator, io);
+    try run(day12, allocator, io);
+    try run(day13, allocator, io);
+    try run(day14, allocator, io);
+    try run(day15, allocator, io);
+    try run(day16, allocator, io);
+    try run(day17, allocator, io);
+    try run(day18, allocator, io);
+    try run(day19, allocator, io);
+    try run(day20, allocator, io);
+    // try run(day21, allocator, io);
+    // try run(day22, allocator, io);
+    // try run(day23, allocator, io);
+    // try run(day24, allocator, io);
+    // try run(day25, allocator, io);
 
     const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
     std.debug.print("🏁 All days completed in {d} ms\n", .{elapsed_ms});

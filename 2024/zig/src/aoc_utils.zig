@@ -5,8 +5,8 @@ pub fn inputPath(comptime day: *const [2:0]u8) []const u8 {
     return "../_inputs/Day" ++ day ++ ".txt";
 }
 
-pub fn readInput(comptime day: *const [2:0]u8, gpa: Allocator) ![]u8 {
-    return std.fs.cwd().readFileAlloc(inputPath(day), gpa, .unlimited);
+pub fn readInput(comptime day: *const [2:0]u8, gpa: Allocator, io: std.Io) ![]u8 {
+    return std.Io.Dir.cwd().readFileAlloc(io, inputPath(day), gpa, .unlimited);
 }
 
 pub fn splitChunks(input: []const u8) std.mem.SplitIterator(u8, .sequence) {
@@ -426,7 +426,9 @@ pub fn DayInfo(
             if (solution == null) return;
 
             const gpa = std.testing.allocator;
-            const input = try readInput(day, gpa);
+            var threadedIo = std.Io.Threaded.init(gpa, .{});
+            defer threadedIo.deinit();
+            const input = try readInput(day, gpa, threadedIo.io());
             defer gpa.free(input);
 
             const func = if (partIdx == 0) module.part1 else module.part2;
@@ -440,15 +442,15 @@ pub fn DayInfo(
             }
         }
 
-        pub fn runPart1(gpa: Allocator) !void {
-            try runPart(0, gpa);
+        pub fn runPart1(gpa: Allocator, io: std.Io) !void {
+            try runPart(0, gpa, io);
         }
 
-        pub fn runPart2(gpa: Allocator) !void {
-            try runPart(1, gpa);
+        pub fn runPart2(gpa: Allocator, io: std.Io) !void {
+            try runPart(1, gpa, io);
         }
 
-        fn runPart(comptime partIdx: u1, gpa: Allocator) !void {
+        fn runPart(comptime partIdx: u1, gpa: Allocator, io: std.Io) !void {
             const description = "Day {s} (part {d}): ";
             const partNum = (@as(u8, partIdx)) + 1;
 
@@ -461,7 +463,7 @@ pub fn DayInfo(
                 return;
             }
 
-            const input = try readInput(day, gpa);
+            const input = try readInput(day, gpa, io);
             defer gpa.free(input);
 
             var timer = try std.time.Timer.start();
