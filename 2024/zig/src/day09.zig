@@ -12,7 +12,7 @@ const Disk = struct {
     blocks: std.ArrayList(Block),
 
     pub fn init(input: []const u8, gpa: Allocator) !Disk {
-        var blocks = try std.ArrayList(Block).initCapacity(gpa, input.len + input.len / 2);
+        var blocks: std.ArrayList(Block) = try .initCapacity(gpa, input.len + input.len / 2);
         errdefer blocks.deinit(gpa);
 
         for (aoc.trim(input), 0..) |d, i| {
@@ -163,14 +163,14 @@ const Disk = struct {
 };
 
 pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
-    var disk = try Disk.init(input, gpa);
+    var disk: Disk = try .init(input, gpa);
     defer disk.deinit(gpa);
     disk.floodFillEmptyBlocks();
     return disk.checksum();
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
-    var disk = try Disk.init(input, gpa);
+    var disk: Disk = try .init(input, gpa);
     defer disk.deinit(gpa);
     disk.moveWholeFiles();
     return disk.checksum();

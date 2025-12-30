@@ -6,7 +6,7 @@ const aoc = @import("aoc_utils");
 const Op = enum { add, mul, concat };
 
 fn canSolve(expected: u64, values: []const u64, ops: []const Op, gpa: Allocator) !bool {
-    var stack = std.ArrayList(struct { u64, []const u64 }).empty;
+    var stack: std.ArrayList(struct { u64, []const u64 }) = .empty;
     defer stack.deinit(gpa);
     try stack.append(gpa, .{ values[0], values[1..] });
 

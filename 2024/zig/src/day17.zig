@@ -61,7 +61,7 @@ const Computer = struct {
         computer.registers.c = try std.fmt.parseUnsigned(u64, lines.next().?[12..], 10);
         _ = lines.next(); // skip blank line
 
-        var buf = std.ArrayList(u3).initBuffer(&computer.programBuffer);
+        var buf: std.ArrayList(u3) = .initBuffer(&computer.programBuffer);
         var codes = aoc.split(lines.next().?[9..], ',');
         while (codes.next()) |codeChar| {
             const code = try std.fmt.parseUnsigned(u3, codeChar, 10);
@@ -137,7 +137,7 @@ var outputBuffer: [256]u8 = undefined;
 pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     _ = gpa;
 
-    var computer = try Computer.init(input);
+    var computer: Computer = try .init(input);
     try computer.run();
 
     var writer = std.Io.Writer.fixed(&outputBuffer);
@@ -148,11 +148,11 @@ pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
-    const c_ = try Computer.init(input);
+    const c_: Computer = try .init(input);
     const len_ = c_.programLen;
 
     const State = struct { usize, u64 };
-    var stack = std.ArrayList(State).empty;
+    var stack: std.ArrayList(State) = .empty;
     defer stack.deinit(gpa);
     try stack.append(gpa, .{ 0, 0 });
 

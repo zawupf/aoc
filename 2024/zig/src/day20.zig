@@ -9,14 +9,14 @@ const Field = enum(u8) { wall = '#', track = '.', start = 'S', end = 'E' };
 const dirs = std.enums.values(aoc.Orientation);
 
 pub fn solve(comptime maxCheatTime: u8, comptime threshold: u8, input: []const u8, gpa: Allocator) !u32 {
-    const grid = try Grid.init(input, gpa);
+    const grid: Grid = try .init(input, gpa);
     defer grid.deinit(gpa);
 
-    var distances = try aoc.Grid(i16, u8).initSize(grid.width, grid.height, 0, gpa);
+    var distances: aoc.Grid(i16, u8) = try .initSize(grid.width, grid.height, 0, gpa);
     defer distances.deinit(gpa);
 
     const track = blk: {
-        var track = std.ArrayList(Grid.Pos).empty;
+        var track: std.ArrayList(Grid.Pos) = .empty;
         errdefer track.deinit(gpa);
         var i: i16 = 0;
         var pos = grid.findScalar(.start).?;

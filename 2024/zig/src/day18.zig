@@ -27,11 +27,11 @@ pub fn solve(comptime variant: Variant, input: []const u8, gpa: Allocator) !Resu
         .part2 => input.len,
     };
 
-    var grid = try Grid.initSize(size, size, .accessible, gpa);
+    var grid: Grid = try .initSize(size, size, .accessible, gpa);
     defer grid.deinit(gpa);
 
     var lines = aoc.splitLines(input);
-    var bytes = std.ArrayList([]const u8).empty;
+    var bytes: std.ArrayList([]const u8) = .empty;
     defer bytes.deinit(gpa);
     var i: usize = 0;
     while (lines.next()) |line| {
@@ -52,14 +52,14 @@ pub fn solve(comptime variant: Variant, input: []const u8, gpa: Allocator) !Resu
         grid.setAt(.{ .x = x, .y = y }, .corrupted);
     }
 
-    var stepsCount = try aoc.Grid(u16, u8).initSize(size, size, 0, gpa);
+    var stepsCount: aoc.Grid(u16, u8) = try .initSize(size, size, 0, gpa);
     defer stepsCount.deinit(gpa);
 
     const State = struct { pos: Grid.Pos, steps: u16 };
-    var stack = std.ArrayList(State).empty;
+    var stack: std.ArrayList(State) = .empty;
     defer stack.deinit(gpa);
 
-    var starts = std.ArrayList(State).empty;
+    var starts: std.ArrayList(State) = .empty;
     defer starts.deinit(gpa);
     try starts.append(gpa, .{ .pos = .{ .x = 0, .y = 0 }, .steps = 0 });
 

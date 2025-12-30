@@ -45,7 +45,7 @@ const turns = std.enums.values(Turn);
 const Mode = enum { min_score, field_count };
 
 pub fn solve(comptime mode: Mode, input: []const u8, gpa: Allocator) !u32 {
-    var grid = try Grid.initMapped(input, Tile.init, gpa);
+    var grid: Grid = try .initMapped(input, Tile.init, gpa);
     defer grid.deinit(gpa);
 
     const Path = switch (mode) {
@@ -70,11 +70,11 @@ pub fn solve(comptime mode: Mode, input: []const u8, gpa: Allocator) !u32 {
         },
     };
 
-    var arena = std.heap.ArenaAllocator.init(gpa);
+    var arena: std.heap.ArenaAllocator = .init(gpa);
     defer arena.deinit();
     const gpa_arena = arena.allocator();
 
-    var stack = std.ArrayList(State).empty;
+    var stack: std.ArrayList(State) = .empty;
     defer stack.deinit(gpa);
     const start = Grid.Pos{ .x = 1, .y = grid.height - 2 };
     grid.ptr(start).scores[@intFromEnum(Direction.east)] = 0;
@@ -99,7 +99,7 @@ pub fn solve(comptime mode: Mode, input: []const u8, gpa: Allocator) !u32 {
         .min_score => std.math.maxInt(u32),
         .field_count => Result{
             .score = std.math.maxInt(u32),
-            .paths = std.ArrayList(Path).empty,
+            .paths = .empty,
         },
     };
     defer if (mode == .field_count) result.paths.deinit(gpa);
@@ -157,7 +157,7 @@ pub fn solve(comptime mode: Mode, input: []const u8, gpa: Allocator) !u32 {
     return switch (mode) {
         .min_score => result,
         .field_count => blk: {
-            var fieldSet = try std.DynamicBitSetUnmanaged.initEmpty(gpa, grid.buf.len);
+            var fieldSet: std.DynamicBitSetUnmanaged = try .initEmpty(gpa, grid.buf.len);
             defer fieldSet.deinit(gpa);
 
             for (result.paths.items) |path| {

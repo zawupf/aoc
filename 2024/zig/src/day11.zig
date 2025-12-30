@@ -50,7 +50,7 @@ fn count(value: u64, blinks: u8, cache: *Cache, gpa: Allocator) !u64 {
 }
 
 pub fn solve(blinks: u8, input: []const u8, gpa: Allocator) !u64 {
-    var cache = Cache.empty;
+    var cache: Cache = .empty;
     defer cache.deinit(gpa);
 
     var result: u64 = 0;

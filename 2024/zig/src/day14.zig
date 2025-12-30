@@ -14,8 +14,8 @@ fn Grid(comptime width: usize, comptime height: usize) type {
         const Self = @This();
 
         pub fn init(input: []const u8, gpa: Allocator) !Self {
-            var ps = std.ArrayList(Pos).empty;
-            var vs = std.ArrayList(Vel).empty;
+            var ps: std.ArrayList(Pos) = .empty;
+            var vs: std.ArrayList(Vel) = .empty;
             errdefer {
                 ps.deinit(gpa);
                 vs.deinit(gpa);
@@ -73,7 +73,7 @@ fn solve1(
     input: []const u8,
     gpa: Allocator,
 ) !Day.Result1 {
-    var grid = try Grid(width, height).init(input, gpa);
+    var grid: Grid(width, height) = try .init(input, gpa);
     defer grid.deinit(gpa);
     grid.step(100);
     return @intCast(@reduce(.Mul, grid.quadrantCount()));
@@ -84,7 +84,7 @@ pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
-    var grid = try Grid(101, 103).init(input, gpa);
+    var grid: Grid(101, 103) = try .init(input, gpa);
     defer grid.deinit(gpa);
 
     const threshold = grid.ps.len / 2;

@@ -50,8 +50,8 @@ const UpdateData = struct {
     updates: []Pages,
 
     fn init(input: []const u8, gpa: Allocator) !UpdateData {
-        var rules = std.ArrayList(OrderingRule).empty;
-        var updates = std.ArrayList(Pages).empty;
+        var rules: std.ArrayList(OrderingRule) = .empty;
+        var updates: std.ArrayList(Pages) = .empty;
         errdefer {
             rules.deinit(gpa);
             for (updates.items) |pages| {
@@ -69,7 +69,7 @@ const UpdateData = struct {
 
         var updatesIter = aoc.splitLines(chunks.next().?);
         while (updatesIter.next()) |line| {
-            var pages = std.ArrayList(u8).empty;
+            var pages: std.ArrayList(u8) = .empty;
             errdefer pages.deinit(gpa);
             var parts = aoc.split(line, ',');
             while (parts.next()) |part| {
@@ -96,7 +96,7 @@ const UpdateData = struct {
 };
 
 pub fn part1(input: []const u8, gpa: Allocator) !u32 {
-    const data = try UpdateData.init(input, gpa);
+    const data: UpdateData = try .init(input, gpa);
     defer data.deinit(gpa);
 
     var result: u32 = 0;
@@ -109,7 +109,7 @@ pub fn part1(input: []const u8, gpa: Allocator) !u32 {
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !u32 {
-    const data = try UpdateData.init(input, gpa);
+    const data: UpdateData = try .init(input, gpa);
     defer data.deinit(gpa);
 
     var result: u32 = 0;

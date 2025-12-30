@@ -7,7 +7,7 @@ const Grid = aoc.Grid(u8, usize);
 const Pos = Grid.Pos;
 
 pub fn part1(input: []const u8, gpa: Allocator) !u32 {
-    const grid = try Grid.init(input, gpa);
+    const grid: Grid = try .init(input, gpa);
     defer grid.deinit(gpa);
 
     var result: u32 = 0;
@@ -28,7 +28,7 @@ pub fn part1(input: []const u8, gpa: Allocator) !u32 {
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !u32 {
-    const grid = try Grid.init(input, gpa);
+    const grid: Grid = try .init(input, gpa);
     defer grid.deinit(gpa);
 
     var result: u32 = 0;

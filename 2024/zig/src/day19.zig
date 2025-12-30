@@ -9,7 +9,7 @@ pub fn solve(comptime mode: Mode, input: []const u8, gpa: Allocator) !u64 {
     var lines = aoc.splitLines(input);
 
     var patternsIter = aoc.splitSeq(lines.next().?, ", ");
-    var patterns = std.ArrayList([]const u8).empty;
+    var patterns: std.ArrayList([]const u8) = .empty;
     defer patterns.deinit(gpa);
     while (patternsIter.next()) |pattern| try patterns.append(gpa, pattern);
     _ = lines.next().?;
@@ -19,7 +19,7 @@ pub fn solve(comptime mode: Mode, input: []const u8, gpa: Allocator) !u64 {
         .part2 => u64,
     };
     const Cache = std.StringHashMapUnmanaged(Count);
-    var cache = Cache.empty;
+    var cache: Cache = .empty;
     defer cache.deinit(gpa);
     const count = struct {
         fn count(design: []const u8, patterns_: []const []const u8, cache_: *Cache, gpa_: Allocator) !Count {

@@ -9,10 +9,10 @@ const Grid = aoc.Grid(u8, usize);
 const SelectionCriteria = enum { edges, corners };
 
 const dirs = std.enums.values(Ori);
-const up_left = std.EnumSet(Ori).initMany(&.{ .up, .left });
-const up_right = std.EnumSet(Ori).initMany(&.{ .up, .right });
-const down_left = std.EnumSet(Ori).initMany(&.{ .down, .left });
-const down_right = std.EnumSet(Ori).initMany(&.{ .down, .right });
+const up_left: std.EnumSet(Ori) = .initMany(&.{ .up, .left });
+const up_right: std.EnumSet(Ori) = .initMany(&.{ .up, .right });
+const down_left: std.EnumSet(Ori) = .initMany(&.{ .down, .left });
+const down_right: std.EnumSet(Ori) = .initMany(&.{ .down, .right });
 
 fn isArea(pos: ?Grid.Pos, grid: Grid, field: u8) bool {
     return if (pos) |p| grid.at(p) == field else false;
@@ -23,13 +23,13 @@ fn isEdge(pos: ?Grid.Pos, grid: Grid, field: u8) bool {
 }
 
 fn solve(comptime countingStrategy: SelectionCriteria, input: []const u8, gpa: Allocator) !u32 {
-    const grid = try Grid.init(input, gpa);
+    const grid: Grid = try .init(input, gpa);
     defer grid.deinit(gpa);
 
-    var visited = try std.DynamicBitSetUnmanaged.initEmpty(gpa, grid.buf.len);
+    var visited: std.DynamicBitSetUnmanaged = try .initEmpty(gpa, grid.buf.len);
     defer visited.deinit(gpa);
 
-    var stack = std.ArrayList(Grid.Pos).empty;
+    var stack: std.ArrayList(Grid.Pos) = .empty;
     defer stack.deinit(gpa);
 
     var result: u32 = 0;
@@ -41,7 +41,7 @@ fn solve(comptime countingStrategy: SelectionCriteria, input: []const u8, gpa: A
         var itemCount: u32 = 0;
         try stack.append(gpa, grid.indexToPos(idx));
         while (stack.pop()) |pos| {
-            var edges = std.EnumSet(Ori).initEmpty();
+            var edges: std.EnumSet(Ori) = .initEmpty();
             for (dirs) |dir| {
                 const p = dir.nextOrNull(grid, pos);
                 if (isEdge(p, grid, field)) {

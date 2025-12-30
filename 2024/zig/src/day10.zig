@@ -22,10 +22,10 @@ const Grid = aoc.Grid(Field, usize);
 const directions = std.enums.values(aoc.Orientation);
 
 pub fn solve(comptime score: Score, input: []const u8, gpa: Allocator) !u32 {
-    var grid = try Grid.initMapped(input, Field.fromChar, gpa);
+    var grid: Grid = try .initMapped(input, Field.fromChar, gpa);
     defer grid.deinit(gpa);
 
-    var stack = std.ArrayList(Grid.Pos).empty;
+    var stack: std.ArrayList(Grid.Pos) = .empty;
     defer stack.deinit(gpa);
 
     var totalScore: u32 = 0;

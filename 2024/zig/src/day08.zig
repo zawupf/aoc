@@ -23,14 +23,14 @@ const State = struct {
 };
 
 fn initState(input: []const u8, gpa: Allocator) !State {
-    const grid = try Grid.init(input, gpa);
+    const grid: Grid = try .init(input, gpa);
     errdefer grid.deinit(gpa);
-    var antennas = AntennaMap.empty;
+    var antennas: AntennaMap = .empty;
     for (grid.buf, 0..) |field, i| {
         if (field != '.') {
             const entry = try antennas.getOrPut(gpa, field);
             if (!entry.found_existing) {
-                entry.value_ptr.* = AntennaPositions.empty;
+                entry.value_ptr.* = .empty;
             }
             try entry.value_ptr.append(gpa, grid.indexToPos(i));
         }
@@ -42,7 +42,7 @@ pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
     var state = try initState(input, gpa);
     defer state.deinit(gpa);
 
-    var antidotes = AntennaSet.empty;
+    var antidotes: AntennaSet = .empty;
     defer antidotes.deinit(gpa);
 
     var lists = state.antennas.valueIterator();
@@ -71,7 +71,7 @@ pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     var state = try initState(input, gpa);
     defer state.deinit(gpa);
 
-    var antidotes = AntennaSet.empty;
+    var antidotes: AntennaSet = .empty;
     defer antidotes.deinit(gpa);
 
     var lists = state.antennas.valueIterator();

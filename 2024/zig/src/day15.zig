@@ -23,7 +23,7 @@ const State = struct {
 
     pub fn init(input: []const u8, gpa: Allocator) !State {
         var chunks = aoc.splitChunks(input);
-        const grid = try Grid.init(chunks.next() orelse return Errors.InvalidInput, gpa);
+        const grid: Grid = try .init(chunks.next() orelse return Errors.InvalidInput, gpa);
         const moves: []const Move = @ptrCast(chunks.next() orelse return Errors.InvalidInput);
         return .{ .grid = grid, .moves = moves };
     }
@@ -168,14 +168,14 @@ const State = struct {
 };
 
 pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
-    var state = try State.init(input, gpa);
+    var state: State = try .init(input, gpa);
     defer state.deinit(gpa);
     state.moveRobot();
     return state.gpsCoordSum();
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
-    var state = try State.init(input, gpa);
+    var state: State = try .init(input, gpa);
     defer state.deinit(gpa);
     try state.scaleUp(gpa);
     state.moveRobot();

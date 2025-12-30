@@ -58,7 +58,7 @@ fn solve(input: []const u8, comptime offset: u64) !u64 {
     var total: u64 = 0;
     var games = aoc.splitChunks(input);
     while (games.next()) |game_input| {
-        const game = try Game.init(game_input);
+        const game: Game = try .init(game_input);
         total += game.solve(offset);
     }
     return total;

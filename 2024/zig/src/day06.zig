@@ -89,7 +89,7 @@ const Guard = struct {
 };
 
 fn initState(input: []const u8, gpa: Allocator) !struct { Guard, Grid } {
-    var grid = try Grid.init(input, gpa);
+    var grid: Grid = try .init(input, gpa);
     errdefer grid.deinit(gpa);
 
     for (grid.buf) |*c| switch (@intFromEnum(c.*)) {
