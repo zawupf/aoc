@@ -7,7 +7,7 @@ const Field = enum(u8) { empty = '.', roll = '@' };
 const Grid = aoc.Grid(Field, u8);
 
 pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
-    const grid = try Grid.init(input, gpa);
+    const grid: Grid = try .init(input, gpa);
     defer grid.deinit(gpa);
 
     const rollsBuffer = try gpa.alloc(Grid.Pos, grid.buf.len);
@@ -18,7 +18,7 @@ pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
 }
 
 pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
-    var grid = try Grid.init(input, gpa);
+    var grid: Grid = try .init(input, gpa);
     defer grid.deinit(gpa);
 
     const rollsBuffer = try gpa.alloc(Grid.Pos, grid.buf.len);
@@ -27,7 +27,7 @@ pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
     var count: u16 = 0;
     var rolls = try findRemovableRolls(&grid, null, rollsBuffer);
 
-    var nextCandidates = std.AutoArrayHashMapUnmanaged(Grid.Pos, void).empty;
+    var nextCandidates: std.AutoArrayHashMapUnmanaged(Grid.Pos, void) = .empty;
     defer nextCandidates.deinit(gpa);
     while (rolls.len > 0) {
         count += @intCast(rolls.len);
@@ -51,7 +51,7 @@ pub fn part2(input: []const u8, gpa: Allocator) !Day.Result2 {
 }
 
 fn findRemovableRolls(grid: *const Grid, process: ?[]Grid.Pos, buffer: []Grid.Pos) ![]Grid.Pos {
-    var rolls = std.ArrayList(Grid.Pos).initBuffer(buffer);
+    var rolls: std.ArrayList(Grid.Pos) = .initBuffer(buffer);
 
     if (process) |positions| {
         for (positions) |pos| {

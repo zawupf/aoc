@@ -23,7 +23,7 @@ fn countDigits(n: u64) u8 {
 const Range = [2]u64;
 const PartId = enum { part1, part2 };
 fn solve(comptime part: PartId, input: []const u8, gpa: Allocator) !u64 {
-    var ranges = std.ArrayList(Range).empty;
+    var ranges: std.ArrayList(Range) = .empty;
     defer ranges.deinit(gpa);
 
     var rangesIter = aoc.split(aoc.trim(input), ',');
@@ -44,7 +44,7 @@ fn solve(comptime part: PartId, input: []const u8, gpa: Allocator) !u64 {
     }
 
     var sum: u64 = 0;
-    var ids = std.AutoHashMapUnmanaged(u64, void).empty;
+    var ids: std.AutoHashMapUnmanaged(u64, void) = .empty;
     defer ids.deinit(gpa);
     for (ranges.items) |range| {
         ids.clearRetainingCapacity();

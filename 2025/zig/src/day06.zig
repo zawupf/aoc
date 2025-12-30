@@ -4,7 +4,7 @@ const Allocator = std.mem.Allocator;
 const aoc = @import("aoc_utils");
 
 pub fn part1(input: []const u8, gpa: Allocator) !Day.Result1 {
-    var rowTokens = std.ArrayList(std.mem.TokenIterator(u8, .scalar)).empty;
+    var rowTokens: std.ArrayList(std.mem.TokenIterator(u8, .scalar)) = .empty;
     defer rowTokens.deinit(gpa);
 
     var lines = aoc.splitLines(input);

@@ -48,7 +48,7 @@ pub fn trim(input: []const u8) []const u8 {
 }
 
 pub fn parseInts(comptime T: type, iter: anytype, buf: []T) ![]T {
-    var array = std.ArrayList(T).initBuffer(buf);
+    var array: std.ArrayList(T) = .initBuffer(buf);
     while (iter.next()) |text| {
         const value = try std.fmt.parseInt(T, text, 10);
         try array.appendBounded(value);
@@ -426,9 +426,9 @@ pub fn DayInfo(
             if (solution == null) return;
 
             const gpa = std.testing.allocator;
-            var threadedIo = std.Io.Threaded.init(gpa, .{});
-            defer threadedIo.deinit();
-            const input = try readInput(day, gpa, threadedIo.io());
+            const io = std.testing.io;
+
+            const input = try readInput(day, gpa, io);
             defer gpa.free(input);
 
             const func = if (partIdx == 0) module.part1 else module.part2;

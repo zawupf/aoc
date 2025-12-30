@@ -91,7 +91,7 @@ const UnionFind = struct {
 fn solve(comptime partId: PartId, input: []const u8, gpa: Allocator) !Result(partId) {
     const positions: []Pos = blk: {
         var lines = aoc.splitLines(aoc.trim(input));
-        var positions = std.ArrayList(Pos).empty;
+        var positions: std.ArrayList(Pos) = .empty;
         errdefer positions.deinit(gpa);
         while (lines.next()) |line| {
             var values = aoc.split(line, ',');
@@ -127,7 +127,7 @@ fn solve(comptime partId: PartId, input: []const u8, gpa: Allocator) !Result(par
     };
     defer distances.deinit();
 
-    var uf = try UnionFind.init(gpa, positions.len);
+    var uf: UnionFind = try .init(gpa, positions.len);
     defer uf.deinit(gpa);
 
     var steps_left: u32 = switch (partId) {

@@ -42,7 +42,7 @@ pub fn main() !void {
         if (deinit_status == .leak) @panic("Memory leak detected");
     }
 
-    var threadedIo = std.Io.Threaded.init(allocator, .{});
+    var threadedIo: std.Io.Threaded = .init(allocator, .{});
     defer threadedIo.deinit();
     const io = threadedIo.io();
 

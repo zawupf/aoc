@@ -14,7 +14,7 @@ fn parseRange(line: []const u8) !Range {
 }
 
 fn parseRanges(input: []const u8, gpa: Allocator) ![]Range {
-    var ranges = std.ArrayList(Range).empty;
+    var ranges: std.ArrayList(Range) = .empty;
     errdefer ranges.deinit(gpa);
     var rangeIter = aoc.splitLines(input);
     while (rangeIter.next()) |line| {
