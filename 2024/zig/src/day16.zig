@@ -13,7 +13,7 @@ const Tile = struct {
     pub fn init(c: u8) Tile {
         return .{
             .free = c != '#',
-            .scores = [_]Score{std.math.maxInt(u32)} ** 4,
+            .scores = @splat(std.math.maxInt(Score)),
         };
     }
 };

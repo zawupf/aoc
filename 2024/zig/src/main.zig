@@ -21,8 +21,8 @@ const day17 = @import("day17");
 const day18 = @import("day18");
 const day19 = @import("day19");
 const day20 = @import("day20");
+const day21 = @import("day21");
 
-// const day21 = @import("day21");
 // const day22 = @import("day22");
 // const day23 = @import("day23");
 // const day24 = @import("day24");
@@ -35,44 +35,44 @@ fn run(day: type, gpa: Allocator, io: std.Io) !void {
 }
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const allocator = gpa.allocator();
+    var allocator = std.heap.GeneralPurposeAllocator(.{}){};
+    const gpa = allocator.allocator();
     defer {
-        const deinit_status = gpa.deinit();
+        const deinit_status = allocator.deinit();
         if (deinit_status == .leak) @panic("Memory leak detected");
     }
 
-    var threadedIo: std.Io.Threaded = .init(allocator, .{});
+    var threadedIo: std.Io.Threaded = .init(gpa, .{ .environ = .empty });
     defer threadedIo.deinit();
     const io = threadedIo.io();
 
     var timer = try std.time.Timer.start();
 
-    try run(day01, allocator, io);
-    try run(day02, allocator, io);
-    try run(day03, allocator, io);
-    try run(day04, allocator, io);
-    try run(day05, allocator, io);
-    try run(day06, allocator, io);
-    try run(day07, allocator, io);
-    try run(day08, allocator, io);
-    try run(day09, allocator, io);
-    try run(day10, allocator, io);
-    try run(day11, allocator, io);
-    try run(day12, allocator, io);
-    try run(day13, allocator, io);
-    try run(day14, allocator, io);
-    try run(day15, allocator, io);
-    try run(day16, allocator, io);
-    try run(day17, allocator, io);
-    try run(day18, allocator, io);
-    try run(day19, allocator, io);
-    try run(day20, allocator, io);
-    // try run(day21, allocator, io);
-    // try run(day22, allocator, io);
-    // try run(day23, allocator, io);
-    // try run(day24, allocator, io);
-    // try run(day25, allocator, io);
+    try run(day01, gpa, io);
+    try run(day02, gpa, io);
+    try run(day03, gpa, io);
+    try run(day04, gpa, io);
+    try run(day05, gpa, io);
+    try run(day06, gpa, io);
+    try run(day07, gpa, io);
+    try run(day08, gpa, io);
+    try run(day09, gpa, io);
+    try run(day10, gpa, io);
+    try run(day11, gpa, io);
+    try run(day12, gpa, io);
+    try run(day13, gpa, io);
+    try run(day14, gpa, io);
+    try run(day15, gpa, io);
+    try run(day16, gpa, io);
+    try run(day17, gpa, io);
+    try run(day18, gpa, io);
+    try run(day19, gpa, io);
+    try run(day20, gpa, io);
+    try run(day21, gpa, io);
+    // try run(day22, gpa, io);
+    // try run(day23, gpa, io);
+    // try run(day24, gpa, io);
+    // try run(day25, gpa, io);
 
     const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
     std.debug.print("🏁 All days completed in {d} ms\n", .{elapsed_ms});
