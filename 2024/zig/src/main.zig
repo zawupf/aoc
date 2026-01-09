@@ -34,17 +34,9 @@ fn run(day: type, gpa: Allocator, io: std.Io) !void {
     try day.Day.runPart2(gpa, io);
 }
 
-pub fn main() !void {
-    var allocator = std.heap.GeneralPurposeAllocator(.{}){};
-    const gpa = allocator.allocator();
-    defer {
-        const deinit_status = allocator.deinit();
-        if (deinit_status == .leak) @panic("Memory leak detected");
-    }
-
-    var threadedIo: std.Io.Threaded = .init(gpa, .{ .environ = .empty });
-    defer threadedIo.deinit();
-    const io = threadedIo.io();
+pub fn main(init: std.process.Init) !void {
+    const gpa = init.gpa;
+    const io = init.io;
 
     var timer = try std.time.Timer.start();
 
