@@ -38,7 +38,7 @@ pub fn main(init: std.process.Init) !void {
     const gpa = init.gpa;
     const io = init.io;
 
-    var timer = try std.time.Timer.start();
+    const timer = std.Io.Timestamp.now(io, .awake);
 
     try run(day01, gpa, io);
     try run(day02, gpa, io);
@@ -53,7 +53,7 @@ pub fn main(init: std.process.Init) !void {
     // try run(day11, gpa, io);
     // try run(day12, gpa, io);
 
-    const elapsed_ms: u64 = @intCast(timer.read() / 1_000_000);
+    const elapsed_ms = timer.untilNow(io, .awake).toMilliseconds();
     std.debug.print("🏁 All days completed in {d} ms\n", .{elapsed_ms});
 }
 

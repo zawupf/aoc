@@ -466,10 +466,13 @@ pub fn DayInfo(
             const input = try readInput(day, gpa, io);
             defer gpa.free(input);
 
-            var timer = try std.time.Timer.start();
+            var timer = std.Io.Timestamp.now(io, .awake);
             const result = try func(input, gpa);
 
-            var elapsed: f64, var unit: []const u8 = .{ @floatFromInt(timer.read()), "ns" };
+            var elapsed: f64, var unit: []const u8 = .{
+                @floatFromInt(timer.untilNow(io, .awake).toNanoseconds()),
+                "ns",
+            };
             if (elapsed >= 1000.0) {
                 elapsed /= 1000.0;
                 unit = "µs";
