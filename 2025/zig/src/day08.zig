@@ -123,9 +123,9 @@ fn solve(comptime partId: PartId, input: []const u8, gpa: Allocator) !Result(par
                 i += 1;
             }
         }
-        break :blk DistanceQueue.fromOwnedSlice(gpa, items, {});
+        break :blk DistanceQueue.fromOwnedSlice(items, {});
     };
-    defer distances.deinit();
+    defer distances.deinit(gpa);
 
     var uf: UnionFind = try .init(gpa, positions.len);
     defer uf.deinit(gpa);
@@ -137,7 +137,7 @@ fn solve(comptime partId: PartId, input: []const u8, gpa: Allocator) !Result(par
 
     var last_distance: ?DistanceInfo = null;
 
-    while (distances.removeOrNull()) |d| {
+    while (distances.pop()) |d| {
         switch (partId) {
             .part1 => {
                 if (steps_left == 0) break;
