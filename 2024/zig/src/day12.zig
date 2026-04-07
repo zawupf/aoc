@@ -41,7 +41,7 @@ fn solve(comptime countingStrategy: SelectionCriteria, input: []const u8, gpa: A
         var itemCount: u32 = 0;
         try stack.append(gpa, grid.indexToPos(idx));
         while (stack.pop()) |pos| {
-            var edges: std.EnumSet(Ori) = .initEmpty();
+            var edges: std.EnumSet(Ori) = .empty;
             for (dirs) |dir| {
                 const p = dir.nextOrNull(grid, pos);
                 if (isEdge(p, grid, field)) {
