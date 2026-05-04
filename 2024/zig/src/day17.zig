@@ -206,7 +206,7 @@ pub const Day = aoc.DayInfo("17", []const u8, u64, "4,1,5,3,1,5,3,5,7", 16454212
 test {
     const program = [_]u3{ 2, 6 };
     var c: Computer = .{
-        .programBuffer = program ++ .{0} ** (BufferSize - program.len),
+        .programBuffer = program ++ @as([BufferSize - program.len]u3, @splat(0)),
         .programLen = program.len,
         .pc = 0,
         .registers = .{ .a = 0, .b = 0, .c = 9 },
@@ -218,7 +218,7 @@ test {
 test {
     const program = [_]u3{ 1, 7 };
     var c: Computer = .{
-        .programBuffer = program ++ .{0} ** (BufferSize - program.len),
+        .programBuffer = program ++ @as([BufferSize - program.len]u3, @splat(0)),
         .programLen = program.len,
         .pc = 0,
         .registers = .{ .a = 0, .b = 29, .c = 0 },
@@ -230,7 +230,7 @@ test {
 test {
     const program = [_]u3{ 4, 0 };
     var c: Computer = .{
-        .programBuffer = program ++ .{0} ** (BufferSize - program.len),
+        .programBuffer = program ++ @as([BufferSize - program.len]u3, @splat(0)),
         .programLen = program.len,
         .pc = 0,
         .registers = .{ .a = 0, .b = 2024, .c = 43690 },
@@ -242,7 +242,7 @@ test {
 test {
     const program = [_]u3{ 5, 0, 5, 1, 5, 4 };
     var c: Computer = .{
-        .programBuffer = program ++ .{0} ** (BufferSize - program.len),
+        .programBuffer = program ++ @as([BufferSize - program.len]u3, @splat(0)),
         .programLen = program.len,
         .pc = 0,
         .registers = .{ .a = 10, .b = 0, .c = 0 },
@@ -253,8 +253,9 @@ test {
 
 test {
     const program = [_]u3{ 0, 1, 5, 4, 3, 0 };
+    const zeros: [BufferSize - program.len]u3 = @splat(0);
     var c: Computer = .{
-        .programBuffer = program ++ .{0} ** (BufferSize - program.len),
+        .programBuffer = program ++ zeros,
         .programLen = program.len,
         .pc = 0,
         .registers = .{ .a = 2024, .b = 0, .c = 0 },
