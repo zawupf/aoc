@@ -16,8 +16,8 @@ pub fn part1(input: []const u8, gpa: Allocator) !u32 {
         p.x = 0;
         while (p.x < grid.width) : (p.x += 1) {
             if (grid.at(p) != 'X') continue;
-            inline for (@typeInfo(aoc.Direction).@"enum".fields) |field| {
-                const dir = @field(aoc.Direction, field.name);
+            inline for (@typeInfo(aoc.Direction).@"enum".field_names) |field_name| {
+                const dir = @field(aoc.Direction, field_name);
                 if (grid.subarray(3, p, dir, 1)) |word| {
                     if (std.mem.eql(u8, &word, "MAS")) result += 1;
                 }
