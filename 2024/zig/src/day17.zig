@@ -99,7 +99,7 @@ const Computer = struct {
     pub fn step(self: *Computer) !void {
         if (self.isHalted()) return error.Halted;
 
-        const opcode: Opcode = @enumFromInt(self.programBuffer[self.pc]);
+        const opcode: Opcode = @fromBackingInt(self.programBuffer[self.pc]);
         const operand: Operand = opcode.operand(self.programBuffer[self.pc + 1]);
         const value = operand.value(self.registers);
         // std.debug.print("PC: {d}, Opcode: {any}, Operand: {any}, Value: {d}\n", .{ self.pc, opcode, operand, value });

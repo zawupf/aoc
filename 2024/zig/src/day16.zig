@@ -22,10 +22,10 @@ const Reindeer = struct {
     dir: Direction,
 
     fn next(self: Reindeer, turn: Turn, grid: Grid) ?Reindeer {
-        const d: u3 = @intFromEnum(self.dir);
-        const dir: Direction = @enumFromInt(switch (turn) {
-            .left => (d + 3) % 4,
-            .right => (d + 1) % 4,
+        const d = @backingInt(self.dir);
+        const dir: Direction = @fromBackingInt(switch (turn) {
+            .left => d +% 3,
+            .right => d +% 1,
             .straight => d,
         });
 

@@ -84,7 +84,7 @@ const Guard = struct {
             .left => .left,
         };
         if (@intFromEnum(field) & @intFromEnum(f) != 0) return error.AlreadyMarked;
-        grid.setAt(self.pos, @enumFromInt(@intFromEnum(field) | @intFromEnum(f)));
+        grid.setAt(self.pos, @fromBackingInt(@intFromEnum(field) | @intFromEnum(f)));
     }
 };
 
