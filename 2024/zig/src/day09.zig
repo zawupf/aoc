@@ -114,10 +114,10 @@ const Disk = struct {
     }
 
     fn stripFreeBlocksAtEnd(self: *Disk) usize {
-        loop: switch (self.blocks.getLast().?) {
+        loop: switch (self.blocks.last().?) {
             .free => {
                 _ = self.blocks.pop();
-                continue :loop self.blocks.getLast().?;
+                continue :loop self.blocks.last().?;
             },
             .file => break :loop,
         }
