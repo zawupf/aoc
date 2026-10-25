@@ -28,11 +28,12 @@ fn isSafe(head: u32, tail: []const u8, canSkip: bool, refOrder: ?Order) bool {
 
     if (refOrder) |o| {
         const safe = o == order(head, next);
-        return safe and isSafe(next, rest, canSkip, o) or canSkip and isSafe(head, rest, false, o);
+        return (safe and isSafe(next, rest, canSkip, o)) or
+            (canSkip and isSafe(head, rest, false, o));
     }
 
     const o1 = order(head, next);
-    return o1 != null and isSafe(next, rest, canSkip, o1) or
+    return (o1 != null and isSafe(next, rest, canSkip, o1)) or
         (canSkip and isSafe(next, rest, false, null)) or
         (canSkip and isSafe(head, rest, false, null));
 }
