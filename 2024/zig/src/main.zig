@@ -21,8 +21,8 @@ const day17 = @import("day17");
 const day18 = @import("day18");
 const day19 = @import("day19");
 const day20 = @import("day20");
-const day21 = @import("day21");
 
+// const day21 = @import("day21");
 // const day22 = @import("day22");
 // const day23 = @import("day23");
 // const day24 = @import("day24");
@@ -60,7 +60,7 @@ pub fn main(init: std.process.Init) !void {
     try run(day18, gpa, io);
     try run(day19, gpa, io);
     try run(day20, gpa, io);
-    try run(day21, gpa, io);
+    // try run(day21, gpa, io);
     // try run(day22, gpa, io);
     // try run(day23, gpa, io);
     // try run(day24, gpa, io);
