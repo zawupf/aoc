@@ -26,7 +26,7 @@ function solveWith(operators: Operator[]): (e: Equation) => Generator<number> {
         }
 
         for (const operator of operators) {
-            const value = apply(operator, a, b)
+            const value = apply(operator, a!, b)
             if (value <= result) {
                 yield* solve([result, [value, ...rest]])
             }
@@ -37,7 +37,10 @@ function solveWith(operators: Operator[]): (e: Equation) => Generator<number> {
 
 function parseEquation(line: string): Equation {
     const [resultChunk, numbersChunk] = line.split(': ')
-    return [utils.parseInt(resultChunk), utils.split_numbers(numbersChunk, ' ')]
+    return [
+        utils.parseInt(resultChunk!),
+        utils.split_numbers(numbersChunk!, ' '),
+    ]
 }
 
 export const part1: Part = input => () =>
@@ -54,7 +57,7 @@ export const part2: Part = input => () =>
         0,
     )
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 1260333054159
 part2.solution = 162042343638683
@@ -80,8 +83,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 3749, part1(testInput[0])],
-                ['Test part 2', 11387, part2(testInput[0])],
+                ['Test part 1', 3749, part1(testInput[0]!)],
+                ['Test part 2', 11387, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

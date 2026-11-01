@@ -12,7 +12,7 @@ type Robot = {
 
 function parseRobot(line: string): Robot {
     const [px, py, vx, vy] = line.match(/(-?\d+)/g)!.map(utils.parseInt)
-    return { pos: [px, py], vel: [vx, vy] }
+    return { pos: [px!, py!], vel: [vx!, vy!] }
 }
 
 function mod(n: number, length: number): number {
@@ -86,7 +86,7 @@ export const part1: Part = input => () => {
 export const part2: Part = input => () =>
     findTree(input.map(parseRobot), { width: 101, height: 103 })
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 233709840
 part2.solution = 6620
@@ -120,7 +120,7 @@ p=9,5 v=-3,-3
                 () => {
                     const g = { width: 11, height: 7 }
                     return safetyFactor(
-                        testInput[0]
+                        testInput[0]!
                             .map(parseRobot)
                             .map(r => moveRobot(r, 100, g)),
                         g,

@@ -17,7 +17,7 @@ function* nextSteps([x, y]: Pos): Generator<Pos> {
 
 function isValidStep(a: Pos, b: Pos, grid: Grid): boolean {
     const [[x1, y1], [x2, y2]] = [a, b]
-    const [v1, v2] = [grid[y1]?.[x1], grid[y2]?.[x2]]
+    const [v1, v2] = [grid[y1]?.[x1]!, grid[y2]?.[x2]!]
     const isInside = () => v1 !== undefined && v2 !== undefined
     const length = () => Math.abs(x1 - x2) + Math.abs(y1 - y2)
     const height = () => v2 - v1
@@ -25,7 +25,7 @@ function isValidStep(a: Pos, b: Pos, grid: Grid): boolean {
 }
 
 function* walk(start: Pos, grid: Grid): Generator<Pos> {
-    if (grid[start[1]][start[0]] === 9) {
+    if (grid[start[1]]![start[0]] === 9) {
         yield start
         return
     }
@@ -38,8 +38,8 @@ function* walk(start: Pos, grid: Grid): Generator<Pos> {
 
 function* starts(grid: Grid): Generator<Pos> {
     for (let y = 0; y < grid.length; y++) {
-        for (let x = 0; x < grid[y].length; x++) {
-            if (grid[y][x] === 0) {
+        for (let x = 0; x < grid[y]!.length; x++) {
+            if (grid[y]![x] === 0) {
                 yield [x, y] as Pos
             }
         }
@@ -70,7 +70,7 @@ export const part2: Part = input => () => {
     )
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 789
 part2.solution = 1735
@@ -95,8 +95,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 36, part1(testInput[0])],
-                ['Test part 2', 81, part2(testInput[0])],
+                ['Test part 1', 36, part1(testInput[0]!)],
+                ['Test part 2', 81, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

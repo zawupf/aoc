@@ -74,7 +74,7 @@ function parse(lines: string[], maxDuration: number): Track {
         for (const current of track) {
             yield* cheats(current)
                 .filter(pos => !isWall(pos))
-                .map(to => ({ from: current, to } as Jump))
+                .map(to => ({ from: current, to }) as Jump)
         }
     }
 
@@ -110,7 +110,7 @@ export const part1: Part = input => () =>
 export const part2: Part = input => () =>
     countJumpsWithSaving(x => x >= 100, parse(input, 20))
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 1415
 part2.solution = 1022577

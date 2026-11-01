@@ -19,20 +19,23 @@ export const part2: Part = input => () =>
         .split_lines(utils.split_sections(input)[0]!)
         .map(line => line.split('-').map(Number) as [number, number])
         .sort(([a0, a1], [b0, b1]) => (a0 !== b0 ? a0 - b0 : a1 - b1))
-        .reduce((merged, current) => {
-            if (merged.length === 0) return [current]
+        .reduce(
+            (merged, current) => {
+                if (merged.length === 0) return [current]
 
-            const [currentStart, currentEnd] = current
-            const [lastStart, lastEnd] = merged[merged.length - 1]!
-            if (currentStart <= lastEnd + 1)
-                merged[merged.length - 1] = [
-                    lastStart,
-                    Math.max(lastEnd, currentEnd),
-                ]
-            else merged.push(current)
+                const [currentStart, currentEnd] = current
+                const [lastStart, lastEnd] = merged[merged.length - 1]!
+                if (currentStart <= lastEnd + 1)
+                    merged[merged.length - 1] = [
+                        lastStart,
+                        Math.max(lastEnd, currentEnd),
+                    ]
+                else merged.push(current)
 
-            return merged
-        }, [] as [number, number][])
+                return merged
+            },
+            [] as [number, number][],
+        )
         .reduce(
             utils.sumBy(([a, b]) => b - a + 1),
             0,

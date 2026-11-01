@@ -37,20 +37,20 @@ function left(o: Orientation): Orientation {
     return o === Orientation.North
         ? Orientation.West
         : o === Orientation.West
-        ? Orientation.South
-        : o === Orientation.South
-        ? Orientation.East
-        : Orientation.North
+          ? Orientation.South
+          : o === Orientation.South
+            ? Orientation.East
+            : Orientation.North
 }
 
 function right(o: Orientation): Orientation {
     return o === Orientation.North
         ? Orientation.East
         : o === Orientation.East
-        ? Orientation.South
-        : o === Orientation.South
-        ? Orientation.West
-        : Orientation.North
+          ? Orientation.South
+          : o === Orientation.South
+            ? Orientation.West
+            : Orientation.North
 }
 
 type Result = { score: Score; paths: Path[] }
@@ -66,7 +66,7 @@ function walk(
     const start: Pos = [1, maze.length - 2]
     field(start).scores[Orientation.East] = 0
     const stack: State[] = [[start, Orientation.East, [start]]]
-    const [end_x, end_y]: Pos = [maze[0].length - 2, 1]
+    const [end_x, end_y]: Pos = [maze[0]!.length - 2, 1]
 
     let state: State | undefined
     while ((state = stack.pop())) {
@@ -104,7 +104,7 @@ function walk(
     }
 
     function field([x, y]: Pos): Field {
-        return maze[y][x]
+        return maze[y]![x]!
     }
 
     function tryMove([pos, orientation, path]: State): State | undefined {
@@ -171,7 +171,7 @@ export const part1: Part = input => () => lowestScore(parse(input))
 
 export const part2: Part = input => () => posCount(parse(input))
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 85432
 part2.solution = 465
@@ -222,10 +222,10 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 7036, part1(testInput[0])],
-                ['Test part 1', 11048, part1(testInput[1])],
-                ['Test part 2', 45, part2(testInput[0])],
-                ['Test part 2', 64, part2(testInput[1])],
+                ['Test part 1', 7036, part1(testInput[0]!)],
+                ['Test part 1', 11048, part1(testInput[1]!)],
+                ['Test part 2', 45, part2(testInput[0]!)],
+                ['Test part 2', 64, part2(testInput[1]!)],
             ),
         () => utils.test_day(module),
     )

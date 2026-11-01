@@ -41,7 +41,7 @@ export const part1: Part = input => () => {
 
 export const part2: Part = input => () => utils.notImplemented()
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = 3077
 part2.solution = NaN
@@ -97,8 +97,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 3, part1(testInput[0])],
-                ['Test part 2', NaN, part2(testInput[0])],
+                ['Test part 1', 3, part1(testInput[0]!)],
+                ['Test part 2', NaN, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

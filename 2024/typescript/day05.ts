@@ -9,8 +9,8 @@ function parse(input: string): [Rule[], Update[]] {
         .split_sections(input)
         .map(utils.split_lines)
     return [
-        ruleLines.map(line => utils.split_numbers(line, '|') as Rule),
-        updateLines.map(line => utils.split_numbers(line, ',') as Update),
+        ruleLines!.map(line => utils.split_numbers(line, '|') as Rule),
+        updateLines!.map(line => utils.split_numbers(line, ',') as Update),
     ]
 }
 
@@ -30,12 +30,12 @@ function fixUpdate(update: Update, rules: Rule[]): Update {
     )
     return update
         .map(page => [page, predecessorCounts[page] ?? 0])
-        .sort((a, b) => a[1] - b[1])
-        .map(([page, _]) => page)
+        .sort((a, b) => a[1]! - b[1]!)
+        .map(([page, _]) => page!)
 }
 
 function middlePage(update: Update): number {
-    return update[update.length >> 1]
+    return update[update.length >> 1]!
 }
 
 export const part1: Part = input => () => {
@@ -53,7 +53,7 @@ export const part2: Part = input => () => {
         .reduce(utils.sumBy(middlePage), 0)
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = 6612
 part2.solution = 4944
@@ -98,8 +98,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 143, part1(testInput[0])],
-                ['Test part 2', 123, part2(testInput[0])],
+                ['Test part 1', 143, part1(testInput[0]!)],
+                ['Test part 2', 123, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

@@ -18,9 +18,9 @@ type Computer = {
 }
 
 function readInstruction(program: number[], pc: number): [Instruction, number] {
-    const opcode = program[pc]
-    const comboOperand = program[pc + 1]
-    return [Opcodes[opcode], comboOperand]
+    const opcode = program[pc]!
+    const comboOperand = program[pc + 1]!
+    return [Opcodes[opcode]!, comboOperand]
 }
 
 function literalValue(literalOperand: number): number {
@@ -126,8 +126,8 @@ function parse(lines: string[]): Computer {
     const [a, b, c] = lines
         .slice(0, 3)
         .map(line => utils.parseInt(line.match(/\d+/g)![0]))
-    const program = lines[4].match(/(\d)/g)!.map(utils.parseInt)
-    return { program, pc: 0, r: { a, b, c }, out: [] }
+    const program = lines[4]!.match(/(\d)/g)!.map(utils.parseInt)
+    return { program, pc: 0, r: { a: a!, b: b!, c: c! }, out: [] }
 }
 
 export const part1: Part = input => () => run(parse(input)).out.join(',')
@@ -135,7 +135,7 @@ export const part1: Part = input => () => run(parse(input)).out.join(',')
 export const part2: Part = input => () =>
     findRegisterValue(parse(input)).toString()
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = '4,1,5,3,1,5,3,5,7'
 part2.solution = '164542125272765'
@@ -233,8 +233,8 @@ Program: 0,3,5,4,3,0
             ),
         () =>
             utils.test_all(
-                ['Test part 1', '4,6,3,5,6,3,5,2,1,0', part1(testInput[0])],
-                ['Test part 2', '117440', part2(testInput[1])],
+                ['Test part 1', '4,6,3,5,6,3,5,2,1,0', part1(testInput[0]!)],
+                ['Test part 2', '117440', part2(testInput[1]!)],
             ),
         () => utils.test_day(module),
     )

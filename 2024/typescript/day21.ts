@@ -56,7 +56,7 @@ function initKeyMap(): KeyMap {
             pathInfo.flatMap(row => {
                 return row.split(' ').flatMap(info => {
                     const [path, ...dirs] = info.split(':')
-                    const [a, b] = path.split('')
+                    const [a, b] = path!.split('') as [string, string]
 
                     return [
                         [a + b, dirs.map(d => d + 'A')],
@@ -69,7 +69,7 @@ function initKeyMap(): KeyMap {
 
     const numKeys = 'A0123456789'.split('')
     for (let i = 0; i < numKeys.length; i++) {
-        const ki = numKeys[i]
+        const ki = numKeys[i]!
         map.set(ki + ki, ['A'])
         for (let j = i + 1; j < numKeys.length; j++) {
             const kj = numKeys[j]
@@ -80,7 +80,7 @@ function initKeyMap(): KeyMap {
 
     const dirKeys = 'A<>^v'.split('')
     for (let i = 0; i < dirKeys.length; i++) {
-        const ki = dirKeys[i]
+        const ki = dirKeys[i]!
         map.set(ki + ki, ['A'])
         for (let j = i + 1; j < dirKeys.length; j++) {
             const kj = dirKeys[j]
@@ -105,7 +105,7 @@ function countKeys(
 
     let result = 0
     for (let i = 0; i < keys.length; i++) {
-        const current = keys[i]
+        const current = keys[i]!
         const pair = previous + current
         previous = current
 
@@ -140,7 +140,7 @@ export const part2: Part = input => () => {
         .reduce(utils.sum)
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 215374
 part2.solution = 260586897262600
@@ -160,7 +160,7 @@ if (main) {
     ])
 
     await utils.tests(
-        () => utils.test_all(['Test part 1', 126384, part1(testInput[0])]),
+        () => utils.test_all(['Test part 1', 126384, part1(testInput[0]!)]),
         () => utils.test_day(module),
     )
 }

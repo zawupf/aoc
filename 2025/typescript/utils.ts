@@ -60,8 +60,8 @@ export function humanize(
         durationMs < 300
             ? ansi.green
             : durationMs < 1000
-            ? ansi.yellow
-            : ansi.red
+              ? ansi.yellow
+              : ansi.red
     return `${color}${prefix}${result}${suffix}${ansi.clear}`
 }
 

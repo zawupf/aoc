@@ -20,16 +20,16 @@ export const part2: Part = input => () => {
     const [leftCounts, rightCounts] = parseInput(input).map(list =>
         list.reduce(utils.count, {} as Record<number, number>),
     )
-    return Object.entries(leftCounts).reduce(
+    return Object.entries(leftCounts!).reduce(
         utils.sumBy(([k, v]) => {
             const n = utils.parseInt(k)
-            return v * n * (rightCounts[n] ?? 0)
+            return v * n * (rightCounts![n] ?? 0)
         }),
         0,
     )
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 1651298
 part2.solution = 21306195
@@ -51,8 +51,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 11, part1(testInput[0])],
-                ['Test part 2', 31, part2(testInput[0])],
+                ['Test part 1', 11, part1(testInput[0]!)],
+                ['Test part 2', 31, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

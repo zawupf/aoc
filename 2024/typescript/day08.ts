@@ -64,7 +64,7 @@ function antinodesCount(grid: Grid, findAntinodes: FindAntinodesFn): number {
 
 function parse(lines: string[]): Grid {
     const height = lines.length
-    const width = lines[0].length
+    const width = lines[0]!.length
     const antennas: Record<string, Pos[]> = lines.reduce(groupByAntennaName, {})
     return { width, height, antennas }
 
@@ -89,7 +89,7 @@ export const part1: Part = input => () =>
 export const part2: Part = input => () =>
     antinodesCount(parse(input), harmonicAntinodes)
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 318
 part2.solution = 1126
@@ -118,8 +118,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 14, part1(testInput[0])],
-                ['Test part 2', 34, part2(testInput[0])],
+                ['Test part 1', 14, part1(testInput[0]!)],
+                ['Test part 2', 34, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

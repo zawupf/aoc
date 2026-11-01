@@ -7,7 +7,7 @@ function mul(a: string, b: string): number {
 
 export const part1: Part = input => () =>
     input.matchAll(/mul\((\d{1,3}),(\d{1,3})\)/g).reduce(
-        utils.sumBy(([_, a, b]) => mul(a, b)),
+        utils.sumBy(([_, a, b]) => mul(a!, b!)),
         0,
     )
 
@@ -20,13 +20,13 @@ export const part2: Part = input => () =>
                 case "don't()":
                     return [sum, false]
                 default:
-                    return [sum + (enabled ? mul(a, b) : 0), enabled]
+                    return [sum + (enabled ? mul(a!, b!) : 0), enabled]
             }
         },
         [0, true],
     )[0]
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = 173529487
 part2.solution = 99532691
@@ -43,8 +43,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 161, part1(testInput[0])],
-                ['Test part 2', 48, part2(testInput[1])],
+                ['Test part 1', 161, part1(testInput[0]!)],
+                ['Test part 2', 48, part2(testInput[1]!)],
             ),
         () => utils.test_day(module),
     )

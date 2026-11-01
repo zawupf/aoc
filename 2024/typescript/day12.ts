@@ -17,8 +17,8 @@ function scanRegions(_grid: Grid): Region[] {
     const grid = _grid.map(row => [...row])
     const regions: Region[] = []
     for (let y = 0; y < grid.length; y++) {
-        for (let x = 0; x < grid[y].length; x++) {
-            if (grid[y][x] === '.') {
+        for (let x = 0; x < grid[y]!.length; x++) {
+            if (grid[y]![x] === '.') {
                 continue
             }
 
@@ -30,7 +30,7 @@ function scanRegions(_grid: Grid): Region[] {
 }
 
 function scanRegion([x, y]: Pos, grid: Grid): Region {
-    const name = grid[y][x]
+    const name = grid[y]![x]!
     const fields: Map<string, Pos> = new Map()
 
     const queue: Pos[] = [[x, y]]
@@ -38,7 +38,7 @@ function scanRegion([x, y]: Pos, grid: Grid): Region {
         const p = queue.pop()!
         const [x, y] = p
         fields.set(posKey(p), p)
-        grid[y][x] = '.'
+        grid[y]![x] = '.'
         queue.push(
             ...neighbors([x, y]).filter(([x, y]) => grid[y]?.[x] === name),
         )
@@ -89,26 +89,32 @@ function sideCount(region: Region): number {
         )
     }
 
-    const edgesBySameRowOrColumn = edges.reduce((groups, [key, value]) => {
-        groups[key] = groups[key] || []
-        groups[key].push(value)
-        return groups
-    }, {} as Record<string, number[]>)
+    const edgesBySameRowOrColumn = edges.reduce(
+        (groups, [key, value]) => {
+            groups[key] = groups[key] || []
+            groups[key].push(value)
+            return groups
+        },
+        {} as Record<string, number[]>,
+    )
 
     const sidesCountBySameRowOrColumn = Object.entries(
         edgesBySameRowOrColumn,
-    ).reduce((groupCounts, [key, values]) => {
-        const counts = values
-            .sort((a, b) => a - b)
-            .reduce((count, value, i, values) => {
-                if (i === 0 || values[i - 1] + 1 === value) {
-                    return count
-                }
-                return count + 1
-            }, 1)
-        groupCounts[key] = counts
-        return groupCounts
-    }, {} as Record<string, number>)
+    ).reduce(
+        (groupCounts, [key, values]) => {
+            const counts = values
+                .sort((a, b) => a - b)
+                .reduce((count, value, i, values) => {
+                    if (i === 0 || values[i - 1]! + 1 === value) {
+                        return count
+                    }
+                    return count + 1
+                }, 1)
+            groupCounts[key] = counts
+            return groupCounts
+        },
+        {} as Record<string, number>,
+    )
     const result = Object.values(sidesCountBySameRowOrColumn).reduce(
         utils.sum,
         0,
@@ -127,7 +133,7 @@ export const part2: Part = input => () =>
         .map(r => area(r) * sideCount(r))
         .reduce(utils.sum, 0)
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 1381056
 part2.solution = 834828
@@ -182,14 +188,14 @@ AAAAAA
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 140, part1(testInput[0])],
-                ['Test part 1', 772, part1(testInput[1])],
-                ['Test part 1', 1930, part1(testInput[2])],
-                ['Test part 2', 80, part2(testInput[0])],
-                ['Test part 2', 436, part2(testInput[1])],
-                ['Test part 2', 236, part2(testInput[3])],
-                ['Test part 2', 368, part2(testInput[4])],
-                ['Test part 2', 1206, part2(testInput[2])],
+                ['Test part 1', 140, part1(testInput[0]!)],
+                ['Test part 1', 772, part1(testInput[1]!)],
+                ['Test part 1', 1930, part1(testInput[2]!)],
+                ['Test part 2', 80, part2(testInput[0]!)],
+                ['Test part 2', 436, part2(testInput[1]!)],
+                ['Test part 2', 236, part2(testInput[3]!)],
+                ['Test part 2', 368, part2(testInput[4]!)],
+                ['Test part 2', 1206, part2(testInput[2]!)],
             ),
         () => utils.test_day(module),
     )

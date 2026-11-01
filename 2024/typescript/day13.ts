@@ -14,9 +14,9 @@ function extractNumberPair(rx: RegExp, input: string): [number, number] {
 function parseGame(input: string): Game {
     const lines = utils.split_lines(input)
 
-    const buttonA = extractNumberPair(/X\+(\d+), Y\+(\d+)/, lines[0])
-    const buttonB = extractNumberPair(/X\+(\d+), Y\+(\d+)/, lines[1])
-    const prize = extractNumberPair(/X=(\d+), Y=(\d+)/, lines[2])
+    const buttonA = extractNumberPair(/X\+(\d+), Y\+(\d+)/, lines[0]!)
+    const buttonB = extractNumberPair(/X\+(\d+), Y\+(\d+)/, lines[1]!)
+    const prize = extractNumberPair(/X=(\d+), Y=(\d+)/, lines[2]!)
 
     return { buttonA, buttonB, prize }
 }
@@ -47,7 +47,7 @@ export const part2: Part = input => () =>
         .map(machine => solve(machine, 10000000000000))
         .reduce(utils.sum)
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = 35729
 part2.solution = 88584689879723
@@ -77,7 +77,7 @@ Prize: X=18641, Y=10279
     ])
 
     await utils.tests(
-        () => utils.test_all(['Test part 1', 480, part1(testInput[0])]),
+        () => utils.test_all(['Test part 1', 480, part1(testInput[0]!)]),
         () => utils.test_day(module),
     )
 }

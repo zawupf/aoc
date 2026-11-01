@@ -21,7 +21,7 @@ function init(bytes: Pos[], dropCount: number): State {
     )
 
     bytes.slice(0, dropCount).forEach(([x, y]) => {
-        grid[y][x] = 0
+        grid[y]![x] = 0
     })
 
     return { grid, bytes }
@@ -29,11 +29,11 @@ function init(bytes: Pos[], dropCount: number): State {
 
 function minimumSteps({ grid }: State): number {
     const size = grid.length
-    grid[0][0] = 0
+    grid[0]![0] = 0
 
     const isEnd = ([x, y]: Pos) => x === size - 1 && y === size - 1
 
-    const field = ([x, y]: Pos) => grid[y][x]
+    const field = ([x, y]: Pos) => grid[y]![x]!
 
     function* nextSteps([x, y]: Pos): Generator<Pos> {
         if (x > 0) yield [x - 1, y]
@@ -42,7 +42,7 @@ function minimumSteps({ grid }: State): number {
         if (y < size - 1) yield [x, y + 1]
     }
 
-    const isValid = ([x, y]: Pos, steps: number) => steps < grid[y][x]
+    const isValid = ([x, y]: Pos, steps: number) => steps < grid[y]![x]!
 
     const stack: Pos[] = [[0, 0]]
     let current: Pos | undefined
@@ -54,11 +54,11 @@ function minimumSteps({ grid }: State): number {
         const steps = field(current) + 1
         const next = [...nextSteps(current).filter(pos => isValid(pos, steps))]
         next.forEach(([x, y]) => {
-            grid[y][x] = steps
+            grid[y]![x] = steps
         })
         stack.push(...next)
     }
-    return grid[size - 1][size - 1]
+    return grid[size - 1]![size - 1]!
 }
 
 function firstBlockingByte(state: State): string {
@@ -75,7 +75,7 @@ function firstBlockingByte(state: State): string {
             okDrops = drops
         }
     }
-    let [x, y] = bytes[okDrops]
+    let [x, y] = bytes[okDrops] as Pos
     return `${x},${y}`
 }
 
@@ -85,7 +85,7 @@ export const part1: Part = input => () =>
 export const part2: Part = input => () =>
     firstBlockingByte(init(parseBytes(input), 0))
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = '292'
 part2.solution = '58,44'
@@ -132,13 +132,13 @@ if (main) {
                     '22',
                     () =>
                         minimumSteps(
-                            init(parseBytes(testInput[0]), 12),
+                            init(parseBytes(testInput[0]!), 12),
                         ).toString(),
                 ],
                 [
                     'Test part 2',
                     '6,1',
-                    () => firstBlockingByte(init(parseBytes(testInput[0]), 0)),
+                    () => firstBlockingByte(init(parseBytes(testInput[0]!), 0)),
                 ],
             ),
         () => utils.test_day(module),

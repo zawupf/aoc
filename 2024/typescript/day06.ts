@@ -17,10 +17,10 @@ function parse(lines: string[]): State {
     const grid = lines.map(line => line.split('') as Row)
     const findGuard = (grid: Grid): Guard => {
         for (let y = 0; y < grid.length; y++) {
-            for (let x = 0; x < grid[y].length; x++) {
-                const cell = grid[y][x] as string
+            for (let x = 0; x < grid[y]!.length; x++) {
+                const cell = grid[y]![x] as string
                 if (cell === '^') {
-                    grid[y][x] = 'X'
+                    grid[y]![x] = 'X'
                     return [[x, y], 'up']
                 }
             }
@@ -66,7 +66,7 @@ function walk(state: State): FinalState {
     while (true) {
         const nextPos = next(dir)
         const [nx, ny] = nextPos
-        if (nx < 0 || ny < 0 || nx >= grid[0].length || ny >= grid.length) {
+        if (nx < 0 || ny < 0 || nx >= grid[0]!.length || ny >= grid.length) {
             return [state, 'exited']
         }
 
@@ -76,13 +76,13 @@ function walk(state: State): FinalState {
         }
 
         guardStates.add(key)
-        if (grid[ny][nx] === '#') {
+        if (grid[ny]![nx] === '#') {
             dir = turnRight(dir)
             continue
         }
 
         ;[x, y] = nextPos
-        grid[y][x] = 'X'
+        grid[y]![x] = 'X'
     }
 }
 
@@ -102,13 +102,13 @@ export const part2: Part = input => () => {
         startPos,
     ])[0][0]
     const [sx, sy] = startPos[0]
-    escapeGrid[sy][sx] = '.'
+    escapeGrid[sy]![sx] = '.'
     let result = 0
     for (let y = 0; y < originalGrid.length; y++) {
-        for (let x = 0; x < originalGrid[0].length; x++) {
-            if (escapeGrid[y][x] === 'X' && originalGrid[y][x] === '.') {
+        for (let x = 0; x < originalGrid[0]!.length; x++) {
+            if (escapeGrid[y]![x] === 'X' && originalGrid[y]![x] === '.') {
                 const grid = originalGrid.map(row => row.slice())
-                grid[y][x] = '#'
+                grid[y]![x] = '#'
                 const state: State = [grid, startPos]
                 const [_, kind] = walk(state)
                 if (kind === 'caught') {
@@ -120,7 +120,7 @@ export const part2: Part = input => () => {
     return result
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 5177
 part2.solution = 1686
@@ -148,8 +148,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 41, part1(testInput[0])],
-                ['Test part 2', 6, part2(testInput[0])],
+                ['Test part 1', 41, part1(testInput[0]!)],
+                ['Test part 2', 6, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

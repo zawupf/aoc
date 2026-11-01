@@ -41,7 +41,7 @@ function collectStats(secret: number, n: number): Stats {
     for (const next of generateSecrets(secret)) {
         const current = next % 10
         const diff = current - previous + 10
-        ;(d = c), (c = b), (b = a), (a = diff)
+        ;((d = c), (c = b), (b = a), (a = diff))
 
         if (d !== 0) {
             const key = (a << 24) | (b! << 16) | (c! << 8) | d
@@ -76,7 +76,7 @@ export const part2: Part = input => () => {
         .reduce(utils.max)
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 18317943467
 part2.solution = 2018
@@ -117,8 +117,8 @@ if (main) {
         //     ),
         () =>
             utils.test_all(
-                ['Test part 1', 37327623, part1(testInput[0])],
-                ['Test part 2', 23, part2(testInput[1])],
+                ['Test part 1', 37327623, part1(testInput[0]!)],
+                ['Test part 2', 23, part2(testInput[1]!)],
             ),
         () => utils.test_day(module),
     )

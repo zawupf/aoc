@@ -46,7 +46,7 @@ export const part1: Part = input => () => sumByCount(parse(input), 25)
 
 export const part2: Part = input => () => sumByCount(parse(input), 75)
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = 220722
 part2.solution = 261952051690787
@@ -60,13 +60,13 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test blink 1', 3, () => sumByCount(parse(testInput[0]), 1)],
-                ['Test blink 2', 4, () => sumByCount(parse(testInput[0]), 2)],
-                ['Test blink 3', 5, () => sumByCount(parse(testInput[0]), 3)],
-                ['Test blink 4', 9, () => sumByCount(parse(testInput[0]), 4)],
-                ['Test blink 5', 13, () => sumByCount(parse(testInput[0]), 5)],
-                ['Test blink 6', 22, () => sumByCount(parse(testInput[0]), 6)],
-                ['Test part 1', 55312, part1(testInput[0])],
+                ['Test blink 1', 3, () => sumByCount(parse(testInput[0]!), 1)],
+                ['Test blink 2', 4, () => sumByCount(parse(testInput[0]!), 2)],
+                ['Test blink 3', 5, () => sumByCount(parse(testInput[0]!), 3)],
+                ['Test blink 4', 9, () => sumByCount(parse(testInput[0]!), 4)],
+                ['Test blink 5', 13, () => sumByCount(parse(testInput[0]!), 5)],
+                ['Test blink 6', 22, () => sumByCount(parse(testInput[0]!), 6)],
+                ['Test part 1', 55312, part1(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

@@ -22,22 +22,25 @@ function parse(input: string): Circuit {
         .map(utils.split_lines)
 
     const wires = new Map(
-        wiresChunk.map(line => {
-            const [name, value] = line.split(': ')
+        wiresChunk!.map(line => {
+            const [name, value] = line.split(': ') as [string, string]
             return [name, utils.parseInt(value)]
         }),
     )
 
     const gates = new Map(
-        gatesChunk.map(line => {
+        gatesChunk!.map(line => {
             const [in1, op, in2, _, output] = line.split(' ')
-            return [output, { op, inputs: [in1, in2], output } as Gate]
+            return [
+                output!,
+                { op: op!, inputs: [in1!, in2!], output: output! } as Gate,
+            ]
         }),
     )
 
     const bits = gates
         .keys()
-        .filter(wire => /^z\d\d$/.test(wire))
+        .filter(wire => /^z\d\d$/.test(wire!))
         .reduce((count, _) => count + 1, 0)
 
     return { wires, gates, bits }
@@ -59,7 +62,7 @@ function evaluate(wire: string, circuit: Circuit): number {
     const gate = gates.get(wire)!
     const [value1, value2] = gate.inputs.map(w => evaluate(w, circuit))
 
-    const result = calculate[gate.op](value1, value2)
+    const result = calculate[gate.op](value1!, value2!)
     wires.set(wire, result)
     return result
 }
@@ -168,7 +171,7 @@ export const part2: Part = input => () => {
                 )
                 const output = outputs.values().next().value!
                 used.add(output)
-                map.push([invalidInnerGates[i], circuit.gates.get(output)!])
+                map.push([invalidInnerGates[i]!, circuit.gates.get(output)!])
                 return [map, used]
             },
             [[], new Set()] as [[Gate, Gate][], Set<string>],
@@ -199,7 +202,7 @@ export const part2: Part = input => () => {
         .toArray()
     console.assert(gatesFail.length === 2, `Invalid gates: ${gatesFail}`)
 
-    swapOutput(gatesFail[0], gatesFail[1], circuit)
+    swapOutput(gatesFail[0]!, gatesFail[1]!, circuit)
     circuit.wires = new Map(initialWires)
     const z2 = get('z', circuit)!
     console.assert(z2 === expected, `Invalid output: ${z2} !== ${expected}`)
@@ -212,7 +215,7 @@ export const part2: Part = input => () => {
     return result
 }
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = '49430469426918'
 part2.solution = 'fbq,pbv,qff,qnw,qqp,z16,z23,z36'
@@ -288,8 +291,8 @@ tnw OR pbm -> gnj
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', '4', part1(testInput[0])],
-                ['Test part 1', '2024', part1(testInput[1])],
+                ['Test part 1', '4', part1(testInput[0]!)],
+                ['Test part 1', '2024', part1(testInput[1]!)],
             ),
         () => utils.test_day(module),
     )

@@ -4,7 +4,7 @@ import * as utils from './utils'
 type Towels = { patterns: string[]; designs: string[] }
 
 function parse(lines: string[]): Towels {
-    const patterns = lines[0].split(', ')
+    const patterns = lines[0]!.split(', ')
     const designs = lines.slice(2)
     return { patterns, designs }
 }
@@ -56,7 +56,7 @@ export const part1: Part = input => () => countPossibleDesigns(parse(input))
 export const part2: Part = input => () =>
     countAllPatternCombinations(parse(input))
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 333
 part2.solution = 678536865274732
@@ -83,8 +83,8 @@ bbrgwb
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 6, part1(testInput[0])],
-                ['Test part 2', 16, part2(testInput[0])],
+                ['Test part 1', 6, part1(testInput[0]!)],
+                ['Test part 2', 16, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

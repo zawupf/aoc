@@ -8,11 +8,11 @@ function parseReport(line: string): Report {
 }
 
 function isGraduallyChanging(report: Report): boolean {
-    const sign = Math.sign(report[1] - report[0])
+    const sign = Math.sign(report[1]! - report[0]!)
     return (
         sign !== 0 &&
         report.slice(1).every((v, i) => {
-            const diff = v - report[i]
+            const diff = v - report[i]!
             const delta = Math.abs(diff)
             return sign === Math.sign(diff) && delta !== 0 && delta <= 3
         })
@@ -46,7 +46,7 @@ export const part2: Part = input => () =>
         0,
     )
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 490
 part2.solution = 536
@@ -69,8 +69,8 @@ if (main) {
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 2, part1(testInput[0])],
-                ['Test part 2', 4, part2(testInput[0])],
+                ['Test part 1', 2, part1(testInput[0]!)],
+                ['Test part 2', 4, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

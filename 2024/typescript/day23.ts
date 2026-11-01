@@ -107,7 +107,7 @@ export const part1: Part = input => () =>
 
 export const part2: Part = input => () => Lan.from(input).findPassword()
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = '1043'
 part2.solution = 'ai,bk,dc,dx,fo,gx,hk,kd,os,uz,xn,yk,zs'
@@ -156,8 +156,8 @@ td-yn
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', '7', part1(testInput[0])],
-                ['Test part 2', 'co,de,ka,ta', part2(testInput[0])],
+                ['Test part 1', '7', part1(testInput[0]!)],
+                ['Test part 2', 'co,de,ka,ta', part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

@@ -6,7 +6,7 @@ const XMAS = 'XMAS'
 type CounterFn = (lines: string[], x: number, y: number) => number
 
 function count_XMAS(lines: string[], x: number, y: number): number {
-    if (lines[y][x] !== XMAS[0]) {
+    if (lines[y]![x] !== XMAS[0]) {
         return 0
     }
 
@@ -31,11 +31,11 @@ function count_XMAS(lines: string[], x: number, y: number): number {
 }
 
 function count_MAS_cross(lines: string[], x: number, y: number): number {
-    const diag1 = () => lines[y + 1]?.[x + 1] + lines[y - 1]?.[x - 1]
-    const diag2 = () => lines[y + 1]?.[x - 1] + lines[y - 1]?.[x + 1]
+    const diag1 = () => lines[y + 1]?.[x + 1]! + lines[y - 1]?.[x - 1]
+    const diag2 = () => lines[y + 1]?.[x - 1]! + lines[y - 1]?.[x + 1]
     const isMS = (s: string) => s === 'MS' || s === 'SM'
 
-    return lines[y][x] === 'A' && isMS(diag1()) && isMS(diag2()) ? 1 : 0
+    return lines[y]![x] === 'A' && isMS(diag1()) && isMS(diag2()) ? 1 : 0
 }
 
 function count(lines: string[], counter: CounterFn): number {
@@ -50,7 +50,7 @@ export const part1: Part = input => () => count(input, count_XMAS)
 
 export const part2: Part = input => () => count(input, count_MAS_cross)
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputLines(day)
 part1.solution = 2517
 part2.solution = 1960
@@ -77,8 +77,8 @@ MXMXAXMASX
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 18, part1(testInput[0])],
-                ['Test part 2', 9, part2(testInput[0])],
+                ['Test part 1', 18, part1(testInput[0]!)],
+                ['Test part 2', 9, part2(testInput[0]!)],
             ),
         () => utils.test_day(module),
     )

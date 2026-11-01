@@ -14,9 +14,9 @@ type State = {
 function parse(input: string): State {
     const [gridChunk, movesChunk] = utils.split_sections(input)
     const grid = utils
-        .split_lines(gridChunk)
+        .split_lines(gridChunk!)
         .map(line => line.split('') as Field[])
-    const moves = movesChunk.replaceAll('\n', '').split('') as Move[]
+    const moves = movesChunk!.replaceAll('\n', '').split('') as Move[]
     const robot = grid
         .flatMap((row, y) => row.map((cell, x) => [cell, x, y]))
         .find(([cell]) => cell === '@')!
@@ -64,7 +64,7 @@ function nextPos([x, y]: Pos, move: Move): Pos {
 
 function canMove(grid: Grid, [x, y]: Pos, move: Move): boolean {
     const [nx, ny] = nextPos([x, y], move)
-    switch (grid[ny][nx]) {
+    switch (grid[ny]![nx]) {
         case '.':
             return true
         case 'O':
@@ -102,14 +102,14 @@ function canMove(grid: Grid, [x, y]: Pos, move: Move): boolean {
         case '#':
             return false
         default:
-            utils.unreachable(`Invalid field: ${grid[ny][nx]}`)
+            utils.unreachable(`Invalid field: ${grid[ny]![nx]}`)
     }
 }
 
 function doMove(grid: Grid, [x, y]: Pos, move: Move): Pos {
     const [nx, ny] = nextPos([x, y], move)
 
-    switch (grid[ny][nx]) {
+    switch (grid[ny]![nx]) {
         case '.':
             break
         case 'O':
@@ -136,11 +136,11 @@ function doMove(grid: Grid, [x, y]: Pos, move: Move): Pos {
         case '#':
             utils.unreachable('Invalid move: hit a wall')
         default:
-            utils.unreachable(`Invalid field: ${grid[ny][nx]}`)
+            utils.unreachable(`Invalid field: ${grid[ny]![nx]}`)
     }
 
-    grid[ny][nx] = grid[y][x]
-    grid[y][x] = '.'
+    grid[ny]![nx] = grid[y]![x]!
+    grid[y]![x] = '.'
     return [nx, ny]
 }
 
@@ -172,7 +172,7 @@ export const part1: Part = input => () => gpsSum(moveRobot(parse(input)))
 export const part2: Part = input => () =>
     gpsSum(moveRobot(scaleUp(parse(input))))
 
-export const day = import.meta.file.match(/day(\d+)/)![1]
+export const day = import.meta.file.match(/day(\d+)/)![1]!
 export const input = await utils.readInputText(day)
 part1.solution = 1563092
 part2.solution = 1582688
@@ -222,9 +222,9 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
     await utils.tests(
         () =>
             utils.test_all(
-                ['Test part 1', 2028, part1(testInput[0])],
-                ['Test part 1', 10092, part1(testInput[1])],
-                ['Test part 2', 9021, part2(testInput[1])],
+                ['Test part 1', 2028, part1(testInput[0]!)],
+                ['Test part 1', 10092, part1(testInput[1]!)],
+                ['Test part 2', 9021, part2(testInput[1]!)],
             ),
         () => utils.test_day(module),
     )
